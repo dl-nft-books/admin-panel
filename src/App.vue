@@ -1,16 +1,29 @@
 <script lang="ts" setup>
-import { AppNavbar } from '@/common'
-
 import { ErrorHandler } from '@/helpers/error-handler'
 import { ref } from 'vue'
 import { useNotifications } from '@/composables'
 import { config } from '@config'
+import { useWeb3ProvidersStore } from '@/store'
+import { PROVIDERS } from '@/enums'
 
 const isAppInitialized = ref(false)
+
+const web3Store = useWeb3ProvidersStore()
+
 const init = async () => {
   try {
     useNotifications()
     document.title = config.APP_NAME
+    await Promise.all([web3Store.detectProviders()])
+
+    // temporary
+    const metamaskProvider = web3Store.providers.find(
+      provider => provider.name === PROVIDERS.metamask,
+    )
+
+    if (metamaskProvider) {
+      await web3Store.provider.init(metamaskProvider)
+    }
   } catch (error) {
     ErrorHandler.process(error)
   }
@@ -22,7 +35,6 @@ init()
 
 <template>
   <div v-if="isAppInitialized" class="app__container">
-    <app-navbar class="app__navbar" />
     <router-view v-slot="{ Component, route }">
       <transition :name="route.meta.transition || 'fade'" mode="out-in">
         <component class="app__main" :is="Component" />
@@ -33,18 +45,15 @@ init()
 
 <style lang="scss" scoped>
 .app__container {
-  overflow: hidden;
-  display: grid;
-  grid-template-rows: toRem(85) 1fr max-content;
+  display: flex;
+  flex-direction: column;
   flex: 1;
-
-  @include respond-to(small) {
-    grid-template-rows: max-content 1fr max-content;
-  }
+  width: 100%;
+  height: 100%;
 }
 
 .app__main {
-  padding: 0 var(--app-padding-right) 0 var(--app-padding-left);
+  flex: 1;
 }
 
 .fade-enter-active {

@@ -8,6 +8,10 @@
   --black: #{$black};
   --black-rgb: #{$black-rgb};
 
+  --background-primary: #{$background-primary};
+  --background-secondary: #{$background-secondary};
+  --background-tertiary: #{$background-tertiary};
+
   /* status colors */
   --success-light: #{$success-light};
   --success-main: #{$success-main};
@@ -61,11 +65,10 @@
   --border-primary-dark: #{$border-primary-dark};
 
   /* App variables */
-  --app-bg: #{$app-bg};
   --app-txt: #{$text-primary-main};
   --app-font-family: 'Roboto', 'Arial', sans-serif;
-  --app-padding-right: #{toRem(120)};
-  --app-padding-left: #{toRem(120)};
+  --app-padding-right: #{toRem(40)};
+  --app-padding-left: #{toRem(40)};
 
   @include respond-to(small) {
     --app-padding-right: #{toRem(24)};
@@ -77,7 +80,7 @@
   /* Field variables */
 
   /* --------------------------------------- */
-  --field-bg: var(--app-bg);
+  --field-bg: var(--background-primary);
 
   /* label */
   --field-label: var(--text-primary-main);

@@ -36,11 +36,26 @@
     "default-message-info": "Something is happening. Just want you to know that",
     "default-message-default": "Just a message"
   },
+  "account-dropdown": {
+    "logout-btn": "Logout"
+  },
+  "app-sidebar": {
+    "logo-subtitle": "Admin panel",
+    "nfts-link": "NFTs",
+    "kyc-requests-link": "KYC Requests",
+    "settings-link": "Settings",
+    "logout-btn": "Logout",
+    "terms-link": "Terms",
+    "downloads-link": "Downloads",
+    "support-link": "Support",
+    "copyright": "{value}© Distributed Lab"
+  },
+  "login-page": {
+    "title": "Login",
+    "subtitle": "NFT Books admin panel"
+  },
   "login-form": {
-    "login-lbl": "Login",
-    "password-lbl": "Password",
-    "login-success-msg": "Access granted",
-    "submit-btn": "Submit"
+    "submit-btn": "Connect Metamask"
   },
   "ui-kit-page": {
     "button": "Button",

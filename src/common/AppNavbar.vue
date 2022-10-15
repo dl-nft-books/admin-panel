@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { AppLogo } from '@/common'
+import { AccountDropdown } from '@/common'
 </script>
 
 <template>
   <div class="app-navbar">
-    <app-logo class="app-navbar__logo" />
+    <account-dropdown class="app-navbar__account-dropdown" />
   </div>
 </template>
 
@@ -12,8 +12,8 @@ import { AppLogo } from '@/common'
 .app-navbar {
   display: flex;
   align-items: center;
-  padding: toRem(24) var(--app-padding-right) toRem(24) var(--app-padding-left);
-  background: var(--app-bg);
+  padding: 0 var(--app-padding-right) 0 var(--app-padding-left);
+  background: var(--background-primary);
   border-bottom: var(--border-primary-main);
 
   @include respond-to(tablet) {
@@ -26,5 +26,9 @@ import { AppLogo } from '@/common'
     width: 100%;
     margin-bottom: toRem(24);
   }
+}
+
+.app-navbar__account-dropdown {
+  margin-left: auto;
 }
 </style>

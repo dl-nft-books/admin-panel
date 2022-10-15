@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
-import { useWeb3 } from '@/composables'
+import { useProvider, useWeb3 } from '@/composables'
 import { DesignatedProvider } from '@/types'
 
 export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
   state: () => ({
     providers: [] as DesignatedProvider[],
+    provider: useProvider(),
   }),
   actions: {
     async detectProviders() {

@@ -17,14 +17,14 @@ body, #app {
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-color: var(--app-bg);
+  background-color: var(--background-primary);
   color: var(--text-primary-main);
 }
 
 input,
 select,
 textarea {
-  background: var(--app-bg);
+  background: var(--background-primary);
   color: var(--text-primary-main);
   font-family: var(--app-font-family);
   font-size: toRem(16);

@@ -34,7 +34,6 @@ import LoginForm from '@/forms/LoginForm.vue'
   gap: toRem(24);
   padding: toRem(24);
   border-radius: toRem(16);
-  background: rgb(17, 16, 16);
   background: linear-gradient(
     326deg,
     rgba(17, 16, 16, 1) 0%,

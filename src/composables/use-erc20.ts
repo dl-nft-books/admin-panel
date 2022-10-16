@@ -1,46 +1,47 @@
 import { ref } from 'vue'
-import { Contract, ContractInterface } from 'ethers'
-import { ERC20ABI } from '@/constants'
 import { UseProvider } from '@/types'
 import { BN } from '@/utils/math.util'
+import { Erc20, Erc20__factory } from '@/types'
 
-export const useErc20 = (
-  provider: UseProvider,
-  address?: string,
-  abi?: ContractInterface,
-) => {
-  const _instance = ref<Contract | undefined>()
-  const _instance_rw = ref<Contract | undefined>()
+export const useErc20 = (provider: UseProvider, address?: string) => {
+  const _instance = ref<Erc20 | undefined>()
+  const _instance_rw = ref<Erc20 | undefined>()
 
-  if (address) {
-    _instance.value = new Contract(
+  if (
+    address &&
+    provider.currentProvider.value &&
+    provider.currentSigner.value
+  ) {
+    _instance.value = Erc20__factory.connect(
       address,
-      abi || ERC20ABI,
       provider.currentProvider.value,
     )
-    _instance_rw.value = new Contract(
+    _instance_rw.value = Erc20__factory.connect(
       address,
-      abi || ERC20ABI,
       provider.currentSigner.value,
     )
   }
 
-  const init = (address: string, abi: ContractInterface) => {
-    _instance.value = new Contract(
-      address,
-      abi || ERC20ABI,
-      provider.currentProvider.value,
-    )
-    _instance_rw.value = new Contract(
-      address,
-      abi || ERC20ABI,
-      provider.currentSigner.value,
-    )
+  const init = (address: string) => {
+    if (
+      address &&
+      provider.currentProvider.value &&
+      provider.currentSigner.value
+    ) {
+      _instance.value = Erc20__factory.connect(
+        address,
+        provider.currentProvider.value,
+      )
+      _instance_rw.value = Erc20__factory.connect(
+        address,
+        provider.currentSigner.value,
+      )
+    }
   }
 
   const allowance = ref('')
 
-  const decimals = ref('')
+  const decimals = ref<number | undefined>()
 
   const name = ref('')
 
@@ -70,24 +71,33 @@ export const useErc20 = (
   }
 
   const approve = async (spender: string, amount: number) => {
-    await _instance_rw.value?.approve(spender, amount)
+    await _instance_rw.value?.approve(
+      spender,
+      new BN(amount).toFraction(decimals.value).toString(),
+    )
   }
 
   const decreaseAllowance = async (
     spender: string,
     subtractedValue: number,
   ) => {
-    await _instance_rw.value?.decreaseAllowance(spender, subtractedValue)
+    await _instance_rw.value?.decreaseAllowance(
+      spender,
+      new BN(subtractedValue).toFraction(decimals.value).toString(),
+    )
   }
 
   const increaseAllowance = async (spender: string, addedValue: number) => {
-    await _instance_rw.value?.increaseAllowance(spender, addedValue)
+    await _instance_rw.value?.increaseAllowance(
+      spender,
+      new BN(addedValue).toFraction(decimals.value).toString(),
+    )
   }
 
   const mint = async (to: string, amount: number) => {
     await _instance_rw.value?.mint(
       to,
-      new BN(amount).toFraction(+decimals.value).toString(),
+      new BN(amount).toFraction(decimals.value).toString(),
     )
   }
 
@@ -98,54 +108,61 @@ export const useErc20 = (
   const transfer = async (address: string, amount: number) => {
     await _instance_rw.value?.transfer(
       address,
-      new BN(amount).toFraction(+decimals.value).toString(),
+      new BN(amount).toFraction(decimals.value).toString(),
     )
   }
 
   const transferFrom = async (from: string, to: string, amount: number) => {
-    await _instance_rw.value?.transferFrom(from, to, amount)
+    await _instance_rw.value?.transferFrom(
+      from,
+      to,
+      new BN(amount).toFraction(decimals.value).toString(),
+    )
   }
 
   const getAllowance = async (owner: string, spender: string) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    allowance.value = await _instance.value?.allowance(owner, spender)
+    const _allowance = await _instance.value?.allowance(owner, spender)
+    if (_allowance) {
+      allowance.value = _allowance.toString()
+    }
   }
 
   const getBalanceOf = async (address: string) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return _instance.value.balanceOf(address)
+    const _balance = await _instance.value?.balanceOf(address)
+
+    return _balance ? _balance.toString() : ''
   }
 
   const getDecimals = async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    decimals.value = await _instance.value.decimals()
+    if (_instance.value?.decimals) {
+      decimals.value = await _instance.value?.decimals()
+    }
   }
 
   const getName = async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    name.value = await _instance.value.name()
+    if (_instance.value?.name) {
+      name.value = await _instance.value?.name()
+    }
   }
 
   const getOwner = async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    owner.value = await _instance.value.owner()
+    if (_instance.value?.owner) {
+      owner.value = await _instance.value?.owner()
+    }
   }
 
   const getSymbol = async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    symbol.value = await _instance.value.symbol()
+    if (_instance.value?.symbol) {
+      symbol.value = await _instance.value?.symbol()
+    }
   }
 
   const getTotalSupply = async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    totalSupply.value = await _instance.value.totalSupply()
+    const _totalSupply = await _instance.value?.totalSupply()
+
+    if (_totalSupply) {
+      totalSupply.value = _totalSupply.toString()
+    }
   }
 
   return {

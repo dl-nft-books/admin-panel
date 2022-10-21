@@ -1,7 +1,5 @@
-<script lang="ts" setup></script>
-
 <template>
-  <div class="nfts-page"></div>
+  <div class="nfts-page">
+    <router-view />
+  </div>
 </template>
-
-<style lang="scss" scoped></style>

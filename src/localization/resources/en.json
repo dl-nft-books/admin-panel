@@ -81,5 +81,8 @@
     "balance-lbl": "Balance",
     "transfer-lbl": "Transfer",
     "mint-lbl": "Mint"
+  },
+  "create-nfts": {
+    "title": "NFT Creation"
   }
 }

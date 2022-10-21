@@ -25,6 +25,8 @@ const submit = async () => {
       <app-button
         class="login-form__submit-btn"
         type="submit"
+
+        :icon-left="$icons.metamask"
         :text="$t('login-form.submit-btn')"
       />
     </div>
@@ -32,8 +34,7 @@ const submit = async () => {
 </template>
 
 <style lang="scss" scoped>
-.login-form {
-  display: grid;
-  grid-gap: toRem(24);
+.login-form__submit-btn {
+  margin: 0 auto;
 }
 </style>

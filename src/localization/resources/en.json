@@ -51,8 +51,8 @@
     "copyright": "{value}© Distributed Lab"
   },
   "login-page": {
-    "title": "Login",
-    "subtitle": "NFT Books admin panel"
+    "title": "Welcome to distributed store",
+    "subtitle": "To log in, please connect to your\n MetaMask wallet"
   },
   "login-form": {
     "submit-btn": "Connect Metamask"

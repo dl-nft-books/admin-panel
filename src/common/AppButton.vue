@@ -184,6 +184,8 @@ const buttonClasses = computed(() =>
     --app-button-border: 0;
     --app-button-border-hover: 0;
     --app-button-border-active: 0;
+
+    filter: drop-shadow(0 toRem(4) toRem(10) rgba(157, 161, 166, 0.5));
   }
 
   &--flat {
@@ -259,7 +261,7 @@ const buttonClasses = computed(() =>
   }
 
   &--border-rounded {
-    border-radius: toRem(10);
+    border-radius: toRem(8);
   }
 
   &--large {
@@ -268,8 +270,8 @@ const buttonClasses = computed(() =>
   }
 
   &--medium {
-    padding: toRem(16) toRem(30);
-    font-size: toRem(16);
+    padding: toRem(18) toRem(45);
+    font-size: toRem(18);
     line-height: 1.4;
     font-weight: 600;
     grid-gap: toRem(12);
@@ -277,15 +279,20 @@ const buttonClasses = computed(() =>
   }
 
   &--small {
-    padding: toRem(8) toRem(15);
-    grid-gap: toRem(8);
+    padding: toRem(12) toRem(16);
+    grid-gap: toRem(12);
+  }
+
+  &--x-small {
+    padding: toRem(7) toRem(16);
+    grid-gap: toRem(6);
   }
 }
 
 .app-button__icon-left,
 .app-button__icon-right {
-  height: 1.2em;
-  width: 1.2em;
+  height: 1.5em;
+  width: 1.5em;
 }
 
 .app-button__text {

@@ -6,10 +6,7 @@ import { AppLogo } from '@/common'
 <template>
   <div class="login-page">
     <div class="login-page__header">
-      <app-logo
-        scheme="dark"
-        class="login-page__logo"
-      />
+      <app-logo scheme="dark" class="login-page__logo" />
     </div>
     <div class="login-page__content">
       <div class="login-page__titles">
@@ -32,8 +29,7 @@ import { AppLogo } from '@/common'
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: url('/images/login-page-bg.png') no-repeat bottom /
-    cover;
+  background: url('/images/login-page-bg.png') no-repeat bottom / cover;
 }
 
 .login-page__header {

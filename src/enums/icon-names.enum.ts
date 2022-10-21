@@ -230,5 +230,5 @@ export enum ICON_NAMES {
   zoomIn = 'zoom-in',
   zoomOut = 'zoom-out',
   logo = 'logo',
-  metamask = 'metamask'
+  metamask = 'metamask',
 }

@@ -25,7 +25,6 @@ const submit = async () => {
       <app-button
         class="login-form__submit-btn"
         type="submit"
-
         :icon-left="$icons.metamask"
         :text="$t('login-form.submit-btn')"
       />

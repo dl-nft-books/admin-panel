@@ -1,11 +1,5 @@
-export enum FIELD_LENGTH_DEFAULT {
-  max = 100,
-}
-
-export enum DESCRIPTION_LENGTH {
-  max = 500,
-}
-
-export enum NAME_LENGTH {
-  max = 64,
+export enum FIELD_LENGTH {
+  default = 100,
+  description = 500,
+  name = 64,
 }

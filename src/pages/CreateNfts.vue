@@ -2,7 +2,7 @@
 import { InputField, TextareaField } from '@/fields'
 import { ref } from 'vue'
 import { AppButton } from '@/common'
-import { DESCRIPTION_LENGTH, NAME_LENGTH } from '@/enums'
+import { FIELD_LENGTH } from '@/enums'
 
 const form = ref({
   name: '',
@@ -34,7 +34,7 @@ const submit = () => {
       <div class="create-nfts__details">
         <input-field
           v-model="form.name"
-          :max-length="NAME_LENGTH.max"
+          :max-length="FIELD_LENGTH.name"
           :placeholder="$t('create-nfts.input-name-placeholder')"
           :label="$t('create-nfts.input-name-label')"
         />
@@ -47,7 +47,7 @@ const submit = () => {
         <textarea-field
           class="create-nfts__textarea"
           v-model="form.description"
-          :max-length="DESCRIPTION_LENGTH.max"
+          :max-length="FIELD_LENGTH.description"
           :placeholder="$t('create-nfts.textarea-description-placeholder')"
           :label="$t('create-nfts.textarea-description-label')"
         />

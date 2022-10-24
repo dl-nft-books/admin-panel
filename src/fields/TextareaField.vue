@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, getCurrentInstance, useAttrs } from 'vue'
-import { FIELD_LENGTH_DEFAULT } from '@/enums'
+import { FIELD_LENGTH } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
@@ -14,7 +14,7 @@ const props = withDefaults(
     label: '',
     placeholder: ' ',
     errorMessage: '',
-    maxLength: FIELD_LENGTH_DEFAULT.max,
+    maxLength: FIELD_LENGTH.default,
   },
 )
 

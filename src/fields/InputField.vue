@@ -3,7 +3,7 @@ import { Icon } from '@/common'
 
 import { BN } from '@/utils/math.util'
 import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
-import { FIELD_LENGTH_DEFAULT } from '@/enums'
+import { FIELD_LENGTH } from '@/enums'
 import { countBy } from 'lodash-es'
 
 type INPUT_TYPES = 'text' | 'number' | 'password' | 'price'
@@ -22,7 +22,7 @@ const props = withDefaults(
     label: '',
     placeholder: ' ',
     errorMessage: '',
-    maxLength: FIELD_LENGTH_DEFAULT.max,
+    maxLength: FIELD_LENGTH.default,
   },
 )
 

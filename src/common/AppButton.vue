@@ -192,7 +192,7 @@ const buttonClasses = computed(() =>
     --app-button-flat-text: var(--text-primary-main);
     --app-button-flat-text-hover: var(--text-primary-dark);
 
-    --app-button-flat-border: #{toRem(2)} solid var(--text-primary-light);
+    --app-button-flat-border: #{toRem(1)} solid var(--text-primary-main);
     --app-button-flat-border-hover: var(--app-button-flat-border);
     --app-button-flat-border-active: var(--app-button-flat-border);
 
@@ -271,9 +271,9 @@ const buttonClasses = computed(() =>
 
   &--medium {
     padding: toRem(18) toRem(45);
-    font-size: toRem(18);
+    font-size: toRem(16);
     line-height: 1.4;
-    font-weight: 600;
+    font-weight: 500;
     grid-gap: toRem(12);
     letter-spacing: 0;
   }

@@ -83,6 +83,16 @@
     "mint-lbl": "Mint"
   },
   "create-nfts": {
-    "title": "NFT Creation"
+    "title": "NFT Creation",
+    "uploading-subtitle": "1. Uploading",
+    "details-subtitle": "2. Add Details",
+    "input-name-label": "Name*",
+    "input-price-label": "Price (USD)*",
+    "textarea-description-label": "Description*",
+    "input-name-placeholder": "Name*",
+    "input-price-placeholder": "Price (USD)*",
+    "textarea-description-placeholder": "Description*",
+    "cancel-button": "cancel",
+    "create-button": "create"
   }
 }

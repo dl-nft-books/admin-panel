@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, getCurrentInstance, useAttrs } from 'vue'
+import { FIELD_LENGTH_DEFAULT } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
@@ -7,11 +8,13 @@ const props = withDefaults(
     label?: string
     placeholder?: string
     errorMessage?: string
+    maxLength?: number
   }>(),
   {
     label: '',
     placeholder: ' ',
     errorMessage: '',
+    maxLength: FIELD_LENGTH_DEFAULT.max,
   },
 )
 
@@ -75,8 +78,12 @@ const setHeightCSSVar = (element: HTMLElement) => {
         :value="modelValue"
         :placeholder="placeholder"
         :tabindex="isDisabled || isReadonly ? -1 : $attrs.tabindex"
+        :maxlength="maxLength"
         :disabled="isDisabled || isReadonly"
       />
+      <span class="textarea-field__textarea-count">
+        {{ `${modelValue.length} / ${maxLength}` }}
+      </span>
     </div>
     <transition
       name="textarea-field__err-msg-transition"
@@ -190,6 +197,14 @@ const setHeightCSSVar = (element: HTMLElement) => {
   &:not([disabled]):not(:focus):hover {
     border-color: var(--field-border-hover);
   }
+}
+
+.textarea-field__textarea-count {
+  position: absolute;
+  bottom: toRem(8);
+  right: toRem(18);
+  font-size: toRem(11);
+  color: var(--text-secondary-main);
 }
 
 .textarea-field__icon-wrp {

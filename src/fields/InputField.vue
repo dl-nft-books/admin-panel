@@ -3,8 +3,10 @@ import { Icon } from '@/common'
 
 import { BN } from '@/utils/math.util'
 import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
+import { FIELD_LENGTH_DEFAULT } from '@/enums'
+import { countBy } from 'lodash-es'
 
-type INPUT_TYPES = 'text' | 'number' | 'password'
+type INPUT_TYPES = 'text' | 'number' | 'password' | 'price'
 
 const props = withDefaults(
   defineProps<{
@@ -13,12 +15,14 @@ const props = withDefaults(
     placeholder?: string
     type?: INPUT_TYPES
     errorMessage?: string
+    maxLength?: number
   }>(),
   {
     type: 'text',
     label: '',
     placeholder: ' ',
     errorMessage: '',
+    maxLength: FIELD_LENGTH_DEFAULT.max,
   },
 )
 
@@ -36,6 +40,7 @@ const isPasswordShown = ref(false)
 
 const isNumberType = computed(() => props.type === 'number')
 const isPasswordType = computed(() => props.type === 'password')
+const isPriceType = computed(() => props.type === 'price')
 
 const min = computed((): string => (attrs?.min as string) || '')
 const max = computed((): string => (attrs?.max as string) || '')
@@ -51,9 +56,13 @@ const isReadonly = computed(() =>
 const listeners = computed(() => ({
   input: (event: Event) => {
     const eventTarget = event.target as HTMLInputElement
-    if (isNumberType.value) {
-      eventTarget.value = normalizeRange(eventTarget.value)
+    eventTarget.value = isNumberType.value
+      ? normalizeRange(eventTarget.value)
+      : normalizeLength(eventTarget.value)
+    if (isPriceType.value) {
+      eventTarget.value = normalizePrice(eventTarget.value)
     }
+
     if (props.modelValue === eventTarget.value) return
 
     emit('update:modelValue', eventTarget.value)
@@ -79,6 +88,37 @@ const normalizeRange = (value: string | number): string => {
     result = min.value
   } else if (max.value && new BN(value).compare(max.value) > 0) {
     result = max.value
+  }
+
+  return result as string
+}
+
+const normalizeLength = (value: string): string => {
+  let result = value
+
+  if (result.length > props.maxLength) {
+    result = result.substring(0, props.maxLength)
+  }
+
+  return result as string
+}
+
+const normalizePrice = (value: string): string => {
+  let result = value
+  const priceRegex = /^[0-9.]+$/
+  const countOfDots = countBy(result)['.'] ?? 0
+
+  result =
+    priceRegex.test(result) && countOfDots < 2
+      ? result
+      : result.substring(0, result.length - 1)
+
+  if (result.includes('.')) {
+    const [stringBeforeDot, stringAfterDot] = result.split('.')
+
+    if (stringAfterDot.length > 2) {
+      result = stringBeforeDot + '.' + stringAfterDot.substring(0, 2)
+    }
   }
 
   return result as string

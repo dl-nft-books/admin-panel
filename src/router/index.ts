@@ -42,6 +42,7 @@ const routes: Array<RouteRecordRaw> = [
           [ROUTE_METAS.isRequiredAuth]: true,
         },
         component: () => import('@/pages/NftsPage.vue'),
+        redirect: { name: ROUTE_NAMES.nftsOverview },
         children: [
           {
             path: '/nfts/create',
@@ -51,6 +52,14 @@ const routes: Array<RouteRecordRaw> = [
             },
             component: () => import('@/pages/CreateNfts.vue'),
           },
+          {
+            path: '/nfts/overview',
+            name: ROUTE_NAMES.nftsOverview,
+            meta: {
+              [ROUTE_METAS.isRequiredAuth]: true,
+            },
+            component: () => import('@/pages/OverviewNfts.vue'),
+          }
         ],
       },
       {

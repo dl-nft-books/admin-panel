@@ -94,5 +94,15 @@
     "textarea-description-placeholder": "Description*",
     "cancel-button": "cancel",
     "create-button": "create"
+  },
+  "overview-nfts": {
+    "title": "NFTs",
+    "search-placeholder": "Search",
+    "view-all-button": "View all"
+  },
+  "nft-card": {
+    "name-description": "Name",
+    "date-description": "Creation Date",
+    "price-description": "Price"
   }
 }

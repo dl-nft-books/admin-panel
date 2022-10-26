@@ -291,8 +291,8 @@ const buttonClasses = computed(() =>
 
 .app-button__icon-left,
 .app-button__icon-right {
-  height: 1.5em;
-  width: 1.5em;
+  height: toRem(24);
+  width: toRem(24);
 }
 
 .app-button__text {

@@ -4,9 +4,8 @@ import { Icon } from '@/common'
 import { BN } from '@/utils/math.util'
 import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
 import { FIELD_LENGTH } from '@/enums'
-import { countBy } from 'lodash-es'
 
-type INPUT_TYPES = 'text' | 'number' | 'password' | 'price'
+type INPUT_TYPES = 'text' | 'number' | 'password'
 
 const props = withDefaults(
   defineProps<{
@@ -40,7 +39,6 @@ const isPasswordShown = ref(false)
 
 const isNumberType = computed(() => props.type === 'number')
 const isPasswordType = computed(() => props.type === 'password')
-const isPriceType = computed(() => props.type === 'price')
 
 const min = computed((): string => (attrs?.min as string) || '')
 const max = computed((): string => (attrs?.max as string) || '')
@@ -59,9 +57,6 @@ const listeners = computed(() => ({
     eventTarget.value = isNumberType.value
       ? normalizeRange(eventTarget.value)
       : normalizeLength(eventTarget.value)
-    if (isPriceType.value) {
-      eventTarget.value = normalizePrice(eventTarget.value)
-    }
 
     if (props.modelValue === eventTarget.value) return
 
@@ -100,28 +95,7 @@ const normalizeLength = (value: string): string => {
     result = result.substring(0, props.maxLength)
   }
 
-  return result as string
-}
-
-const normalizePrice = (value: string): string => {
-  let result = value
-  const priceRegex = /^[0-9.]+$/
-  const countOfDots = countBy(result)['.'] ?? 0
-
-  result =
-    priceRegex.test(result) && countOfDots < 2
-      ? result
-      : result.substring(0, result.length - 1)
-
-  if (result.includes('.')) {
-    const [stringBeforeDot, stringAfterDot] = result.split('.')
-
-    if (stringAfterDot.length > 2) {
-      result = stringBeforeDot + '.' + stringAfterDot.substring(0, 2)
-    }
-  }
-
-  return result as string
+  return result
 }
 
 const setHeightCSSVar = (element: HTMLElement) => {

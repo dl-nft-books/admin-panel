@@ -192,7 +192,7 @@
 
 @font-face {
   font-family: 'Metropolis';
-  src: local('Gilroy'), url('./Metropolis/Metropolis-Medium.ttf') format('truetype');
+  src: local('Metropolis'), url('./Metropolis/Metropolis-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -200,7 +200,7 @@
 
 @font-face {
   font-family: 'Metropolis';
-  src: local('Gilroy'), url('./Metropolis/Metropolis-MediumItalic.ttf') format('truetype');
+  src: local('Metropolis'), url('./Metropolis/Metropolis-MediumItalic.ttf') format('truetype');
   font-weight: 500;
   font-style: italic;
   font-display: swap;

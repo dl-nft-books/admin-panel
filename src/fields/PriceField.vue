@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { InputField } from '@/fields'
 import { ref } from 'vue'
-import { countBy } from 'lodash-es'
 
 const price = ref('')
 
@@ -30,31 +29,18 @@ const input = () => {
 }
 
 const normalizePrice = (value: string): string => {
-  let result = value
-  const priceRegex = /^[0-9.]+$/
-  const countOfDots = countBy(result)['.'] ?? 0
+  let price = value
 
-  result =
-    priceRegex.test(result) && countOfDots < 2
-      ? result
-      : result.substring(0, result.length - 1)
+  const formatValue = price.replace(/,/, '.')
+  const resString = formatValue.match(
+    `\\d*\\.?\\d{0,${props.numberOfDecimalPlaces}}`,
+  )
+  price = Array.isArray(resString) ? resString[0] : ''
+  if (price === '.') price = '0.'
 
-  if (result.includes('.')) {
-    const [stringBeforeDot, stringAfterDot] = result.split('.')
+  const res = price.match(`\\d*\\.?\\d{0,${props.numberOfDecimalPlaces}}`)
 
-    if (!stringBeforeDot.length) {
-      result = '0.'
-    }
-
-    if (stringAfterDot.length > props.numberOfDecimalPlaces) {
-      result =
-        stringBeforeDot +
-        '.' +
-        stringAfterDot.substring(0, props.numberOfDecimalPlaces)
-    }
-  }
-
-  return result
+  return res ? res[0] : ''
 }
 </script>
 

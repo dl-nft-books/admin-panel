@@ -83,9 +83,9 @@
   --field-bg: var(--background-primary);
 
   /* label */
-  --field-label: var(--text-primary-main);
-  --field-label-hover: var(--text-primary-main);
-  --field-label-focus: var(--text-primary-main);
+  --field-label: var(--text-secondary-main);
+  --field-label-hover: var(--text-secondary-main);
+  --field-label-focus: var(--text-secondary-main);
   --field-label-font-size: #{toRem(14)};
   --field-label-line-height: 1.4;
 
@@ -96,7 +96,7 @@
   --field-placeholder: #{rgba($text-primary-main, 0.35)};
 
   /* border */
-  --field-border: var(--border-primary-main);
+  --field-border: var(--border-primary-light);
   --field-border-hover: var(--primary-light);
   --field-border-focus: var(--primary-light);
 

@@ -61,15 +61,6 @@ const isValidFileType = (file: File) => {
 }
 
 const onChange = (file: File) => {
-  if (file.size > maxSizeBytes.value) {
-    Bus.error(
-      t('file-field.max-size-exceeded-err', {
-        maxSize: props.maxSize,
-      }),
-    )
-    return
-  }
-
   if (!isValidFileType(file)) {
     const acceptedExtensions = props.fileExtensions
       .map(item => `.${item.toUpperCase()}`)
@@ -79,6 +70,15 @@ const onChange = (file: File) => {
       t('file-field.incorrect-file-type-err', {
         allowedTypes: acceptedExtensions,
         type: `.${getFileExtension(file)}`,
+      }),
+    )
+    return
+  }
+
+  if (file.size > maxSizeBytes.value) {
+    Bus.error(
+      t('file-field.max-size-exceeded-err', {
+        maxSize: props.maxSize,
       }),
     )
     return

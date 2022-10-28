@@ -8,7 +8,7 @@ import {
   Icon,
   Collapse,
 } from '@/common'
-import { CheckboxField, InputField } from '@/fields'
+import { CheckboxField, InputField, FileField } from '@/fields'
 import LoginForm from '@/forms/LoginForm.vue'
 
 import { reactive, ref } from 'vue'
@@ -18,6 +18,7 @@ const isModalShown = ref<boolean>(false)
 const form = reactive({
   chbValue: false,
   inputValue: '',
+  file: undefined,
 })
 
 const handleClick = () => {
@@ -44,6 +45,11 @@ const throwBusInfo = () => {
 <template>
   <div class="ui-kit-page">
     <section class="ui-kit-page__buttons">
+      <file-field
+        v-model="form.file"
+        label="Upload Photo*"
+        note="JPG, PNG less than 2 mb"
+      />
       <app-button
         :icon-right="$icons.gift"
         :text="'router, border-rounded, icon'"

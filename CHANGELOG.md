@@ -8,6 +8,8 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+#### Added
+- File field
 
 ## [1.0.0-rc.0] - 2022-10-15
 #### Under the hood changes

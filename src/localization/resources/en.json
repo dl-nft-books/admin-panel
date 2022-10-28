@@ -81,5 +81,9 @@
     "balance-lbl": "Balance",
     "transfer-lbl": "Transfer",
     "mint-lbl": "Mint"
+  },
+  "file-field": {
+    "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",
+    "incorrect-file-type-err": "You cannot upload a {type} file. Allowed types: {allowedTypes}"
   }
 }

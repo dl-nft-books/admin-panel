@@ -8,6 +8,8 @@ import { useI18n } from 'vue-i18n'
 import { ErrorHandler } from '@/helpers/error-handler'
 import { formatBytes } from '@/helpers'
 
+type FileExtension = 'jpg' | 'png' | 'pdf'
+
 const props = withDefaults(
   defineProps<{
     modelValue: File | undefined
@@ -15,7 +17,7 @@ const props = withDefaults(
     disabled?: boolean | string
     label?: string
     note?: string
-    fileExtensions?: string[]
+    fileExtensions?: FileExtension[]
     maxSize?: number // MB
   }>(),
   {
@@ -24,7 +26,7 @@ const props = withDefaults(
     label: '',
     note: '',
     maxSize: 2,
-    fileExtensions: () => ['jpg', 'png'],
+    fileExtensions: () => ['jpg', 'png', 'pdf'],
   },
 )
 
@@ -36,13 +38,41 @@ const { t } = useI18n()
 
 const dropZoneRef = ref<HTMLDivElement | null>(null)
 
+const imageExtensions = computed(() => {
+  const imageExtMap = ['jpg', 'png']
+  return props.fileExtensions
+    .filter(el => imageExtMap.includes(el))
+    .map(el => '.' + el)
+})
+
+const applicationExtensions = computed(() => {
+  const imageExtMap = ['pdf']
+  return props.fileExtensions
+    .filter(el => imageExtMap.includes(el))
+    .map(el => '.' + el)
+})
+
 useDropZone(dropZoneRef, onDrop)
-const { open, file } = useFile()
+const { open, file } = useFile([
+  {
+    description: 'image',
+    accept: {
+      'image/*': imageExtensions.value,
+    },
+  },
+  {
+    description: 'application',
+    accept: {
+      'application/*': applicationExtensions.value,
+    },
+  },
+])
 
 const maxSizeBytes = computed(() => props.maxSize * 1024 * 1024)
 
 const classes = computed(() =>
   [
+    'file-field',
     ...(props.disabled ? ['file-field--disabled'] : []),
     ...(props.errorMessage ? ['file-field--error'] : []),
   ].join(' '),
@@ -112,8 +142,8 @@ const setHeightCSSVar = (element: HTMLElement) => {
 </script>
 
 <template>
-  <div class="file-field" :class="classes">
-    <div class="file-field__wrap">
+  <div :class="classes">
+    <div class="file-field__container">
       <template v-if="modelValue?.name">
         <div class="file-field__file-info">
           <p class="file-field__file-name">
@@ -132,7 +162,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
         </div>
       </template>
       <template v-else>
-        <button class="file-field__open-btn" @click="handleOpen">
+        <button type="button" class="file-field__open-btn" @click="handleOpen">
           <span ref="dropZoneRef" class="file-field__drop-zone" />
 
           <icon class="file-field__upload-icon" :name="$icons.upload" />
@@ -167,7 +197,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
   }
 }
 
-.file-field__wrap {
+.file-field__container {
   min-width: toRem(300);
   border: toRem(1) dashed var(--field-border);
   border-radius: toRem(9);

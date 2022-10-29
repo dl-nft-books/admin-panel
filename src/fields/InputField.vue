@@ -89,13 +89,9 @@ const normalizeRange = (value: string | number): string => {
 }
 
 const normalizeLength = (value: string): string => {
-  let result = value
-
-  if (result.length > props.maxLength) {
-    result = result.substring(0, props.maxLength)
-  }
-
-  return result
+  return value.length > props.maxLength
+    ? value.substring(0, props.maxLength)
+    : value
 }
 
 const setHeightCSSVar = (element: HTMLElement) => {

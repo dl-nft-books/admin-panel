@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { InputField, TextareaField, PriceField } from '@/fields'
+import { InputField, TextareaField, AmountField } from '@/fields'
 import { ref } from 'vue'
 import { AppButton } from '@/common'
 import { FIELD_LENGTH } from '@/enums'
@@ -38,7 +38,7 @@ const submit = () => {
           :placeholder="$t('create-nfts.input-name-placeholder')"
           :label="$t('create-nfts.input-name-label')"
         />
-        <price-field
+        <amount-field
           v-model="form.price"
           :placeholder="$t('create-nfts.input-price-placeholder')"
           :label="$t('create-nfts.input-price-label')"

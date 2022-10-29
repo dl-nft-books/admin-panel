@@ -11,6 +11,9 @@ for further information about branching and tagging conventions.
 #### Added
 - File field
 
+#### Changed
+- App colors
+
 ## [1.0.0-rc.0] - 2022-10-15
 #### Under the hood changes
 - Merged from https://gitlab.com/distributed_lab/frontend/vue-template/-/commit/905e060b66b4fbdfa4bf102ac6c27e8edd11dbc2

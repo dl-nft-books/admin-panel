@@ -100,7 +100,8 @@
     "search-placeholder": "Search",
     "view-all-button": "View all",
     "error-message": "Error while loading",
-    "error-title": "Error"
+    "error-title": "Error",
+    "no-data-message": "No NFT Books available"
   },
   "nft-card": {
     "name-description": "Name",

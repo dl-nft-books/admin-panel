@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { InputField } from '@/fields'
-import { Icon, Loader, NftCard, ErrorMessage } from '@/common'
+import { Icon, Loader, NftCard, ErrorMessage, NoDataMessage } from '@/common'
 import { Book } from '@/types'
 
 const searchByString = ref('')
@@ -15,7 +15,7 @@ const NFT_MOCK_DATA: Array<Book> = [
     title: 'Blockchain and Decentralized Sistems Vol. 1',
     price: {
       amount: 199.99,
-      assetCode: 'USD'
+      assetCode: 'USD',
     },
     coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
   },
@@ -24,7 +24,7 @@ const NFT_MOCK_DATA: Array<Book> = [
     title: 'Blockchain and Decentralized Sistems Vol. 1',
     price: {
       amount: 199.99,
-      assetCode: 'USD'
+      assetCode: 'USD',
     },
     coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
   },
@@ -33,10 +33,10 @@ const NFT_MOCK_DATA: Array<Book> = [
     title: 'Blockchain and Decentralized Sistems Vol. 1',
     price: {
       amount: 199.99,
-      assetCode: 'USD'
+      assetCode: 'USD',
     },
     coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
-  }
+  },
 ]
 
 const loadNfts = () => {
@@ -59,7 +59,7 @@ loadNfts()
 <template>
   <div class="overview-nfts">
     <template v-if="isLoaded">
-      <template v-if="!isErrored">
+      <template v-if="!isErrored && NFT_MOCK_DATA.length">
         <div class="overview-nfts__header">
           <h2 class="overview-nfts__title">
             {{ $t('overview-nfts.title') }}
@@ -81,9 +81,17 @@ loadNfts()
           </div>
         </div>
         <div class="overview-nfts__content">
-          <nft-card v-for="(nft, idx) in NFT_MOCK_DATA" :key="idx" :nft="nft" />
+          <nft-card
+            v-for="(nft, idx) in NFT_MOCK_DATA"
+            :key="idx"
+            :nft="nft"
+          />
         </div>
       </template>
+      <no-data-message
+        v-else-if="!NFT_MOCK_DATA.length"
+        :message="$t('overview-nfts.no-data-message')"
+      />
       <error-message
         v-else
         :message="$t('overview-nfts.error-message')"

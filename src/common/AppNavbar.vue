@@ -5,7 +5,6 @@ import { Bus } from '@/helpers'
 const openSidebar = () => {
   Bus.emit(Bus.eventList.toggleSidebar)
 }
-
 </script>
 
 <template>
@@ -16,10 +15,7 @@ const openSidebar = () => {
       aria-label="Open sidebar button"
       @click="openSidebar"
     >
-      <icon
-        class="app-navbar__open-sidebar-icon"
-        :name="$icons.menu"
-      />
+      <icon class="app-navbar__open-sidebar-icon" :name="$icons.menu" />
     </button>
     <account-dropdown class="app-navbar__account-dropdown" />
   </div>

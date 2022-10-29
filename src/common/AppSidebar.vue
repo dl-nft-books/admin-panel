@@ -22,9 +22,7 @@ const swipe = useSwipe(document.querySelector('#app'))
 
 const isShowSidebar = ref(true)
 
-const isNeedToHideSidebar = computed(
-  () => windowWidth.value <= hideWidth,
-)
+const isNeedToHideSidebar = computed(() => windowWidth.value <= hideWidth)
 
 const isSidebarShown = computed(
   () => !isNeedToHideSidebar.value || isShowSidebar.value,
@@ -63,7 +61,6 @@ watch(asideElement, () => {
     }
   }
 })
-
 </script>
 
 <template>
@@ -73,8 +70,8 @@ watch(asideElement, () => {
         <div class="app-sidebar__logo-wrp">
           <app-logo class="app-sidebar__logo" />
           <span class="app-sidebar__logo-subtitle">
-          {{ $t('app-sidebar.logo-subtitle') }}
-        </span>
+            {{ $t('app-sidebar.logo-subtitle') }}
+          </span>
         </div>
         <div class="app-sidebar__links-section">
           <router-link class="app-sidebar__link" :to="{ name: $routes.nfts }">

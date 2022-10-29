@@ -193,7 +193,7 @@ const buttonClasses = computed(() =>
     --app-button-flat-text: var(--text-primary-main);
     --app-button-flat-text-hover: var(--text-primary-dark);
 
-    --app-button-flat-border: #{toRem(2)} solid var(--text-primary-light);
+    --app-button-flat-border: #{toRem(1)} solid var(--text-primary-main);
     --app-button-flat-border-hover: var(--app-button-flat-border);
     --app-button-flat-border-active: var(--app-button-flat-border);
 
@@ -262,7 +262,7 @@ const buttonClasses = computed(() =>
   }
 
   &--border-rounded {
-    border-radius: toRem(10);
+    border-radius: toRem(8);
   }
 
   &--large {
@@ -275,10 +275,10 @@ const buttonClasses = computed(() =>
   }
 
   &--medium {
-    padding: toRem(16) toRem(30);
+    padding: toRem(18) toRem(45);
     font-size: toRem(16);
     line-height: 1.4;
-    font-weight: 600;
+    font-weight: 500;
     grid-gap: toRem(12);
     letter-spacing: 0;
 
@@ -288,11 +288,20 @@ const buttonClasses = computed(() =>
   }
 
   &--small {
-    padding: toRem(8) toRem(15);
-    grid-gap: toRem(8);
+    padding: toRem(12) toRem(16);
+    grid-gap: toRem(12);
 
     &.app-button--only-icon {
-      padding: toRem(8);
+      padding: toRem(12);
+    }
+  }
+
+  &--x-small {
+    padding: toRem(7) toRem(16);
+    grid-gap: toRem(6);
+
+    &.app-button--only-icon {
+      padding: toRem(7);
     }
   }
 }

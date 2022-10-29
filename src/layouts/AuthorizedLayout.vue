@@ -28,6 +28,10 @@ export default defineComponent({
   display: grid;
   grid-template-columns: toRem(302) 1fr;
   padding: toRem(20);
+
+  @include respond-to(tablet) {
+    display: block;
+  }
 }
 
 .authorized-layout__main-wrp {

@@ -8,7 +8,7 @@ import {
   Icon,
   Collapse,
 } from '@/common'
-import { CheckboxField, InputField, FileField } from '@/fields'
+import { InputField, FileField } from '@/fields'
 import LoginForm from '@/forms/LoginForm.vue'
 
 import { reactive, ref } from 'vue'
@@ -270,15 +270,6 @@ const throwBusInfo = () => {
         :label="$t('ui-kit-page.some-label')"
         :error-message="$t('ui-kit-page.some-error-message')"
         :placeholder="$t('ui-kit-page.some-placeholder')"
-        disabled
-      />
-      <checkbox-field
-        v-model="form.chbValue"
-        :label="$t('ui-kit-page.some-label')"
-      />
-      <checkbox-field
-        v-model="form.chbValue"
-        :label="$t('ui-kit-page.some-label')"
         disabled
       />
     </section>

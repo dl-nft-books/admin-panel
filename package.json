@@ -28,6 +28,7 @@
     "axios": "^0.27.2",
     "bignumber.js": "^9.0.2",
     "bs58": "^5.0.0",
+    "currency-symbol-map": "^5.1.0",
     "dayjs": "^1.11.5",
     "ethers": "^5.7.0",
     "jsona": "^1.9.6",

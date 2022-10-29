@@ -155,7 +155,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
           <app-button
             class="file-field__reset-btn"
             scheme="default"
-            size="x-small"
+            size="default"
             :icon-right="$icons.x"
             @click="emit('update:modelValue', undefined)"
           />

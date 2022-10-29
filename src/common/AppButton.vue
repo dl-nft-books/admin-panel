@@ -59,6 +59,9 @@ const buttonClasses = computed(() =>
     `app-button--${props.color}`,
     `app-button--${props.size}`,
     ...(isDisabled.value ? ['app-button--disabled'] : []),
+    ...((props.iconRight || props.iconLeft) && !props.text
+      ? ['app-button--only-icon']
+      : []),
   ].join(' '),
 )
 </script>
@@ -265,6 +268,10 @@ const buttonClasses = computed(() =>
   &--large {
     padding: toRem(24) toRem(50);
     grid-gap: toRem(16);
+
+    &.app-button--only-icon {
+      padding: toRem(24);
+    }
   }
 
   &--medium {
@@ -274,16 +281,28 @@ const buttonClasses = computed(() =>
     font-weight: 500;
     grid-gap: toRem(12);
     letter-spacing: 0;
+
+    &.app-button--only-icon {
+      padding: toRem(16);
+    }
   }
 
   &--small {
     padding: toRem(12) toRem(16);
     grid-gap: toRem(12);
+
+    &.app-button--only-icon {
+      padding: toRem(12);
+    }
   }
 
   &--x-small {
     padding: toRem(7) toRem(16);
     grid-gap: toRem(6);
+
+    &.app-button--only-icon {
+      padding: toRem(7);
+    }
   }
 }
 

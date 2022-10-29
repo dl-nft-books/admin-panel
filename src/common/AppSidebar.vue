@@ -66,21 +66,15 @@ watch(asideElement, () => {
 <template>
   <transition name="app-sidebar__transition">
     <div v-if="isSidebarShown" class="app-sidebar">
-      <button
-        class="app-sidebar__close-button"
-        type="button"
-      >
-        <icon
-          class="app-sidebar__close-button-icon"
-          :name="$icons.x"
-        />
+      <button class="app-sidebar__close-button" type="button">
+        <icon class="app-sidebar__close-button-icon" :name="$icons.x" />
       </button>
       <aside class="app-sidebar__aside" ref="asideElement">
         <div class="app-sidebar__logo-wrp">
           <div class="app-sidebar__logo-container">
             <app-logo class="app-sidebar__logo" />
             <span class="app-sidebar__logo-subtitle">
-            {{ $t('app-sidebar.logo-subtitle') }}
+              {{ $t('app-sidebar.logo-subtitle') }}
             </span>
           </div>
         </div>

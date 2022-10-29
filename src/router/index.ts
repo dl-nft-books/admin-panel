@@ -59,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
               [ROUTE_METAS.isRequiredAuth]: true,
             },
             component: () => import('@/pages/OverviewNfts.vue'),
-          }
+          },
         ],
       },
       {

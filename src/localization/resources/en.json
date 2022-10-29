@@ -98,7 +98,9 @@
   "overview-nfts": {
     "title": "NFTs",
     "search-placeholder": "Search",
-    "view-all-button": "View all"
+    "view-all-button": "View all",
+    "error-message": "Error while loading",
+    "error-title": "Error"
   },
   "nft-card": {
     "name-description": "Name",

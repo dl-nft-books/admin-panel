@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { NFT_TYPE } from '@/types'
+import { nftType } from '@/types'
 import moment from 'moment'
 
 defineProps<{
-  nft: NFT_TYPE
+  nft: nftType
 }>()
 </script>
 

@@ -1,4 +1,4 @@
-export type NFT_TYPE = {
+export type nftType = {
   id: number
   img: string
   name: string

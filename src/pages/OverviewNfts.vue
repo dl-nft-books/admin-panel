@@ -1,40 +1,95 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { InputField } from '@/fields'
-import { Icon, NftListSection } from '@/common'
+import { Icon, Loader, NftCard, ErrorMessage } from '@/common'
+import { nftType } from '@/types'
+import moment from 'moment'
 
 const searchByString = ref('')
+
+const isLoaded = ref(false)
+const isErrored = ref(false)
+
+const NFT_MOCK_DATA: Array<nftType> = [
+  {
+    id: 1,
+    img: 'https://i.ibb.co/VmKdS97/book-image.png',
+    name: 'Blockchain and Decentralized Sistems Vol. 1',
+    date: moment(new Date()).format(),
+    price: 199.99,
+  },
+  {
+    id: 2,
+    img: 'https://i.ibb.co/VmKdS97/book-image.png',
+    name: 'Blockchain and Decentralized Sistems Vol. 1',
+    date: moment(new Date()).format(),
+    price: 199.99,
+  },
+  {
+    id: 3,
+    img: 'https://i.ibb.co/VmKdS97/book-image.png',
+    name: 'Blockchain and Decentralized Sistems Vol. 1',
+    date: moment(new Date()).format(),
+    price: 199.99,
+  },
+]
+
+const loadNfts = () => {
+  isLoaded.value = false
+  try {
+    setTimeout(() => true)
+  } catch (e) {
+    isErrored.value = true
+  }
+  isLoaded.value = true
+}
 
 const search = () => {
   return true
 }
+
+loadNfts()
 </script>
 
 <template>
   <div class="overview-nfts">
-    <div class="overview-nfts__header">
-      <h2 class="overview-nfts__title">
-        {{ $t('overview-nfts.title') }}
-      </h2>
-      <div class="overview-nfts__search-wrapper">
-        <button
-          class="overview-nfts__search-button"
-          type="button"
-          @click="search"
-        >
-          <icon class="overview-nfts__search-icon" :name="$icons.search" />
-        </button>
-        <input-field
-          class="overview-nfts__search"
-          v-model="searchByString"
-          :placeholder="$t('overview-nfts.search-placeholder')"
-          iconned
-        />
-      </div>
-    </div>
-    <div class="overview-nfts__content">
-      <nft-list-section />
-    </div>
+    <template v-if="isLoaded">
+      <template v-if="!isErrored">
+        <div class="overview-nfts__header">
+          <h2 class="overview-nfts__title">
+            {{ $t('overview-nfts.title') }}
+          </h2>
+          <div class="overview-nfts__search-wrapper">
+            <button
+              class="overview-nfts__search-button"
+              type="button"
+              @click="search"
+            >
+              <icon class="overview-nfts__search-icon" :name="$icons.search" />
+            </button>
+            <input-field
+              class="overview-nfts__search"
+              v-model="searchByString"
+              :placeholder="$t('overview-nfts.search-placeholder')"
+              iconned
+            />
+          </div>
+        </div>
+        <div class="overview-nfts__content">
+          <nft-card
+            v-for="(nft, idx) in NFT_MOCK_DATA"
+            :key="idx"
+            :nft="nft"
+          />
+        </div>
+      </template>
+      <error-message
+        v-else
+        :message="$t('overview-nfts.error-message')"
+        :title="$t('overview-nfts.error-title')"
+      />
+    </template>
+    <loader v-else />
   </div>
 </template>
 
@@ -73,5 +128,8 @@ $z-icon: 2;
 
 .overview-nfts__content {
   margin-top: toRem(20);
+  display: flex;
+  flex-direction: column;
+  row-gap: toRem(15);
 }
 </style>

@@ -66,12 +66,23 @@ watch(asideElement, () => {
 <template>
   <transition name="app-sidebar__transition">
     <div v-if="isSidebarShown" class="app-sidebar">
+      <button
+        class="app-sidebar__close-button"
+        type="button"
+      >
+        <icon
+          class="app-sidebar__close-button-icon"
+          :name="$icons.x"
+        />
+      </button>
       <aside class="app-sidebar__aside" ref="asideElement">
         <div class="app-sidebar__logo-wrp">
-          <app-logo class="app-sidebar__logo" />
-          <span class="app-sidebar__logo-subtitle">
+          <div class="app-sidebar__logo-container">
+            <app-logo class="app-sidebar__logo" />
+            <span class="app-sidebar__logo-subtitle">
             {{ $t('app-sidebar.logo-subtitle') }}
-          </span>
+            </span>
+          </div>
         </div>
         <div class="app-sidebar__links-section">
           <router-link class="app-sidebar__link" :to="{ name: $routes.nfts }">
@@ -167,6 +178,15 @@ $sidebar-padding-vertical: toRem(24);
   @include respond-to(small) {
     max-width: toRem(280);
   }
+
+  @include respond-to(xsmall) {
+    max-width: 100%;
+    border-radius: 0;
+  }
+}
+
+.app-sidebar__logo-container {
+  margin-top: toRem(45);
 }
 
 .app-sidebar__logo-wrp {
@@ -195,6 +215,10 @@ $sidebar-padding-vertical: toRem(24);
   display: grid;
   grid-gap: toRem(4);
   margin-top: toRem(90);
+
+  @include respond-to(xsmall) {
+    margin-top: toRem(45);
+  }
 }
 
 .app-sidebar__link {
@@ -255,6 +279,25 @@ $sidebar-padding-vertical: toRem(24);
   align-self: center;
   font-size: toRem(12);
   line-height: 1.3;
+  color: var(--text-primary-invert-main);
+}
+
+.app-sidebar__close-button {
+  display: none;
+  position: absolute;
+  top: toRem(20);
+  right: toRem(20);
+
+  @include respond-to(xsmall) {
+    display: block;
+    width: toRem(30);
+    height: toRem(30);
+  }
+}
+
+.app-sidebar__close-button-icon {
+  width: 100%;
+  height: 100%;
   color: var(--text-primary-invert-main);
 }
 </style>

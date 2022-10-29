@@ -94,5 +94,9 @@
     "textarea-description-placeholder": "Description*",
     "cancel-button": "cancel",
     "create-button": "create"
+  },
+  "file-field": {
+    "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",
+    "incorrect-file-type-err": "You cannot upload a {type} file. Allowed types: {allowedTypes}"
   }
 }

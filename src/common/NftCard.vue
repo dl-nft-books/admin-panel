@@ -1,22 +1,23 @@
 <script lang="ts" setup>
-import { nftType } from '@/types'
-import moment from 'moment'
+import { Book } from '@/types'
+import { formatDMY } from '@/helpers'
+import { formatFiatAsset } from '@/helpers'
 
 defineProps<{
-  nft: nftType
+  nft: Book
 }>()
 </script>
 
 <template>
   <router-link class="nft-card" to="/">
-    <img class="nft-card__img" :src="nft.img" alt="Book image" />
+    <img class="nft-card__img" :src="nft.coverUrl" alt="Book image" />
     <div class="nft-card__content-wrapper">
       <div class="nft-card__content">
         <span class="nft-card__desc">
           {{ $t('nft-card.name-description') }}
         </span>
         <span class="nft-card__value">
-          {{ nft.name }}
+          {{ nft.title }}
         </span>
       </div>
       <div class="nft-card__content">
@@ -24,7 +25,7 @@ defineProps<{
           {{ $t('nft-card.date-description') }}
         </span>
         <span class="nft-card__value">
-          {{ moment(nft.date).format('LL') }}
+          {{ formatDMY(nft.purchaseDate) }}
         </span>
       </div>
       <div class="nft-card__content">
@@ -32,7 +33,7 @@ defineProps<{
           {{ $t('nft-card.price-description') }}
         </span>
         <span class="nft-card__value">
-          {{ `$${nft.price}` }}
+          {{ formatFiatAsset(nft.price.amount, nft.price.assetCode) }}
         </span>
       </div>
     </div>

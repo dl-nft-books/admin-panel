@@ -2,36 +2,41 @@
 import { ref } from 'vue'
 import { InputField } from '@/fields'
 import { Icon, Loader, NftCard, ErrorMessage } from '@/common'
-import { nftType } from '@/types'
-import moment from 'moment'
+import { Book } from '@/types'
 
 const searchByString = ref('')
 
 const isLoaded = ref(false)
 const isErrored = ref(false)
 
-const NFT_MOCK_DATA: Array<nftType> = [
+const NFT_MOCK_DATA: Array<Book> = [
   {
     id: 1,
-    img: 'https://i.ibb.co/VmKdS97/book-image.png',
-    name: 'Blockchain and Decentralized Sistems Vol. 1',
-    date: moment(new Date()).format(),
-    price: 199.99,
+    title: 'Blockchain and Decentralized Sistems Vol. 1',
+    price: {
+      amount: 199.99,
+      assetCode: 'USD'
+    },
+    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
   },
   {
     id: 2,
-    img: 'https://i.ibb.co/VmKdS97/book-image.png',
-    name: 'Blockchain and Decentralized Sistems Vol. 1',
-    date: moment(new Date()).format(),
-    price: 199.99,
+    title: 'Blockchain and Decentralized Sistems Vol. 1',
+    price: {
+      amount: 199.99,
+      assetCode: 'USD'
+    },
+    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
   },
   {
     id: 3,
-    img: 'https://i.ibb.co/VmKdS97/book-image.png',
-    name: 'Blockchain and Decentralized Sistems Vol. 1',
-    date: moment(new Date()).format(),
-    price: 199.99,
-  },
+    title: 'Blockchain and Decentralized Sistems Vol. 1',
+    price: {
+      amount: 199.99,
+      assetCode: 'USD'
+    },
+    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
+  }
 ]
 
 const loadNfts = () => {

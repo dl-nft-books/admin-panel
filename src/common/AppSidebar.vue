@@ -2,7 +2,7 @@
 import { ref, watch, computed } from 'vue'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { Bus } from '@/helpers'
-import { AppLogo, Icon } from '@/common'
+import { AppLogo, Icon, AppButton } from '@/common'
 import { useAuth } from '@/composables'
 import {
   onClickOutside,
@@ -50,9 +50,7 @@ const hideSidebar = () => {
   isShowSidebar.value = false
 }
 
-Bus.on(Bus.eventList.toggleSidebar, () => {
-  toggleSidebar()
-})
+Bus.on(Bus.eventList.toggleSidebar, toggleSidebar)
 
 watch(asideElement, () => {
   if (asideElement.value) {
@@ -66,9 +64,6 @@ watch(asideElement, () => {
 <template>
   <transition name="app-sidebar__transition">
     <div v-if="isSidebarShown" class="app-sidebar">
-      <button class="app-sidebar__close-button" type="button">
-        <icon class="app-sidebar__close-button-icon" :name="$icons.x" />
-      </button>
       <aside class="app-sidebar__aside" ref="asideElement">
         <div class="app-sidebar__logo-wrp">
           <div class="app-sidebar__logo-container">
@@ -77,6 +72,16 @@ watch(asideElement, () => {
               {{ $t('app-sidebar.logo-subtitle') }}
             </span>
           </div>
+          <app-button
+            scheme="default"
+            color="primary-inverted"
+            size="default"
+            class="app-sidebar__close-button"
+            type="button"
+            @click="hideSidebar"
+          >
+            <icon class="app-sidebar__close-button-icon" :name="$icons.x" />
+          </app-button>
         </div>
         <div class="app-sidebar__links-section">
           <router-link class="app-sidebar__link" :to="{ name: $routes.nfts }">
@@ -92,10 +97,16 @@ watch(asideElement, () => {
             {{ $t('app-sidebar.settings-link') }}
           </router-link>
         </div>
-        <button class="app-sidebar__link app-sidebar__logout" @click="logout">
+        <app-button
+          scheme="default"
+          color="primary-inverted"
+          size="default"
+          class="app-sidebar__link app-sidebar__logout"
+          @click="logout"
+        >
           <icon class="app-sidebar__link-icon" :name="$icons.logout" />
           {{ $t('app-sidebar.logout-btn') }}
-        </button>
+        </app-button>
         <div class="app-sidebar__refs">
           <a class="app-sidebar__refs-item">
             {{ $t('app-sidebar.terms-link') }}
@@ -179,10 +190,6 @@ $sidebar-padding-vertical: toRem(24);
   }
 }
 
-.app-sidebar__logo-container {
-  margin-top: toRem(45);
-}
-
 .app-sidebar__logo-wrp {
   display: flex;
   flex-direction: column;
@@ -190,12 +197,21 @@ $sidebar-padding-vertical: toRem(24);
   border-bottom: toRem(1) solid var(--bg-secondary-light);
   margin-bottom: toRem(24);
   padding: 0 toRem(30);
+
+  @include respond-to(xsmall) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 }
 
 .app-sidebar__logo {
   max-width: toRem(211);
   width: 100%;
   height: auto;
+
+  @include respond-to(xsmall) {
+    max-width: toRem(150);
+  }
 }
 
 .app-sidebar__logo-subtitle {
@@ -203,6 +219,10 @@ $sidebar-padding-vertical: toRem(24);
   text-align: center;
   font-size: toRem(14);
   line-height: 1.2;
+
+  @include respond-to(xsmall) {
+    font-size: toRem(10);
+  }
 }
 
 .app-sidebar__links-section {
@@ -278,9 +298,6 @@ $sidebar-padding-vertical: toRem(24);
 
 .app-sidebar__close-button {
   display: none;
-  position: absolute;
-  top: toRem(20);
-  right: toRem(20);
 
   @include respond-to(xsmall) {
     display: block;

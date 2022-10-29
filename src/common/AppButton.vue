@@ -17,6 +17,7 @@ type COLORS =
   | 'warning'
   | 'info'
   | 'default'
+  | 'primary-inverted'
 
 type SIZES = 'large' | 'medium' | 'small' | 'x-small' | 'default'
 
@@ -216,6 +217,20 @@ const buttonClasses = computed(() =>
     --app-button-filled-bg: var(--success-main);
     --app-button-filled-bg-hover: var(--success-dark);
     --app-button-filled-bg-active: var(--success-dark);
+  }
+
+  &--primary-inverted {
+    --app-button-flat-text: var(--primary-inverted-main);
+    --app-button-flat-text-hover: var(--primary-inverted-dark);
+    --app-button-flat-border: #{toRem(2)} solid var(--primary-inverted-main);
+
+    $flat-border-hover: #{toRem(2)} solid var(--primary-inverted-dark);
+    --app-button-flat-border-hover: $flat-border-hover;
+    --app-button-flat-border-active: $flat-border-hover;
+
+    --app-button-filled-bg: var(--primary-inverted-main);
+    --app-button-filled-bg-hover: var(--primary-inverted-dark);
+    --app-button-filled-bg-active: var(--primary-inverted-dark);
   }
 
   &--error {

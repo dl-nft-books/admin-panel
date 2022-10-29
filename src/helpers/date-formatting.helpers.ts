@@ -1,8 +1,16 @@
 import { DateUtil } from '@/utils/date.util'
+import { ConfigType } from 'dayjs'
 
-export function formatDMY(date: number | string) {
+export function formatMDY(date: ConfigType) {
   return DateUtil.format(
     typeof date == 'number' ? DateUtil.fromTimestampSec(date) : date,
-    'DD/MM/YYYY',
+    'MMMM D, YYYY',
+  )
+}
+
+export function formatDMY(date: ConfigType) {
+  return DateUtil.format(
+    typeof date == 'number' ? DateUtil.fromTimestampSec(date) : date,
+    'D MMM, YYYY',
   )
 }

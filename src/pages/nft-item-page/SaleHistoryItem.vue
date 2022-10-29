@@ -1,0 +1,164 @@
+<script lang="ts" setup>
+import { BookSaleHistory } from '@/types'
+import { Collapse, AppButton } from '@/common'
+import { cropAddress } from '@/helpers'
+import { formatDMY } from '@/helpers'
+import { formatFiatAsset } from '@/helpers'
+
+defineProps<{ historyItem: BookSaleHistory }>()
+</script>
+
+<template>
+  <collapse class="sale-history-item" :is-close-by-click-outside="false">
+    <template #head="{ collapse }">
+      <div class="sale-history-item__head">
+        <div class="sale-history-item__head-col">
+          <p class="sale-history-item__label">
+            {{ $t('sale-history-item.buyer-address-lbl') }}
+          </p>
+          <p class="sale-history-item__value">
+            {{ cropAddress(historyItem.buyerAddress, 10) }}
+          </p>
+        </div>
+        <div class="sale-history-item__head-col">
+          <p class="sale-history-item__label">
+            {{ $t('sale-history-item.purchase-date-lbl') }}
+          </p>
+          <p class="sale-history-item__value">
+            {{ formatDMY(historyItem.purchaseDate) }}
+          </p>
+        </div>
+
+        <div class="sale-history-item__head-col">
+          <p class="sale-history-item__label">
+            {{ $t('sale-history-item.price-lbl') }}
+          </p>
+          <p class="sale-history-item__value">
+            {{
+              formatFiatAsset(
+                historyItem.price.amount,
+                historyItem.price.assetCode,
+              )
+            }}
+          </p>
+        </div>
+        <div class="sale-history-item__header-action">
+          <app-button
+            class="sale-history-item__header-button"
+            :class="{
+              'sale-history-item__header-button--open': collapse.isOpen,
+            }"
+            scheme="flat"
+            :icon-right="$icons.arrowDown"
+            size="small"
+            color="secondary"
+            @click="collapse.toggle"
+          />
+        </div>
+      </div>
+    </template>
+    <div class="sale-history-item__dropdown">
+      <p class="sale-history-item__label">
+        {{ $t('sale-history-item.buyer-address-lbl') }}
+      </p>
+      <p class="sale-history-item__value sale-history-item__value--overflow">
+        {{ historyItem.buyerAddress }}
+      </p>
+
+      <p class="sale-history-item__label">
+        {{ $t('sale-history-item.token-lbl') }}
+      </p>
+      <p class="sale-history-item__value">
+        {{ historyItem.token?.assetCode }}
+      </p>
+
+      <p class="sale-history-item__label">
+        {{ $t('sale-history-item.token-amount-lbl') }}
+      </p>
+      <p class="sale-history-item__value">
+        {{ historyItem.token?.amount }}
+      </p>
+      <p class="sale-history-item__label">
+        {{ $t('sale-history-item.book-link-lbl') }}
+      </p>
+      <a
+        class="sale-history-item__value sale-history-item__value--overflow"
+        :href="historyItem.bookLink"
+        target="_blank"
+        rel="noopener"
+      >
+        {{ historyItem.bookLink }}
+      </a>
+    </div>
+  </collapse>
+</template>
+
+<style lang="scss" scoped>
+$padding-left: toRem(24);
+$padding-right: toRem(36);
+$padding-bottom: toRem(26);
+
+.sale-history-item {
+  border: toRem(1) solid var(--border-primary-dark);
+  border-radius: toRem(6);
+  padding-top: toRem(26);
+}
+
+.sale-history-item__head {
+  display: grid;
+  grid-template-columns: 0.5fr 0.25fr 0.25fr #{toRem(40)};
+  gap: toRem(20);
+  padding: 0 $padding-right $padding-bottom $padding-left;
+}
+
+.sale-history-item__head-col {
+  display: grid;
+  gap: toRem(10);
+}
+
+.sale-history-item__header-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* stylelint-disable selector-pseudo-class-no-unknown */
+:deep(.sale-history-item__header-button) {
+  .app-button__icon-right {
+    transition: all 0.2s;
+  }
+
+  &.sale-history-item__header-button--open {
+    .app-button__icon-right {
+      transform: rotate(180deg);
+    }
+  }
+}
+/* stylelint-enable selector-pseudo-class-no-unknown */
+
+.sale-history-item__dropdown {
+  display: grid;
+  grid-template-columns: 0.3fr 0.7fr;
+  gap: toRem(20);
+  padding: toRem(26) $padding-right $padding-bottom $padding-left;
+  border-top: toRem(1) solid var(--border-primary-dark);
+}
+
+.sale-history-item__label {
+  font-size: toRem(16);
+  line-height: 1.1;
+  color: var(--text-secondary-main);
+}
+
+.sale-history-item__value {
+  font-size: toRem(20);
+  line-height: 1.1;
+  font-weight: 400;
+
+  &--overflow {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+</style>

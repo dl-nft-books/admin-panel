@@ -184,8 +184,6 @@ const buttonClasses = computed(() =>
     --app-button-border: 0;
     --app-button-border-hover: 0;
     --app-button-border-active: 0;
-
-    filter: drop-shadow(0 toRem(4) toRem(10) rgba(157, 161, 166, 0.5));
   }
 
   &--flat {
@@ -291,8 +289,8 @@ const buttonClasses = computed(() =>
 
 .app-button__icon-left,
 .app-button__icon-right {
-  height: 1.5em;
-  width: 1.5em;
+  height: 1.2em;
+  width: 1.2em;
 }
 
 .app-button__text {

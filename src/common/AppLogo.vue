@@ -18,7 +18,7 @@ const props = withDefaults(
     :class="`app-logo app-logo--${props.scheme}`"
     :to="{ name: $routes.uiKit }"
   >
-    <icon class="app-logo__book-icon" :name="$icons.logo" />
+    <icon class="app-logo__book-icon" :name="$icons.appLogo" />
   </router-link>
 </template>
 
@@ -36,15 +36,5 @@ const props = withDefaults(
 .app-logo__book-icon {
   max-width: toRem(255);
   max-height: toRem(45);
-}
-
-.app-logo__store-text-icon {
-  max-width: toRem(200);
-  max-height: toRem(15);
-
-  @include respond-to(medium) {
-    max-width: toRem(150);
-    max-height: toRem(25);
-  }
 }
 </style>

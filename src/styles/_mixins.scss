@@ -68,8 +68,8 @@ $media-breakpoints: (
 @mixin field-error {
   overflow: hidden;
   color: var(--field-error);
-  font-size: toRem(10);
-  line-height: 1.4;
+  font-size: toRem(14);
+  line-height: 1.2;
   transition: var(--field-transition-duration) ease;
   transition-property: opacity, color, font-size, transform;
   margin-top: toRem(4);

@@ -3,6 +3,7 @@ import { Icon } from '@/common'
 
 import { BN } from '@/utils/math.util'
 import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
+import { FIELD_LENGTH } from '@/enums'
 
 type INPUT_TYPES = 'text' | 'number' | 'password'
 
@@ -13,12 +14,14 @@ const props = withDefaults(
     placeholder?: string
     type?: INPUT_TYPES
     errorMessage?: string
+    maxLength?: number
   }>(),
   {
     type: 'text',
     label: '',
     placeholder: ' ',
     errorMessage: '',
+    maxLength: FIELD_LENGTH.default,
   },
 )
 
@@ -51,9 +54,10 @@ const isReadonly = computed(() =>
 const listeners = computed(() => ({
   input: (event: Event) => {
     const eventTarget = event.target as HTMLInputElement
-    if (isNumberType.value) {
-      eventTarget.value = normalizeRange(eventTarget.value)
-    }
+    eventTarget.value = isNumberType.value
+      ? normalizeRange(eventTarget.value)
+      : normalizeLength(eventTarget.value)
+
     if (props.modelValue === eventTarget.value) return
 
     emit('update:modelValue', eventTarget.value)
@@ -82,6 +86,12 @@ const normalizeRange = (value: string | number): string => {
   }
 
   return result as string
+}
+
+const normalizeLength = (value: string): string => {
+  return value.length > props.maxLength
+    ? value.substring(0, props.maxLength)
+    : value
 }
 
 const setHeightCSSVar = (element: HTMLElement) => {

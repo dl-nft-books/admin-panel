@@ -51,8 +51,8 @@
     "copyright": "{value}© Distributed Lab"
   },
   "login-page": {
-    "title": "Login",
-    "subtitle": "NFT Books admin panel"
+    "title": "Welcome to distributed store",
+    "subtitle": "To log in, please connect to your\n MetaMask wallet"
   },
   "login-form": {
     "submit-btn": "Connect Metamask"
@@ -81,6 +81,19 @@
     "balance-lbl": "Balance",
     "transfer-lbl": "Transfer",
     "mint-lbl": "Mint"
+  },
+  "create-nfts": {
+    "title": "NFT Creation",
+    "uploading-subtitle": "1. Uploading",
+    "details-subtitle": "2. Add Details",
+    "input-name-label": "Name*",
+    "input-price-label": "Price (USD)*",
+    "textarea-description-label": "Description*",
+    "input-name-placeholder": "Name*",
+    "input-price-placeholder": "Price (USD)*",
+    "textarea-description-placeholder": "Description*",
+    "cancel-button": "cancel",
+    "create-button": "create"
   },
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",

@@ -76,11 +76,7 @@ loadNfts()
           </div>
         </div>
         <div class="overview-nfts__content">
-          <nft-card
-            v-for="(nft, idx) in NFT_MOCK_DATA"
-            :key="idx"
-            :nft="nft"
-          />
+          <nft-card v-for="(nft, idx) in NFT_MOCK_DATA" :key="idx" :nft="nft" />
         </div>
       </template>
       <error-message

@@ -87,9 +87,9 @@
   --field-bg: var(--background-primary);
 
   /* label */
-  --field-label: var(--text-secondary-main);
-  --field-label-hover: var(--text-secondary-main);
-  --field-label-focus: var(--text-secondary-main);
+  --field-label: var(--text-secondary-light);
+  --field-label-hover: var(--text-secondary-light);
+  --field-label-focus: var(--text-secondary-light);
   --field-label-font-size: #{toRem(14)};
   --field-label-line-height: 1.4;
 

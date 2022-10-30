@@ -156,6 +156,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
             class="file-field__reset-btn"
             scheme="default"
             size="default"
+            color="secondary"
             :icon-right="$icons.x"
             @click="emit('update:modelValue', undefined)"
           />
@@ -239,12 +240,14 @@ const setHeightCSSVar = (element: HTMLElement) => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text-secondary-main);
 }
 
 .file-field__file-size {
   margin-top: toRem(5);
   font-size: toRem(14);
   line-height: 1;
+  color: var(--text-secondary-main);
 }
 
 .file-field__label {

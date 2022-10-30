@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { InputField, TextareaField, AmountField } from '@/fields'
+import { InputField, TextareaField, AmountField, FileField } from '@/fields'
 import { ref } from 'vue'
 import { AppButton } from '@/common'
 import { FIELD_LENGTH } from '@/enums'
@@ -25,8 +25,18 @@ const submit = () => {
         {{ $t('create-nfts.uploading-subtitle') }}
       </h3>
       <div class="create-nfts__uploadings">
-        <input type="file" />
-        <input type="file" />
+        <file-field
+          class="create-nfts__upload-field"
+          :file-extensions="['jpg', 'png']"
+          :label="$t('create-nfts.file-field-image-title')"
+          :note="$t('create-nfts.file-field-image-description')"
+        />
+        <file-field
+          class="create-nfts__upload-field"
+          :file-extensions="['pdf']"
+          :label="$t('create-nfts.file-field-pdf-title')"
+          :note="$t('create-nfts.file-field-pdf-description')"
+        />
       </div>
       <h3 class="create-nfts__subtitle">
         {{ $t('create-nfts.details-subtitle') }}
@@ -85,9 +95,10 @@ const submit = () => {
 
 .create-nfts__uploadings {
   display: grid;
-  grid-template-columns: repeat(2, minmax(toRem(100), 1fr));
+  grid-template-columns: repeat(2, minmax(toRem(100), toRem(510)));
   grid-column-gap: toRem(20);
   margin-bottom: toRem(35);
+  justify-content: space-evenly;
 }
 
 .create-nfts__details {

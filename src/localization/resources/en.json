@@ -93,7 +93,11 @@
     "input-price-placeholder": "Price (USD)*",
     "textarea-description-placeholder": "Description*",
     "cancel-button": "cancel",
-    "create-button": "create"
+    "create-button": "create",
+    "file-field-image-title": "Upload Photo*",
+    "file-field-image-description": "JPG, PNG less than 2 mb",
+    "file-field-pdf-title": "Upload Main File*",
+    "file-field-pdf-description": "PDF less than 500 mb"
   },
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",

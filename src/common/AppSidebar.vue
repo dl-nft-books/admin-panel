@@ -77,7 +77,6 @@ watch(asideElement, () => {
             color="primary-inverted"
             size="default"
             class="app-sidebar__close-button"
-            type="button"
             @click="hideSidebar"
           >
             <icon class="app-sidebar__close-button-icon" :name="$icons.x" />

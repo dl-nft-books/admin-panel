@@ -95,6 +95,19 @@
     "cancel-button": "cancel",
     "create-button": "create"
   },
+  "overview-nfts": {
+    "title": "NFTs",
+    "search-placeholder": "Search",
+    "view-all-button": "View all",
+    "error-message": "Error while loading",
+    "error-title": "Error",
+    "no-data-message": "No NFT Books available"
+  },
+  "nft-card": {
+    "name-description": "Name",
+    "date-description": "Creation Date",
+    "price-description": "Price"
+  },
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",
     "incorrect-file-type-err": "You cannot upload a {type} file. Allowed types: {allowedTypes}"

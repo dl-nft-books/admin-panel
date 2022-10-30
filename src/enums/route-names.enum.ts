@@ -8,4 +8,5 @@ export enum ROUTE_NAMES {
   nftForm = 'nft-form',
   nftItemEdit = 'nft-item-edit',
   nftsCreate = 'nfts-create',
+  nftsOverview = 'nfts-overview',
 }

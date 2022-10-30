@@ -15,6 +15,7 @@ const props = withDefaults(
     type?: INPUT_TYPES
     errorMessage?: string
     maxLength?: number
+    iconned?: boolean
   }>(),
   {
     type: 'text',
@@ -22,6 +23,7 @@ const props = withDefaults(
     placeholder: ' ',
     errorMessage: '',
     maxLength: FIELD_LENGTH.default,
+    iconned: false,
   },
 )
 
@@ -73,6 +75,7 @@ const inputClasses = computed(() =>
     ...(isDisabled.value ? ['input-field--disabled'] : []),
     ...(isReadonly.value ? ['input-field--readonly'] : []),
     ...(props.errorMessage ? ['input-field--error'] : []),
+    ...(props.iconned ? ['input-field--iconned'] : []),
   ].join(' '),
 )
 
@@ -239,6 +242,10 @@ const setHeightCSSVar = (element: HTMLElement) => {
 
   .input-field--node-right & {
     padding-right: calc(var(--field-padding-right) * 3);
+  }
+
+  .input-field--iconned & {
+    padding-left: calc(var(--field-padding-left) * 3);
   }
 
   &:not([disabled]):focus {

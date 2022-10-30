@@ -203,6 +203,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
   border: toRem(1) dashed var(--field-border);
   border-radius: toRem(9);
   padding: toRem(23) toRem(20);
+  background: var(--background-tertiary);
 
   .file-field--error & {
     border-color: var(--field-error);

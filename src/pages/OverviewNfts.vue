@@ -85,7 +85,6 @@ loadNfts()
                 size="default"
                 scheme="default"
                 class="overview-nfts__search-button"
-                type="button"
                 @click="search"
               >
                 <icon

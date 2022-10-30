@@ -1,8 +1,16 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { InputField } from '@/fields'
-import { Icon, Loader, NftCard, ErrorMessage, NoDataMessage } from '@/common'
+import {
+  Icon,
+  Loader,
+  NftCard,
+  ErrorMessage,
+  NoDataMessage,
+  AppButton,
+} from '@/common'
 import { Book } from '@/types'
+import { ErrorHandler } from '@/helpers'
 
 const searchByString = ref('')
 
@@ -44,6 +52,7 @@ const loadNfts = () => {
   try {
     setTimeout(() => true)
   } catch (e) {
+    ErrorHandler.processWithoutFeedback(e)
     isErrored.value = true
   }
   isLoaded.value = true
@@ -72,7 +81,9 @@ loadNfts()
               {{ $t('overview-nfts.title') }}
             </h2>
             <div class="overview-nfts__search-wrapper">
-              <button
+              <app-button
+                size="default"
+                scheme="default"
                 class="overview-nfts__search-button"
                 type="button"
                 @click="search"
@@ -81,7 +92,7 @@ loadNfts()
                   class="overview-nfts__search-icon"
                   :name="$icons.search"
                 />
-              </button>
+              </app-button>
               <input-field
                 class="overview-nfts__search"
                 v-model="searchByString"

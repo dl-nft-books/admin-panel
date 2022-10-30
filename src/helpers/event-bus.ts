@@ -7,6 +7,7 @@ enum EVENTS {
   success = 'success',
   info = 'info',
   default = 'default',
+  toggleSidebar = 'toggle-sidebar',
 }
 
 export class EventBus {

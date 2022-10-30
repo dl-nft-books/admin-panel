@@ -240,7 +240,6 @@ const setHeightCSSVar = (element: HTMLElement) => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--text-primary-main);
 }
 
 .file-field__file-size {

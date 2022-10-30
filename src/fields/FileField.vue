@@ -208,6 +208,10 @@ const setHeightCSSVar = (element: HTMLElement) => {
   .file-field--error & {
     border-color: var(--field-error);
   }
+
+  @include respond-to(small) {
+    min-width: toRem(220);
+  }
 }
 
 .file-field__open-btn {

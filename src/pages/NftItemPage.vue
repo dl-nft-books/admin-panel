@@ -120,10 +120,19 @@ init()
   grid-column-gap: toRem(50);
   justify-content: center;
   margin-bottom: toRem(56);
+
+  @include respond-to(medium) {
+    display: block;
+  }
 }
 
 .nft-item-page__cover-wrp {
   width: 100%;
+
+  @include respond-to(medium) {
+    max-width: toRem(300);
+    margin: 0 auto;
+  }
 }
 
 .nft-item-page__cover {
@@ -143,6 +152,15 @@ init()
   font-size: toRem(30);
   line-height: 1.2;
   margin-bottom: toRem(30);
+
+  @include respond-to(xmedium) {
+    font-size: toRem(20);
+  }
+
+  @include respond-to(medium) {
+    text-align: center;
+    margin-top: toRem(20);
+  }
 }
 
 .nft-item-page__tabs {

@@ -101,7 +101,7 @@ const openSidebar = () => {
 .app-navbar__link-button {
   width: toRem(180);
 
-  @include respond-to(tablet) {
+  @include respond-to(small) {
     display: none;
   }
 }

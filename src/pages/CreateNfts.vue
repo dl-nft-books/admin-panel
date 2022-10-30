@@ -68,15 +68,15 @@ const submit = () => {
       <div class="create-nfts__action-buttons">
         <app-button
           class="create-nfts__button"
-          size="default"
           scheme="flat"
+          size="small"
           :text="$t('create-nfts.cancel-button')"
           :route="{ name: $routes.nfts }"
         />
         <app-button
           type="submit"
+          size="small"
           class="create-nfts__button"
-          size="default"
           :text="$t('create-nfts.create-button')"
         />
       </div>

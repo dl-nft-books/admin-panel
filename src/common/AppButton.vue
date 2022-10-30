@@ -325,6 +325,7 @@ const buttonClasses = computed(() =>
 .app-button__icon-right {
   height: 1.2em;
   width: 1.2em;
+  color: inherit;
 }
 
 .app-button__text {

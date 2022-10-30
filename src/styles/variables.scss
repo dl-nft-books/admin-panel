@@ -104,9 +104,9 @@
   --field-placeholder: #{--text-primary-main};
 
   /* border */
-  --field-border: var(--border-primary-light);
-  --field-border-hover: var(--primary-light);
-  --field-border-focus: var(--primary-light);
+  --field-border: var(--border-primary-main);
+  --field-border-hover: var(--primary-main);
+  --field-border-focus: var(--primary-main);
 
   /* transition duration */
   --field-transition-duration: 0.2s;

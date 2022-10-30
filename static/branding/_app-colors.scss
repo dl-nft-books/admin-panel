@@ -3,9 +3,9 @@ $white-rgb: hexToRGB($white);
 $black: #000000;
 $black-rgb: hexToRGB($black);
 
-$background-primary: $white;
+$background-primary: #f5f5f5;
 $background-secondary: #111010;
-$background-tertiary: $white;
+$background-tertiary: #fdfdfd;
 
 /* status colors */
 
@@ -13,9 +13,9 @@ $success-light: #5efc82;
 $success-main: #00c853;
 $success-dark: #009624;
 
-$error-light: #ec7770;
-$error-main: #dd3a31;
-$error-dark: #a7302a;
+$error-light: #ff6434;
+$error-main: #dd2c00;
+$error-dark: #a30000;
 
 $warning-light: #f16709;
 $warning-main: #ff6d00;
@@ -27,27 +27,27 @@ $info-dark: #0094cc;
 
 /* brand colors */
 
-$primary-light: #d7dadb;
+$primary-light: #84f1ff;
 $primary-main: #4cbecf;
-$primary-dark: #3ba2b1;
+$primary-dark: #008d9e;
 
-$secondary-light: #d7dadb;
-$secondary-main: $white;
-$secondary-dark: #3ba2b1;
+$secondary-light: #8e8e8e;
+$secondary-main: #616161;
+$secondary-dark: #373737;
 
-$tertiary-light: #d7dadb;
-$tertiary-main: #4cbecf;
-$tertiary-dark: #3ba2b1;
+$tertiary-light: #ffff6b;
+$tertiary-main: #fdd835;
+$tertiary-dark: #c6a700;
 
 /* typography colors */
 
 $text-primary-light: #484848;
-$text-primary-main: #818181;
+$text-primary-main: #464646;
 $text-primary-dark: #000000;
 
-$text-secondary-light: #978d8d;
-$text-secondary-main: #464646;
-$text-secondary-dark: #262626;
+$text-secondary-light: #4f5b62;
+$text-secondary-main: #978d8d;
+$text-secondary-dark: #000a12;
 
 $text-tertiary-light: #81a0df;
 $text-tertiary-main: #5072ad;
@@ -63,6 +63,6 @@ $text-secondary-invert-dark: #ffffff;
 
 /* border colors */
 
-$border-primary-light: #c8bdbd;
-$border-primary-main: #978d8d;
-$border-primary-dark: #696060;
+$border-primary-light: #ffffff;
+$border-primary-main: #e4e7e7;
+$border-primary-dark: #b2b5b5;

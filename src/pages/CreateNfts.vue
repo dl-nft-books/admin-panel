@@ -8,6 +8,8 @@ const form = ref({
   name: '',
   price: '',
   description: '',
+  photo: undefined,
+  book: undefined,
 })
 
 const submit = () => {
@@ -27,12 +29,14 @@ const submit = () => {
       <div class="create-nfts__uploadings">
         <file-field
           class="create-nfts__upload-field"
+          v-model="form.photo"
           :file-extensions="['jpg', 'png']"
           :label="$t('create-nfts.file-field-image-title')"
           :note="$t('create-nfts.file-field-image-description')"
         />
         <file-field
           class="create-nfts__upload-field"
+          v-model="form.book"
           :file-extensions="['pdf']"
           :label="$t('create-nfts.file-field-pdf-title')"
           :note="$t('create-nfts.file-field-pdf-description')"

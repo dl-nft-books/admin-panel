@@ -133,13 +133,12 @@ watch(asideElement, () => {
 <style lang="scss" scoped>
 $sidebar-padding-horizontal: toRem(16);
 $sidebar-padding-vertical: toRem(24);
+$z-local: 1;
 
 .app-sidebar {
   overflow: hidden;
 
   @include respond-to(tablet) {
-    $z-local: 1;
-
     position: fixed;
     width: 100%;
     height: 100%;

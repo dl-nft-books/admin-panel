@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AccountDropdown, Icon } from '@/common'
+import { AccountDropdown, Icon, AppButton } from '@/common'
 import { Bus } from '@/helpers'
 
 const openSidebar = () => {
@@ -9,14 +9,15 @@ const openSidebar = () => {
 
 <template>
   <div class="app-navbar">
-    <button
+    <app-button
       class="app-navbar__open-sidebar-button"
-      type="button"
       aria-label="Open sidebar button"
+      size="default"
+      scheme="default"
       @click="openSidebar"
     >
       <icon class="app-navbar__open-sidebar-icon" :name="$icons.menu" />
-    </button>
+    </app-button>
     <account-dropdown class="app-navbar__account-dropdown" />
   </div>
 </template>

@@ -59,40 +59,49 @@ loadNfts()
 <template>
   <div class="overview-nfts">
     <template v-if="isLoaded">
-      <template v-if="!isErrored && NFT_MOCK_DATA.length">
-        <div class="overview-nfts__header">
-          <h2 class="overview-nfts__title">
-            {{ $t('overview-nfts.title') }}
-          </h2>
-          <div class="overview-nfts__search-wrapper">
-            <button
-              class="overview-nfts__search-button"
-              type="button"
-              @click="search"
-            >
-              <icon class="overview-nfts__search-icon" :name="$icons.search" />
-            </button>
-            <input-field
-              class="overview-nfts__search"
-              v-model="searchByString"
-              :placeholder="$t('overview-nfts.search-placeholder')"
-              iconned
+      <template v-if="isErrored">
+        <error-message
+          :message="$t('overview-nfts.error-message')"
+          :title="$t('overview-nfts.error-title')"
+        />
+      </template>
+      <template v-else>
+        <template v-if="NFT_MOCK_DATA.length">
+          <div class="overview-nfts__header">
+            <h2 class="overview-nfts__title">
+              {{ $t('overview-nfts.title') }}
+            </h2>
+            <div class="overview-nfts__search-wrapper">
+              <button
+                class="overview-nfts__search-button"
+                type="button"
+                @click="search"
+              >
+                <icon
+                  class="overview-nfts__search-icon"
+                  :name="$icons.search"
+                />
+              </button>
+              <input-field
+                class="overview-nfts__search"
+                v-model="searchByString"
+                :placeholder="$t('overview-nfts.search-placeholder')"
+                iconned
+              />
+            </div>
+          </div>
+          <div class="overview-nfts__content">
+            <nft-card
+              v-for="(nft, idx) in NFT_MOCK_DATA"
+              :key="idx"
+              :nft="nft"
             />
           </div>
-        </div>
-        <div class="overview-nfts__content">
-          <nft-card v-for="(nft, idx) in NFT_MOCK_DATA" :key="idx" :nft="nft" />
-        </div>
+        </template>
+        <template v-else>
+          <no-data-message :message="$t('overview-nfts.no-data-message')" />
+        </template>
       </template>
-      <no-data-message
-        v-else-if="!NFT_MOCK_DATA.length"
-        :message="$t('overview-nfts.no-data-message')"
-      />
-      <error-message
-        v-else
-        :message="$t('overview-nfts.error-message')"
-        :title="$t('overview-nfts.error-title')"
-      />
     </template>
     <loader v-else />
   </div>

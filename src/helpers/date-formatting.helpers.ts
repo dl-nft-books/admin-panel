@@ -1,8 +1,15 @@
-import { DateUtil } from '@/utils/date.util'
+import { DateUtil, DataConfigType } from '@/utils/date.util'
 
-export function formatDMY(date: number | string) {
+export function formatMDY(date: DataConfigType) {
   return DateUtil.format(
     typeof date == 'number' ? DateUtil.fromTimestampSec(date) : date,
-    'DD/MM/YYYY',
+    'MMMM D, YYYY',
+  )
+}
+
+export function formatDMY(date: DataConfigType) {
+  return DateUtil.format(
+    typeof date == 'number' ? DateUtil.fromTimestampSec(date) : date,
+    'D MMM, YYYY',
   )
 }

@@ -98,5 +98,23 @@
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",
     "incorrect-file-type-err": "You cannot upload a {type} file. Allowed types: {allowedTypes}"
+  },
+  "nft-details": {
+    "price-lbl": "Price",
+    "creation-date-lbl": "Creation Date",
+    "document-lbl": "Document",
+    "description-lbl": "Description"
+  },
+  "sale-history": {
+    "header": "Sale History",
+    "no-data-message": "No history available"
+  },
+  "sale-history-item": {
+    "buyer-address-lbl": "Buyer's Address",
+    "purchase-date-lbl": "Purchase Date",
+    "price-lbl": "Price",
+    "token-lbl": "Token",
+    "token-amount-lbl": "Amount of Token",
+    "book-link-lbl": "Link to the book"
   }
 }

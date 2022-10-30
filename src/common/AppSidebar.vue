@@ -132,7 +132,7 @@ watch(asideElement, () => {
 <style lang="scss" scoped>
 $sidebar-padding-horizontal: toRem(16);
 $sidebar-padding-vertical: toRem(24);
-$z-local: 1;
+$z-local: 5;
 
 .app-sidebar {
   overflow: hidden;

@@ -133,5 +133,9 @@
     "token-lbl": "Token",
     "token-amount-lbl": "Amount of Token",
     "book-link-lbl": "Link to the book"
+  },
+  "app-navbar": {
+    "create-button": "CREATE NFT",
+    "edit-button": "EDIT NFT"
   }
 }

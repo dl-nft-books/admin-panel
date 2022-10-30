@@ -9,7 +9,10 @@ defineProps<{
 </script>
 
 <template>
-  <router-link class="nft-card" to="/">
+  <router-link
+    class="nft-card"
+    :to="{ name: $routes.nftItem, params: { id: nft.id } }"
+  >
     <img class="nft-card__img" :src="nft.coverUrl" alt="Book image" />
     <div class="nft-card__content-wrapper">
       <div class="nft-card__content">
@@ -48,18 +51,39 @@ defineProps<{
   border: toRem(1) solid var(--border-primary-main);
   border-radius: toRem(6);
   padding: toRem(10) toRem(15);
+
+  @include respond-to(medium) {
+    flex-direction: column;
+  }
 }
 
 .nft-card__img {
   max-width: toRem(100);
   max-height: toRem(100);
   margin-right: toRem(35);
+
+  @include respond-to(xmedium) {
+    max-width: toRem(75);
+    max-height: toRem(75);
+  }
+
+  @include respond-to(medium) {
+    max-width: toRem(200);
+    max-height: toRem(200);
+    margin: 0 auto;
+  }
 }
 
 .nft-card__content-wrapper {
   display: flex;
   justify-content: space-between;
   flex: 1;
+
+  @include respond-to(medium) {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
 }
 
 .nft-card__content {
@@ -73,11 +97,33 @@ defineProps<{
   &:first-child {
     width: 35%;
   }
+
+  @include respond-to(medium) {
+    width: 100%;
+    margin: 0;
+
+    &:first-child {
+      width: 100%;
+      margin-top: toRem(20);
+    }
+
+    &:nth-child(2n) {
+      margin: toRem(20) 0;
+    }
+  }
 }
 
 .nft-card__desc {
   color: var(--text-secondary-main);
   font-weight: 400;
+
+  @include respond-to(xmedium) {
+    font-size: toRem(14);
+  }
+
+  @include respond-to(medium) {
+    text-align: center;
+  }
 }
 
 .nft-card__value {
@@ -88,5 +134,13 @@ defineProps<{
   overflow: hidden;
   width: 100%;
   white-space: nowrap;
+
+  @include respond-to(xmedium) {
+    font-size: toRem(14);
+  }
+
+  @include respond-to(medium) {
+    text-align: center;
+  }
 }
 </style>

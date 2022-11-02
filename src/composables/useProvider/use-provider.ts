@@ -38,6 +38,7 @@ export interface UseProvider {
   getHashFromTxResponse: (txResponse: TransactionResponse) => string
   getTxUrl: (explorerUrl: string, txHash: string) => string
   getAddressUrl: (explorerUrl: string, address: string) => string
+  signMessage: (message: string) => Promise<string>
 }
 
 export const useProvider = (): UseProvider => {
@@ -145,6 +146,13 @@ export const useProvider = (): UseProvider => {
     return providerWrp.value.getAddressUrl(explorerUrl, address)
   }
 
+  const signMessage = (message: string) => {
+    if (!providerWrp.value?.signMessage)
+      throw new errors.ProviderWrapperMethodNotFoundError()
+
+    return providerWrp.value.signMessage(message)
+  }
+
   return {
     currentProvider,
     currentSigner,
@@ -163,5 +171,6 @@ export const useProvider = (): UseProvider => {
     getHashFromTxResponse,
     getTxUrl,
     getAddressUrl,
+    signMessage,
   }
 }

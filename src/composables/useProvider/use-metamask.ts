@@ -130,6 +130,11 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     return getEthExplorerAddressUrl(explorerUrl, address)
   }
 
+  const signMessage = (message: string) => {
+    const signer = currentProvider.value.getSigner()
+    return signer.signMessage(message)
+  }
+
   return {
     currentProvider,
     currentSigner,
@@ -146,5 +151,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     getHashFromTxResponse,
     getTxUrl,
     getAddressUrl,
+    signMessage,
   }
 }

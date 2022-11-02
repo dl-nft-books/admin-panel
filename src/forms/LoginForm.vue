@@ -2,20 +2,53 @@
 import { AppButton } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, getAuthNonce, saveAuthAccess } from '@/helpers'
+
 import { useRouter } from 'vue-router'
 import { ROUTE_NAMES } from '@/enums'
+import { storeToRefs } from 'pinia'
+import { api } from '@/api'
+import { AuthResponse } from '@/types'
 
-const web3ProviderStore = useWeb3ProvidersStore()
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+
 const router = useRouter()
 
 const submit = async () => {
   try {
-    await web3ProviderStore.provider.connect()
-    await router.push({ name: ROUTE_NAMES.nfts })
+    await provider.value.connect()
+
+    if (provider.value.selectedAddress) {
+      const authNonce = await getAuthNonce(provider.value.selectedAddress)
+
+      const signedMessage = await provider.value.signMessage(authNonce)
+
+      await login(signedMessage)
+
+      router.push({ name: ROUTE_NAMES.nfts })
+    }
   } catch (error) {
     ErrorHandler.process(error)
   }
+}
+
+const login = async (signedMessage: string) => {
+  const { data } = await api.post<AuthResponse>(
+    '/integrations/nonce-auth-svc/login/admin',
+    {
+      data: {
+        type: 'admin_login',
+        attributes: {
+          auth_pair: {
+            address: provider.value.selectedAddress,
+            signed_message: signedMessage,
+          },
+        },
+      },
+    },
+  )
+
+  saveAuthAccess(data.access_token, data.refresh_token)
 }
 </script>
 

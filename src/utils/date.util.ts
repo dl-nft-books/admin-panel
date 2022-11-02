@@ -31,6 +31,15 @@ export class DateUtil {
     return targetDate.diff(currentDate, 'ms')
   }
 
+  static isSameOrAfter(
+    checkingDate: DataConfigType,
+    targetDate?: DataConfigType,
+  ) {
+    const checking = this._instance(checkingDate)
+    const target = this._instance(targetDate)
+    return checking.isSame(target) || target.isAfter(checking)
+  }
+
   static diffs(
     checkingDate: DataConfigType,
     targetDate: DataConfigType,

@@ -8,8 +8,8 @@ import {
   useRouter,
 } from 'vue-router'
 
-import { PROVIDERS, ROUTE_NAMES } from '@/enums'
-import { useWeb3ProvidersStore } from '@/store'
+import { ROUTE_NAMES } from '@/enums'
+import { useAuthStore } from '@/store'
 import { ErrorHandler } from '@/helpers'
 
 enum ROUTE_METAS {
@@ -99,26 +99,13 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const web3ProviderStore = useWeb3ProvidersStore()
-  const isLoggedIn = web3ProviderStore.provider.selectedAddress
+  const accountStore = useAuthStore()
 
-  if (!isLoggedIn) {
-    try {
-      await web3ProviderStore.detectProviders()
-
-      // temporary
-      const metamaskProvider = web3ProviderStore.providers.find(
-        provider => provider.name === PROVIDERS.metamask,
-      )
-
-      if (metamaskProvider) {
-        await web3ProviderStore.provider.init(metamaskProvider)
-      }
-    } catch (error) {
-      ErrorHandler.processWithoutFeedback(error)
-    }
+  try {
+    accountStore.initAuth()
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
   }
-
   if (to.name === ROUTE_NAMES.app) {
     redirectRouteGuard(to, from, next)
   } else if (
@@ -139,8 +126,8 @@ function redirectRouteGuard(
   from: RouteLocationNormalized,
   next: NavigationGuardNext,
 ) {
-  const web3ProviderStore = useWeb3ProvidersStore()
-  const isLoggedIn = web3ProviderStore.provider.selectedAddress
+  const accountStore = useAuthStore()
+  const isLoggedIn = accountStore.isLoggedIn
 
   if (isLoggedIn) {
     if (to.name === ROUTE_NAMES.app) {
@@ -158,8 +145,8 @@ function authGuard(
   from: RouteLocationNormalized,
   next: NavigationGuardNext,
 ) {
-  const web3ProviderStore = useWeb3ProvidersStore()
-  const isLoggedIn = web3ProviderStore.provider.selectedAddress
+  const accountStore = useAuthStore()
+  const isLoggedIn = accountStore.isLoggedIn
 
   if (isLoggedIn) {
     next({ name: ROUTE_NAMES.app })
@@ -173,8 +160,8 @@ function inAppRouteGuard(
   from: RouteLocationNormalized,
   next: NavigationGuardNext,
 ) {
-  const web3ProviderStore = useWeb3ProvidersStore()
-  const isLoggedIn = web3ProviderStore.provider.selectedAddress
+  const accountStore = useAuthStore()
+  const isLoggedIn = accountStore.isLoggedIn
 
   if (isLoggedIn) {
     next()

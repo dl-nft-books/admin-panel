@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { useAuth } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { cropAddress } from '@/helpers'
 
 import { onMounted, ref, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { useRoute } from 'vue-router'
+import { logout } from '@/helpers'
 
 const accountDropdown = ref<HTMLElement | undefined>()
 const isDropdownOpen = ref(false)
@@ -22,8 +22,6 @@ onMounted(() => {
 watch(route, () => {
   closeDropdown()
 })
-
-const { logout } = useAuth()
 
 const closeDropdown = () => {
   isDropdownOpen.value = false

@@ -3,7 +3,8 @@ import { ref, watch, computed } from 'vue'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { Bus } from '@/helpers'
 import { AppLogo, Icon, AppButton } from '@/common'
-import { useAuth } from '@/composables'
+import { logout } from '@/helpers'
+
 import {
   onClickOutside,
   SwipeDirection,
@@ -12,8 +13,6 @@ import {
 } from '@vueuse/core'
 
 const hideWidth = WINDOW_BREAKPOINTS.tablet
-
-const { logout } = useAuth()
 
 const asideElement = ref<HTMLElement | null>(null)
 

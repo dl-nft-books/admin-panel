@@ -132,7 +132,7 @@ watch(asideElement, () => {
 <style lang="scss" scoped>
 $sidebar-padding-horizontal: toRem(16);
 $sidebar-padding-vertical: toRem(24);
-$z-local: 1;
+$z-local: 5;
 
 .app-sidebar {
   overflow: hidden;
@@ -196,7 +196,7 @@ $z-local: 1;
   margin-bottom: toRem(24);
   padding: 0 toRem(30);
 
-  @include respond-to(xsmall) {
+  @include respond-to(tablet) {
     flex-direction: row;
     justify-content: space-between;
   }
@@ -207,7 +207,7 @@ $z-local: 1;
   width: 100%;
   height: auto;
 
-  @include respond-to(xsmall) {
+  @include respond-to(tablet) {
     max-width: toRem(150);
   }
 }
@@ -218,7 +218,7 @@ $z-local: 1;
   font-size: toRem(14);
   line-height: 1.2;
 
-  @include respond-to(xsmall) {
+  @include respond-to(tablet) {
     font-size: toRem(10);
   }
 }
@@ -297,7 +297,7 @@ $z-local: 1;
 .app-sidebar__close-button {
   display: none;
 
-  @include respond-to(xsmall) {
+  @include respond-to(tablet) {
     display: block;
     width: toRem(30);
     height: toRem(30);

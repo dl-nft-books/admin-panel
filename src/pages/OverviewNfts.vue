@@ -123,16 +123,30 @@ $z-icon: 2;
 .overview-nfts__header {
   display: flex;
   justify-content: space-between;
+
+  @include respond-to(small) {
+    flex-direction: column;
+    align-items: center;
+    gap: toRem(20);
+  }
 }
 
 .overview-nfts__title {
   font-weight: 600;
   font-size: toRem(40);
+
+  @include respond-to(small) {
+    font-size: toRem(30);
+  }
 }
 
 .overview-nfts__search-wrapper {
   position: relative;
   width: toRem(180);
+
+  @include respond-to(small) {
+    width: 100%;
+  }
 }
 
 .overview-nfts__search-button {
@@ -155,5 +169,12 @@ $z-icon: 2;
   display: flex;
   flex-direction: column;
   row-gap: toRem(15);
+
+  @include respond-to(medium) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(toRem(240), 1fr));
+    max-width: 100%;
+    gap: toRem(20);
+  }
 }
 </style>

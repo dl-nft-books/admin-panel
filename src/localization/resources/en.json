@@ -82,8 +82,9 @@
     "transfer-lbl": "Transfer",
     "mint-lbl": "Mint"
   },
-  "create-nfts": {
-    "title": "NFT Creation",
+  "nft-form": {
+    "create-title": "NFT Creation",
+    "edit-title": "Edit NFT",
     "uploading-subtitle": "1. Uploading",
     "details-subtitle": "2. Add Details",
     "input-name-label": "Name*",
@@ -133,5 +134,9 @@
     "token-lbl": "Token",
     "token-amount-lbl": "Amount of Token",
     "book-link-lbl": "Link to the book"
+  },
+  "app-navbar": {
+    "create-button": "CREATE NFT",
+    "edit-button": "EDIT NFT"
   }
 }

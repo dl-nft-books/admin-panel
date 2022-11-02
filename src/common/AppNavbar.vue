@@ -1,6 +1,26 @@
 <script lang="ts" setup>
-import { AccountDropdown, Icon, AppButton } from '@/common'
+import { computed } from 'vue'
+import { Icon, AppButton, AccountDropdown } from '@/common'
+import { ROUTE_NAMES } from '@/enums'
+import { useRoute } from 'vue-router'
 import { Bus } from '@/helpers'
+
+const route = useRoute()
+
+const isCreateButton = computed(() => route.name === ROUTE_NAMES.nftsOverview)
+
+const isButtonLinkShown = computed(() => {
+  return (
+    route.name === ROUTE_NAMES.nftsOverview ||
+    route.name === ROUTE_NAMES.nftItem
+  )
+})
+
+const buttonLink = computed(() => {
+  return route.name === ROUTE_NAMES.nftItem
+    ? { name: ROUTE_NAMES.nftItemEdit, params: { id: route.params.id } }
+    : { name: ROUTE_NAMES.nftsCreate }
+})
 
 const openSidebar = () => {
   Bus.emit(Bus.eventList.toggleSidebar)
@@ -18,7 +38,18 @@ const openSidebar = () => {
     >
       <icon class="app-navbar__open-sidebar-icon" :name="$icons.menu" />
     </app-button>
-    <account-dropdown class="app-navbar__account-dropdown" />
+    <div class="app-navbar__right-buttons">
+      <app-button
+        v-if="isButtonLinkShown"
+        class="app-navbar__link-button"
+        size="small"
+        :text="
+          $t(`app-navbar.${isCreateButton ? 'create-button' : 'edit-button'}`)
+        "
+        :route="buttonLink"
+      />
+      <account-dropdown class="app-navbar__account-dropdown" />
+    </div>
   </div>
 </template>
 
@@ -59,5 +90,19 @@ const openSidebar = () => {
 .app-navbar__open-sidebar-icon {
   width: 100%;
   height: 100%;
+}
+
+.app-navbar__right-buttons {
+  display: flex;
+  column-gap: toRem(25);
+  margin-left: auto;
+}
+
+.app-navbar__link-button {
+  width: toRem(180);
+
+  @include respond-to(small) {
+    display: none;
+  }
 }
 </style>

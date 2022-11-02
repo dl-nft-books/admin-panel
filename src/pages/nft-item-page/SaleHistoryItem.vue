@@ -97,6 +97,8 @@ defineProps<{ historyItem: BookSaleHistory }>()
 $padding-left: toRem(24);
 $padding-right: toRem(36);
 $padding-bottom: toRem(26);
+/* stylelint-disable-next-line */
+$custom-breakpoint: 655px;
 
 .sale-history-item {
   border: toRem(1) solid var(--border-primary-dark);
@@ -109,6 +111,10 @@ $padding-bottom: toRem(26);
   grid-template-columns: 0.5fr 0.25fr 0.25fr #{toRem(40)};
   gap: toRem(20);
   padding: 0 $padding-right $padding-bottom $padding-left;
+
+  @include respond-to($custom-breakpoint) {
+    display: block;
+  }
 }
 
 .sale-history-item__head-col {
@@ -142,12 +148,24 @@ $padding-bottom: toRem(26);
   gap: toRem(20);
   padding: toRem(26) $padding-right $padding-bottom $padding-left;
   border-top: toRem(1) solid var(--border-primary-dark);
+
+  @include respond-to($custom-breakpoint) {
+    display: block;
+  }
 }
 
 .sale-history-item__label {
   font-size: toRem(16);
   line-height: 1.1;
   color: var(--text-secondary-main);
+
+  @include respond-to(xmedium) {
+    font-size: toRem(14);
+  }
+
+  @include respond-to($custom-breakpoint) {
+    text-align: center;
+  }
 }
 
 .sale-history-item__value {
@@ -159,6 +177,19 @@ $padding-bottom: toRem(26);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  @include respond-to(xmedium) {
+    font-size: toRem(16);
+  }
+
+  @include respond-to($custom-breakpoint) {
+    display: block;
+    text-align: center;
+
+    &:nth-child(2n) {
+      margin-bottom: toRem(20);
+    }
   }
 }
 </style>

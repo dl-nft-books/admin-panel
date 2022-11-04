@@ -5,7 +5,6 @@ export class StoreDocument {
   _name?: string
   _mimeType?: string
   _key?: string
-  _type?: string
   _url?: string
 
   constructor(opts?: {
@@ -13,33 +12,16 @@ export class StoreDocument {
     name: string
     mimeType: string
     key?: string
-    type: string
   }) {
     if (opts) {
       this._file = opts.file
       this._name = opts.name
       this._mimeType = opts.mimeType
       this._key = opts.key
-      this._type = opts.type
     }
   }
 
-  async uploadSelf(ownerAddress: string) {
-    const docMetadata = {
-      data: {
-        type: 'passport', // FIXME
-        attributes: {
-          content_type: this._mimeType,
-        },
-        relationships: {
-          owner: {
-            data: {
-              id: ownerAddress,
-            },
-          },
-        },
-      },
-    }
+  async uploadSelf() {
     const formData = new FormData()
     const arrayBuffer = await this._file?.arrayBuffer()
 
@@ -48,36 +30,22 @@ export class StoreDocument {
     const blob = new Blob([new Uint8Array(arrayBuffer)], {
       type: this._mimeType,
     })
-    formData.append('Image', blob)
-    formData.append('Document', JSON.stringify(docMetadata))
-
+    formData.append('Document', blob)
     const { data } = await api.post<{
       id: string
-      content_type: string
-      owner: {
-        type: string
-        id: string
-      }
-      relationshipNames: string[]
       type: string
-      url: string
-    }>('integrations/storage/documents', formData)
+      key: string
+    }>('/integrations/documents', formData)
 
-    this._key = data.id
+    this._key = data.key
   }
 
   async load() {
     const { data } = await api.get<{
-      type: string
       id: string
-      content_type: string
+      type: string
       url: string
-      owner: {
-        type: string
-        id: string
-      }
-      relationshipNames: string[]
-    }>(`/integrations/storage/documents/${this._key}`)
+    }>(`/integrations/documents/${this._key}`)
 
     this._url = data.url
   }

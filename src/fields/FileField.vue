@@ -55,15 +55,14 @@ const applicationExtensions = computed(() => {
 useDropZone(dropZoneRef, onDrop)
 const { open, file } = useFile([
   {
-    description: 'image',
+    description: 'all',
     accept: {
-      'image/*': imageExtensions.value,
-    },
-  },
-  {
-    description: 'application',
-    accept: {
-      'application/*': applicationExtensions.value,
+      ...(imageExtensions.value.length
+        ? { 'image/*': imageExtensions.value }
+        : {}),
+      ...(applicationExtensions.value.length
+        ? { 'application/*': applicationExtensions.value }
+        : {}),
     },
   },
 ])

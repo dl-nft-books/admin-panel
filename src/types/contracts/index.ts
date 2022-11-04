@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Erc20 } from "./Erc20";
+export type { TokenFactory } from "./TokenFactory";
 export * as factories from "./factories";
 export { Erc20__factory } from "./factories/Erc20__factory";
+export { TokenFactory__factory } from "./factories/TokenFactory__factory";

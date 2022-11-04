@@ -1,4 +1,7 @@
 import { api } from '@/api'
+import { useAuthStore } from '@/store'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
 
 export const getAuthNonce = async (message: string) => {
   const { data } = await api.post<{ message: string }>(
@@ -21,4 +24,10 @@ export const getAuthNonce = async (message: string) => {
    * with message for signing
    */
   return data.message.split('\n')[data.message.split('\n').length - 1]
+}
+
+export const logout = () => {
+  const authStore = useAuthStore()
+  authStore.logout()
+  router.push({ name: ROUTE_NAMES.login })
 }

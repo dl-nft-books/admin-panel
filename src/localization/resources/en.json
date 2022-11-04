@@ -142,5 +142,9 @@
   "app-navbar": {
     "create-button": "CREATE NFT",
     "edit-button": "EDIT NFT"
+  },
+  "api-errors": {
+    "session-expired-title": "Session expired",
+    "session-expired-desc": "Please login again to continue using the application."
   }
 }

@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
+import { AxiosRequestConfig, AxiosRequestHeaders, AxiosInstance } from 'axios'
 import { HTTP_METHODS } from '@/api/json-api/enums'
 
 export enum JsonApiLinkFields {
@@ -17,7 +17,7 @@ export type Endpoint = string
 
 export type JsonApiClientConfig = {
   baseUrl?: Url
-  authToken?: Uuid
+  axios?: AxiosInstance
 }
 
 export type JsonApiClientRequestConfigHeaders = AxiosRequestHeaders

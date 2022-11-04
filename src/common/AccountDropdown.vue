@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { useWeb3ProvidersStore, useAuthStore } from '@/store'
+import { useWeb3ProvidersStore } from '@/store'
 import { cropAddress } from '@/helpers'
 
 import { onMounted, ref, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { useRoute } from 'vue-router'
+import { logout } from '@/helpers'
 
 const accountDropdown = ref<HTMLElement | undefined>()
 const isDropdownOpen = ref(false)
 
 const route = useRoute()
 const web3ProviderStore = useWeb3ProvidersStore()
-const authStore = useAuthStore()
 
 onMounted(() => {
   if (accountDropdown.value) {
@@ -46,7 +46,7 @@ const toggleDropdown = () => {
     </button>
     <transition name="account-dropdown__body">
       <div v-if="isDropdownOpen" class="account-dropdown__body">
-        <button class="account-dropdown__item" @click="authStore.logout">
+        <button class="account-dropdown__item" @click="logout">
           {{ $t('account-dropdown.logout-btn') }}
         </button>
       </div>

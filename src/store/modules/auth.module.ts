@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { api } from '@/api'
 import { AuthResponse, RefreshTokenResponse, AuthToken } from '@/types'
+import { HTTP_METHODS } from '@/api/json-api/enums'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -34,13 +35,16 @@ export const useAuthStore = defineStore('auth', {
       this._accessToken = null
       this._refreshToken = null
       this._account = ''
-      location.reload()
     },
 
     async refreshToken(): Promise<void> {
-      const { data } = await api.get<RefreshTokenResponse>(
-        '/integrations/nonce-auth-svc/refresh-token',
-      )
+      const { data } = await api.request<RefreshTokenResponse>({
+        endpoint: '/integrations/nonce-auth-svc/refresh-token',
+        method: HTTP_METHODS.GET,
+        headers: {
+          Authorization: `Bearer ${this._refreshToken?.id}`,
+        },
+      })
       this._accessToken = data.access_token
       this._refreshToken = data.refresh_token
     },

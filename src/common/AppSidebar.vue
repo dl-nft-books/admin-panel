@@ -3,7 +3,7 @@ import { ref, watch, computed } from 'vue'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { Bus } from '@/helpers'
 import { AppLogo, Icon, AppButton } from '@/common'
-import { useAuthStore } from '@/store'
+import { logout } from '@/helpers'
 
 import {
   onClickOutside,
@@ -11,8 +11,6 @@ import {
   useSwipe,
   useWindowSize,
 } from '@vueuse/core'
-
-const authStore = useAuthStore()
 
 const hideWidth = WINDOW_BREAKPOINTS.tablet
 
@@ -102,7 +100,7 @@ watch(asideElement, () => {
           color="primary-inverted"
           size="default"
           class="app-sidebar__link app-sidebar__logout"
-          @click="authStore.logout"
+          @click="logout"
         >
           <icon class="app-sidebar__link-icon" :name="$icons.logout" />
           {{ $t('app-sidebar.logout-btn') }}

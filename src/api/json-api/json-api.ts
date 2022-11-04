@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosInstance } from 'axios'
 import { HTTP_METHODS } from '@/api/json-api/enums'
 import { JsonApiResponse } from '@/api/json-api/response'
 import {
@@ -7,7 +7,6 @@ import {
   JsonApiClientRequestConfigHeaders,
   RequestOpts,
   Url,
-  Uuid,
 } from '@/api/json-api/types'
 import {
   flattenToAxiosJsonApiQuery,
@@ -21,14 +20,11 @@ import {
  */
 export class JsonApiClient {
   private _baseUrl: Url
-  protected _authToken: Uuid
+  private _axios: AxiosInstance
 
   constructor(config = {} as JsonApiClientConfig) {
-    this._authToken = ''
-    this._baseUrl = ''
-
-    if (config?.baseUrl) this.useBaseUrl(config.baseUrl)
-    if (config?.authToken) this.setAuthToken(config.authToken)
+    this._baseUrl = config.baseUrl ?? ''
+    this._axios = config.axios ?? axios.create()
   }
 
   /**
@@ -46,24 +42,22 @@ export class JsonApiClient {
    *  For more details look Axios Request config:
    *  {@link https://github.com/axios/axios#request-config}
    */
-  get baseUrl(): Url {
+  public get baseUrl(): Url {
     return this._baseUrl
   }
 
   /**
-   * All endpoints in the API use bearer authToken authentication.
-   * To get a authToken, contact us. All requests must include your authToken
-   * in the Authorization header.
+   * Sets axios instance to the client instance.
    */
-  get authToken(): Uuid {
-    return this._authToken
+  public get axios(): AxiosInstance {
+    return this._axios
   }
 
   /**
-   * Sets authentication token to the client instance.
+   * Sets axios instance to the client instance.
    */
-  setAuthToken(authToken: Uuid): JsonApiClient {
-    this._authToken = authToken
+  public useAxios(axiosInstance: AxiosInstance): JsonApiClient {
+    this._axios = axiosInstance
     return this
   }
 
@@ -83,15 +77,6 @@ export class JsonApiClient {
     if (!baseUrl) throw new TypeError('Arg "baseUrl" not passed')
 
     return this._clone().useBaseUrl(baseUrl)
-  }
-
-  /**
-   * Creates new instance JsonApiClient instance with given auth authToken.
-   */
-  withAuthToken(authToken: Uuid): JsonApiClient {
-    if (!authToken) throw new TypeError('Arg "authToken" not passed')
-
-    return this._clone().setAuthToken(authToken)
   }
 
   /**
@@ -123,13 +108,11 @@ export class JsonApiClient {
 
       if (config.headers) {
         if (opts.contentType) config.headers['Content-Type'] = opts.contentType
-        if (this.authToken)
-          config.headers['Authorization'] = `Bearer ${this.authToken}`
       }
     }
 
     try {
-      response = await axios(config)
+      response = await this._axios(config)
     } catch (e) {
       throw parseJsonApiError(e as AxiosError)
     }

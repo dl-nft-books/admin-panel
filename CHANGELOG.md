@@ -15,6 +15,7 @@ for further information about branching and tagging conventions.
 
 #### Changed
 - App colors
+- Auth flow
 
 ## [1.0.0-rc.0] - 2022-10-15
 #### Under the hood changes

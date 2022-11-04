@@ -3,7 +3,7 @@ import { config } from '@config'
 import {
   attachBearerInjector,
   attachStaleTokenHandler,
-} from '@/api/json-api/apiInterceptors'
+} from '@/api/apiInterceptors'
 import axios from 'axios'
 
 const axiosInstance = axios.create()

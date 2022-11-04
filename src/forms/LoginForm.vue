@@ -2,7 +2,7 @@
 import { AppButton } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
-import { ErrorHandler, getAuthNonce } from '@/helpers'
+import { ErrorHandler, getAuthNonce, sleep } from '@/helpers'
 
 import { useRouter } from 'vue-router'
 import { ROUTE_NAMES } from '@/enums'
@@ -17,7 +17,7 @@ const authStore = useAuthStore()
 const submit = async () => {
   try {
     await provider.value.connect()
-
+    await sleep(1000)
     if (provider.value.selectedAddress) {
       const authNonce = await getAuthNonce(provider.value.selectedAddress)
 

@@ -2,17 +2,17 @@
 import { AppButton } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
-import { ErrorHandler, getAuthNonce, saveAuthAccess } from '@/helpers'
+import { ErrorHandler, getAuthNonce } from '@/helpers'
 
 import { useRouter } from 'vue-router'
 import { ROUTE_NAMES } from '@/enums'
 import { storeToRefs } from 'pinia'
-import { api } from '@/api'
-import { AuthResponse } from '@/types'
+import { useAuthStore } from '@/store'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const submit = async () => {
   try {
@@ -23,32 +23,13 @@ const submit = async () => {
 
       const signedMessage = await provider.value.signMessage(authNonce)
 
-      await login(signedMessage)
+      await authStore.login(provider.value.selectedAddress, signedMessage)
 
       router.push({ name: ROUTE_NAMES.nfts })
     }
   } catch (error) {
     ErrorHandler.process(error)
   }
-}
-
-const login = async (signedMessage: string) => {
-  const { data } = await api.post<AuthResponse>(
-    '/integrations/nonce-auth-svc/login/admin',
-    {
-      data: {
-        type: 'admin_login',
-        attributes: {
-          auth_pair: {
-            address: provider.value.selectedAddress,
-            signed_message: signedMessage,
-          },
-        },
-      },
-    },
-  )
-
-  saveAuthAccess(data.access_token, data.refresh_token)
 }
 </script>
 

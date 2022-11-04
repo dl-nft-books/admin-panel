@@ -10,3 +10,9 @@ export type AuthResponse = {
   access_token: AuthToken
   id: string
 }
+
+export type RefreshTokenResponse = {
+  type: 'jwt_pair'
+  refresh_token: AuthToken
+  access_token: AuthToken
+}

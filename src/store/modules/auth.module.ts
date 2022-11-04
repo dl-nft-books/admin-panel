@@ -1,39 +1,54 @@
 import { defineStore } from 'pinia'
-import { ErrorHandler, logout } from '@/helpers'
 import { api } from '@/api'
-import { Auth } from '@/types'
+import { AuthResponse, RefreshTokenResponse, AuthToken } from '@/types'
 
-import { DateUtil } from '@/utils/date.util'
-
-export const useAuthStore = defineStore('account-store', {
+export const useAuthStore = defineStore('auth', {
   state: () => ({
-    auth: {} as Auth,
+    _accessToken: null as AuthToken | null,
+    _refreshToken: null as AuthToken | null,
+    _account: '',
   }),
+  persist: true,
   actions: {
-    async initAuth() {
-      try {
-        this.checkAuthorize()
-      } catch (error) {
-        ErrorHandler.processWithoutFeedback(error)
-      }
+    async login(account: string, signMsg: string): Promise<void> {
+      const { data } = await api.post<AuthResponse>(
+        '/integrations/nonce-auth-svc/login/admin',
+        {
+          data: {
+            type: 'admin_login',
+            attributes: {
+              auth_pair: {
+                address: account,
+                signed_message: signMsg,
+              },
+            },
+          },
+        },
+      )
+      this._accessToken = data.access_token
+      this._refreshToken = data.refresh_token
+      this._account = account
     },
-    checkAuthorize() {
-      const accessTokenString = localStorage.getItem('accessToken')
-      const accessToken = accessTokenString && JSON.parse(accessTokenString)
 
-      if (accessToken) {
-        const isExpired = DateUtil.isSameOrAfter(accessToken.expires_in * 1000)
-        if (isExpired) {
-          logout()
-        } else {
-          api.setAuthToken(accessToken.id)
+    logout(): void {
+      this._accessToken = null
+      this._refreshToken = null
+      this._account = ''
+      location.reload()
+    },
 
-          this.auth = { access_token: accessToken }
-        }
-      }
+    async refreshToken(): Promise<void> {
+      const { data } = await api.get<RefreshTokenResponse>(
+        '/integrations/nonce-auth-svc/refresh-token',
+      )
+      this._accessToken = data.access_token
+      this._refreshToken = data.refresh_token
     },
   },
+
   getters: {
-    isLoggedIn: state => Boolean(state.auth?.access_token),
+    isLoggedIn: state => Boolean(state._accessToken),
+    accessToken: state => state._accessToken,
+    account: state => state._account,
   },
 })

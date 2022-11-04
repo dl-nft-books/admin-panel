@@ -1,5 +1,4 @@
 import { api } from '@/api'
-import { AuthToken } from '@/types'
 
 export const getAuthNonce = async (message: string) => {
   const { data } = await api.post<{ message: string }>(
@@ -22,21 +21,4 @@ export const getAuthNonce = async (message: string) => {
    * with message for signing
    */
   return data.message.split('\n')[data.message.split('\n').length - 1]
-}
-
-export const saveAuthAccess = (
-  accessToken: AuthToken,
-  refreshToken: AuthToken,
-) => {
-  const accessTokenString = JSON.stringify(accessToken)
-  const refreshTokenString = JSON.stringify(refreshToken)
-  localStorage.setItem('accessToken', accessTokenString)
-  localStorage.setItem('refreshToken', refreshTokenString)
-}
-
-export const logout = () => {
-  localStorage.removeItem('accessToken')
-  localStorage.removeItem('refreshToken')
-
-  location.reload()
 }

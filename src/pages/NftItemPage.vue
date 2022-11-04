@@ -2,58 +2,31 @@
 import { Loader, ErrorMessage } from '@/common'
 import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
 
-import { ErrorHandler } from '@/helpers'
-import { Book, BookSaleHistory } from '@/types'
-import { useRoute } from 'vue-router'
+import { ErrorHandler, getBookById } from '@/helpers'
+import { BookSaleHistory } from '@/types'
 import { ref } from 'vue'
+import { BookRecord } from '@/records'
+
+const props = defineProps<{
+  id: string
+}>()
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 
-const book = ref<Book | undefined>()
+const book = ref<BookRecord | undefined>()
 const history = ref<BookSaleHistory[]>([])
-
-const route = useRoute()
 
 const init = async () => {
   try {
-    await loadBook()
+    const bookData = await getBookById(props.id)
+    book.value = new BookRecord(bookData)
     await loadHistory()
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
   }
   isLoaded.value = true
-}
-
-const loadBook = async () => {
-  book.value = {
-    id: route.params.id,
-    title: 'Blockchain and decentralized systems, Volume 1',
-    price: {
-      amount: 109,
-      assetCode: 'USD',
-    },
-    coverUrl:
-      'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    description:
-      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae \n' +
-      'Mack nitevis. Mikropp antelånas londe. Tism svenna sitt liv i preliga. Sögisk euroråse belig. \n' +
-      'Pögt ont puhet och supravinade. Dis vil gesåbelt och vaheten. Aning elektrogram eftersom miligen. Renyde korat. \n',
-    meta: {
-      volume: 'Volume 2',
-    },
-    token: {
-      amount: '0,0056',
-      assetCode: 'BTC',
-    },
-    document: {
-      name: 'BDS_volume1.pdf',
-    },
-    signature:
-      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae',
-    purchaseDate: '2010-04-02T14:12:07',
-  } as Book
 }
 
 const loadHistory = async () => {
@@ -88,7 +61,7 @@ init()
         <div class="nft-item-page__book">
           <div class="nft-item-page__cover-wrp">
             <img
-              :src="book.coverUrl"
+              :src="`http://dltestbucketdl.s3.eu-west-1.amazonaws.com/${book.fileKey}`"
               :alt="book.title"
               class="nft-item-page__cover"
             />

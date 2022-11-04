@@ -9,8 +9,8 @@ export class StoreDocument {
 
   constructor(opts?: {
     file?: File
-    name: string
-    mimeType: string
+    name?: string
+    mimeType?: string
     key?: string
   }) {
     if (opts) {

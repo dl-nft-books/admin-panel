@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Book } from '@/types'
 import { Icon } from '@/common'
 import { formatFiatAsset } from '@/helpers'
 import { formatMDY } from '@/helpers'
+import { BookRecord } from '@/records'
 
-defineProps<{ book: Book }>()
+defineProps<{ book: BookRecord }>()
 </script>
 
 <template>
@@ -14,7 +14,7 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.creation-date-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ formatMDY(book.purchaseDate) }}
+        {{ formatMDY(book.createdAt) }}
       </p>
     </div>
     <div class="nft-details__row">
@@ -22,17 +22,24 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.price-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ formatFiatAsset(book.price.amount, book.price.assetCode) }}
+        <!-- FIXME: fix `assetCode` after bekend -->
+        {{ formatFiatAsset(book.price, 'USD') }}
       </p>
     </div>
     <div class="nft-details__row">
       <p class="nft-details__row-label">
         {{ $t('nft-details.document-lbl') }}
       </p>
-      <p class="nft-details__row-value nft-details__row-value--document">
-        {{ book.document?.name }}
+      <!-- FIXME: fix `href` after bekend -->
+      <a
+        target="_blank"
+        rel="noopener"
+        :href="`http://dltestbucketdl.s3.eu-west-1.amazonaws.com/${book.fileKey}`"
+        class="nft-details__row-value nft-details__row-value--document"
+      >
+        {{ book.fileName }}
         <icon class="nft-details__row-icon" :name="$icons.download" />
-      </p>
+      </a>
     </div>
     <div class="nft-details__row">
       <p class="nft-details__row-label">
@@ -77,6 +84,7 @@ defineProps<{ book: Book }>()
 }
 
 .nft-details__row-value {
+  font-weight: 400;
   font-size: toRem(20);
   line-height: 1.2;
 

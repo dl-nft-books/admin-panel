@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Book } from '@/types'
 import { formatDMY } from '@/helpers'
 import { formatFiatAsset } from '@/helpers'
+import { BookRecord } from '@/records'
 
 defineProps<{
-  nft: Book
+  nft: BookRecord
 }>()
 </script>
 
@@ -13,7 +13,12 @@ defineProps<{
     class="nft-card"
     :to="{ name: $routes.nftItem, params: { id: nft.id } }"
   >
-    <img class="nft-card__img" :src="nft.coverUrl" alt="Book image" />
+    <!-- FIXME: fix `src` after bekend -->
+    <img
+      class="nft-card__img"
+      :src="`http://dltestbucketdl.s3.eu-west-1.amazonaws.com/${nft.fileKey}`"
+      alt="Book image"
+    />
     <div class="nft-card__content-wrapper">
       <div class="nft-card__content">
         <span class="nft-card__desc">
@@ -28,7 +33,7 @@ defineProps<{
           {{ $t('nft-card.date-description') }}
         </span>
         <span class="nft-card__value">
-          {{ formatDMY(nft.purchaseDate) }}
+          {{ formatDMY(nft.createdAt) }}
         </span>
       </div>
       <div class="nft-card__content">
@@ -36,7 +41,8 @@ defineProps<{
           {{ $t('nft-card.price-description') }}
         </span>
         <span class="nft-card__value">
-          {{ formatFiatAsset(nft.price.amount, nft.price.assetCode) }}
+          <!-- FIXME: fix `assetCode` after bekend -->
+          {{ formatFiatAsset(nft.price, 'USD') }}
         </span>
       </div>
     </div>

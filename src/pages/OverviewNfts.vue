@@ -9,48 +9,19 @@ import {
   NoDataMessage,
   AppButton,
 } from '@/common'
-import { Book } from '@/types'
-import { ErrorHandler } from '@/helpers'
+
+import { ErrorHandler, getBooks } from '@/helpers'
+import { BookRecord } from '@/records'
 
 const searchByString = ref('')
-
+const booksList = ref<BookRecord[]>([])
 const isLoaded = ref(false)
 const isErrored = ref(false)
-
-const NFT_MOCK_DATA: Array<Book> = [
-  {
-    id: 1,
-    title: 'Blockchain and Decentralized Sistems Vol. 1',
-    price: {
-      amount: 199.99,
-      assetCode: 'USD',
-    },
-    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
-  },
-  {
-    id: 2,
-    title: 'Blockchain and Decentralized Sistems Vol. 1',
-    price: {
-      amount: 199.99,
-      assetCode: 'USD',
-    },
-    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
-  },
-  {
-    id: 3,
-    title: 'Blockchain and Decentralized Sistems Vol. 1',
-    price: {
-      amount: 199.99,
-      assetCode: 'USD',
-    },
-    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
-  },
-]
-
-const loadNfts = () => {
+const loadNfts = async () => {
   isLoaded.value = false
   try {
-    setTimeout(() => true)
+    const data = await getBooks()
+    booksList.value = data.map(book => new BookRecord(book))
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
     isErrored.value = true
@@ -75,7 +46,7 @@ loadNfts()
         />
       </template>
       <template v-else>
-        <template v-if="NFT_MOCK_DATA.length">
+        <template v-if="booksList.length">
           <div class="overview-nfts__header">
             <h2 class="overview-nfts__title">
               {{ $t('overview-nfts.title') }}
@@ -101,11 +72,7 @@ loadNfts()
             </div>
           </div>
           <div class="overview-nfts__content">
-            <nft-card
-              v-for="(nft, idx) in NFT_MOCK_DATA"
-              :key="idx"
-              :nft="nft"
-            />
+            <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
           </div>
         </template>
         <template v-else>

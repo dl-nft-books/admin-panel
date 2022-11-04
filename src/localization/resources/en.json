@@ -1,7 +1,8 @@
 {
   "validations": {
     "field-error_required": "Please fill out this field",
-    "field-error_email": "Field must be a valid email"
+    "field-error_email": "Field must be a valid email",
+    "field-error_minValue": "Value must be at least {min}"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -89,8 +90,10 @@
     "details-subtitle": "2. Add Details",
     "input-name-label": "Name*",
     "input-price-label": "Price (USD)*",
+    "input-symbol-label": "NFT symbol*",
     "textarea-description-label": "Description*",
     "input-name-placeholder": "Name*",
+    "input-symbol-placeholder": "Enter NFT symbol",
     "input-price-placeholder": "Price (USD)*",
     "textarea-description-placeholder": "Description*",
     "cancel-button": "cancel",
@@ -98,7 +101,8 @@
     "file-field-image-title": "Upload Photo*",
     "file-field-image-description": "JPG, PNG less than 2 mb",
     "file-field-pdf-title": "Upload Main File*",
-    "file-field-pdf-description": "PDF less than 500 mb"
+    "file-field-pdf-description": "PDF less than 500 mb",
+    "success-msg": "Congratulations. A new book has been created."
   },
   "overview-nfts": {
     "title": "NFTs",

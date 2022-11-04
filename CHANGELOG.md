@@ -10,6 +10,8 @@ for further information about branching and tagging conventions.
 ## [Unreleased]
 #### Added
 - File field
+- Crete NFT page
+- Crete NFT logic
 
 #### Changed
 - App colors

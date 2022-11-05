@@ -114,4 +114,13 @@ $z-index-overlap: 1;
     background: rgba(var(--black-rgb), 0.04);
   }
 }
+
+.account-dropdown__address {
+  color: var(--text-primary-light);
+  font-weight: 500;
+
+  @include respond-to(xsmall) {
+    display: none;
+  }
+}
 </style>

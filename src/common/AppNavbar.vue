@@ -1,13 +1,23 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { Icon, AppButton, AccountDropdown } from '@/common'
-import { ROUTE_NAMES } from '@/enums'
+import { ROUTE_NAMES, WINDOW_BREAKPOINTS } from '@/enums'
 import { useRoute } from 'vue-router'
 import { Bus } from '@/helpers'
+import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
+const { width } = useWindowSize()
 const route = useRoute()
+const { t } = useI18n({ useScope: 'global' })
 
 const isCreateButton = computed(() => route.name === ROUTE_NAMES.nftsOverview)
+
+const buttonLinkText = computed(() => {
+  return t(
+    `app-navbar.${isCreateButton.value ? 'create-button' : 'edit-button'}`,
+  )
+})
 
 const isButtonLinkShown = computed(() => {
   return (
@@ -43,9 +53,8 @@ const openSidebar = () => {
         v-if="isButtonLinkShown"
         class="app-navbar__link-button"
         size="small"
-        :text="
-          $t(`app-navbar.${isCreateButton ? 'create-button' : 'edit-button'}`)
-        "
+        :icon-left="$icons.edit"
+        :text="width >= WINDOW_BREAKPOINTS.small ? buttonLinkText : ''"
         :route="buttonLink"
       />
       <account-dropdown class="app-navbar__account-dropdown" />
@@ -102,7 +111,9 @@ const openSidebar = () => {
   width: toRem(180);
 
   @include respond-to(small) {
-    display: none;
+    width: toRem(54);
+    height: toRem(54);
+    order: 1;
   }
 }
 </style>

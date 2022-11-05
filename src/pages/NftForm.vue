@@ -175,23 +175,23 @@ const submit = async () => {
           :disabled="isFormDisabled"
           @blur="touchField('description')"
         />
-      </div>
-      <div class="nft-form__action-buttons">
-        <app-button
-          class="nft-form__button"
-          scheme="flat"
-          size="small"
-          :text="$t('nft-form.cancel-button')"
-          :route="{ name: $routes.nfts }"
-          :disabled="isFormDisabled"
-        />
-        <app-button
-          type="submit"
-          size="small"
-          class="nft-form__button"
-          :text="$t('nft-form.create-button')"
-          :disabled="isFormDisabled"
-        />
+        <div class="nft-form__action-buttons">
+          <app-button
+            class="nft-form__button"
+            scheme="flat"
+            size="small"
+            :text="$t('nft-form.cancel-button')"
+            :route="{ name: $routes.nfts }"
+            :disabled="isFormDisabled"
+          />
+          <app-button
+            type="submit"
+            size="small"
+            class="nft-form__button"
+            :text="$t('nft-form.create-button')"
+            :disabled="isFormDisabled"
+          />
+        </div>
       </div>
     </form>
   </div>
@@ -250,6 +250,7 @@ const submit = async () => {
 
 .nft-form__action-buttons {
   display: flex;
+  align-items: flex-end;
   justify-content: flex-end;
   column-gap: toRem(20);
 
@@ -272,5 +273,10 @@ const submit = async () => {
   text-transform: uppercase;
   width: toRem(182);
   padding: toRem(15);
+  max-height: toRem(50);
+
+  &:first-child {
+    font-weight: 500;
+  }
 }
 </style>

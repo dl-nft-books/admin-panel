@@ -59,24 +59,24 @@ const routes: Array<RouteRecordRaw> = [
             },
             component: () => import('@/pages/OverviewNfts.vue'),
           },
+          {
+            path: '/nfts/:id',
+            name: ROUTE_NAMES.nftItem,
+            component: () => import('@/pages/NftItemPage.vue'),
+            props: true,
+            meta: {
+              [ROUTE_METAS.isRequiredAuth]: true,
+            },
+          },
+          {
+            path: '/nfts/:id/edit',
+            name: ROUTE_NAMES.nftItemEdit,
+            component: () => import('@/pages/NftForm.vue'),
+            meta: {
+              [ROUTE_METAS.isRequiredAuth]: true,
+            },
+          },
         ],
-      },
-      {
-        path: '/nfts/:id',
-        name: ROUTE_NAMES.nftItem,
-        component: () => import('@/pages/NftItemPage.vue'),
-        props: true,
-        meta: {
-          [ROUTE_METAS.isRequiredAuth]: true,
-        },
-      },
-      {
-        path: '/nfts/:id/edit',
-        name: ROUTE_NAMES.nftItemEdit,
-        component: () => import('@/pages/NftForm.vue'),
-        meta: {
-          [ROUTE_METAS.isRequiredAuth]: true,
-        },
       },
       {
         path: '/ui-kit',

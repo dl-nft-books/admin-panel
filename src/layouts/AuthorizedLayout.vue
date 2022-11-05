@@ -41,6 +41,6 @@ export default defineComponent({
 
 .authorized-layout__main {
   flex: 1;
-  padding: toRem(64) var(--app-padding-right) toRem(64) var(--app-padding-left);
+  padding: toRem(54) var(--app-padding-right) toRem(54) var(--app-padding-left);
 }
 </style>

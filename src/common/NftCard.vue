@@ -52,6 +52,7 @@ defineProps<{
   border: toRem(1) solid var(--border-primary-main);
   border-radius: toRem(6);
   padding: toRem(10) toRem(15);
+  background: var(--background-tertiary);
 
   @include respond-to(medium) {
     flex-direction: column;

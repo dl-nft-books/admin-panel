@@ -79,14 +79,20 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
-        path: '/ui-kit',
-        name: ROUTE_NAMES.uiKit,
-        component: () => import('@/pages/UiKitPage.vue'),
+        path: '/kyc-requests',
+        name: ROUTE_NAMES.kycRequests,
+        meta: {
+          [ROUTE_METAS.isRequiredAuth]: true,
+        },
+        component: () => import('@/pages/KycRequests.vue'),
       },
       {
-        path: '/web3',
-        name: ROUTE_NAMES.web3,
-        component: () => import('@/pages/Web3Page.vue'),
+        path: '/settings',
+        name: ROUTE_NAMES.settings,
+        meta: {
+          [ROUTE_METAS.isRequiredAuth]: true,
+        },
+        component: () => import('@/pages/Settings.vue'),
       },
     ],
   },

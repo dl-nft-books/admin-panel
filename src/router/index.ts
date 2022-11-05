@@ -10,7 +10,6 @@ import {
 
 import { ROUTE_NAMES } from '@/enums'
 import { useAuthStore } from '@/store'
-import { ErrorHandler } from '@/helpers'
 
 enum ROUTE_METAS {
   isRequiredAuth = 'isRequiredAuth',
@@ -100,13 +99,6 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const accountStore = useAuthStore()
-
-  try {
-    accountStore.initAuth()
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-  }
   if (to.name === ROUTE_NAMES.app) {
     redirectRouteGuard(to, from, next)
   } else if (

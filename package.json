@@ -36,6 +36,7 @@
     "loglevel": "^1.8.0",
     "mitt": "^3.0.0",
     "pinia": "^2.0.21",
+    "pinia-plugin-persistedstate": "^2.0.1",
     "postcss": "^8.4.16",
     "vue": "^3.2.38",
     "vue-i18n": "^9.2.2",

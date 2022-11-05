@@ -1,6 +1,18 @@
 import { JsonApiClient } from '@/api/json-api'
 import { config } from '@config'
+import {
+  attachBearerInjector,
+  attachStaleTokenHandler,
+} from '@/api/apiInterceptors'
+import axios from 'axios'
 
-export const api = new JsonApiClient({ baseUrl: config.API_URL })
+const axiosInstance = axios.create()
+attachBearerInjector(axiosInstance)
+attachStaleTokenHandler(axiosInstance)
+
+export const api = new JsonApiClient({
+  baseUrl: config.API_URL,
+  axios: axiosInstance,
+})
 
 export * from './utils'

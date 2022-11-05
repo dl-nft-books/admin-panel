@@ -20,6 +20,7 @@ export interface BookFileResponse {
     key: string
     mime_type: string
     name: string
+    url: string
   }
 }
 

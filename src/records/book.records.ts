@@ -13,6 +13,8 @@ export class BookRecord {
   fileKey: string
   bannerKey: string
   fileName: string
+  fileUrl: string
+  bannerUrl: string
 
   constructor(record: BookResponse) {
     this.contractAddress = record.contract_address
@@ -27,6 +29,8 @@ export class BookRecord {
 
     this.fileKey = record.file.attributes.key
     this.fileName = record.file.attributes.name
+    this.fileUrl = record.file.attributes.url
     this.bannerKey = record.banner.attributes.key
+    this.bannerUrl = record.banner.attributes.url
   }
 }

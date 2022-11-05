@@ -30,11 +30,10 @@ defineProps<{ book: BookRecord }>()
       <p class="nft-details__row-label">
         {{ $t('nft-details.document-lbl') }}
       </p>
-      <!-- FIXME: fix `href` after bekend -->
       <a
         target="_blank"
         rel="noopener"
-        :href="`http://dltestbucketdl.s3.eu-west-1.amazonaws.com/${book.fileKey}`"
+        :href="book.fileUrl"
         class="nft-details__row-value nft-details__row-value--document"
       >
         {{ book.fileName }}

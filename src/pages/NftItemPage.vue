@@ -61,7 +61,7 @@ init()
         <div class="nft-item-page__book">
           <div class="nft-item-page__cover-wrp">
             <img
-              :src="`http://dltestbucketdl.s3.eu-west-1.amazonaws.com/${book.fileKey}`"
+              :src="book.bannerUrl"
               :alt="book.title"
               class="nft-item-page__cover"
             />

@@ -13,12 +13,7 @@ defineProps<{
     class="nft-card"
     :to="{ name: $routes.nftItem, params: { id: nft.id } }"
   >
-    <!-- FIXME: fix `src` after bekend -->
-    <img
-      class="nft-card__img"
-      :src="`http://dltestbucketdl.s3.eu-west-1.amazonaws.com/${nft.fileKey}`"
-      alt="Book image"
-    />
+    <img class="nft-card__img" :src="nft.bannerUrl" alt="Book image" />
     <div class="nft-card__content-wrapper">
       <div class="nft-card__content">
         <span class="nft-card__desc">

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Icon, AppButton } from '@/common'
-import { formatFiatAsset } from '@/helpers'
+import { Icon } from '@/common'
+import { formatFiatAssetFromWei } from '@/helpers'
 import { formatMDY } from '@/helpers'
 import { BookRecord } from '@/records'
 
@@ -23,7 +23,7 @@ defineProps<{ book: BookRecord }>()
       </p>
       <p class="nft-details__row-value">
         <!-- FIXME: fix `assetCode` after bekend -->
-        {{ formatFiatAsset(book.price, 'USD') }}
+        {{ formatFiatAssetFromWei(book.price, 'USD') }}
       </p>
     </div>
     <div class="nft-details__row">
@@ -36,17 +36,11 @@ defineProps<{ book: BookRecord }>()
         :href="book.fileUrl"
         class="nft-details__row-value nft-details__row-value--document"
       >
-        {{ book.fileName }}
-      </a>
-      <app-button
-        class="nft-details__row-icon-button"
-        aria-label="Open sidebar button"
-        size="default"
-        scheme="default"
-        :href="book.fileUrl"
-      >
+        <span class="nft-details__row-value--document-text">
+          {{ book.fileName }}
+        </span>
         <icon class="nft-details__row-icon" :name="$icons.download" />
-      </app-button>
+      </a>
     </div>
     <div class="nft-details__row">
       <p class="nft-details__row-label">
@@ -104,34 +98,25 @@ $icon-size: toRem(20);
 }
 
 .nft-details__row-value--document {
-  display: inline-block;
-  position: relative;
+  display: flex;
   align-items: center;
   cursor: pointer;
-  max-width: calc(100% - #{$icon-size});
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.nft-details__row-value--document-text {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.nft-details__row-icon-button {
+.nft-details__row-icon {
   display: inline-block;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
   width: $icon-size;
   height: $icon-size;
-
-  @include respond-to(medium) {
-    top: 95%;
-    transform: translateY(-100%);
-  }
-}
-
-.nft-details__row-icon {
-  width: 100%;
-  height: 100%;
+  min-width: $icon-size;
   color: var(--primary-main);
+  margin-left: toRem(10);
 }
 </style>

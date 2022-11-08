@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { formatDMY } from '@/helpers'
-import { formatFiatAsset } from '@/helpers'
+import { formatFiatAssetFromWei } from '@/helpers'
 import { BookRecord } from '@/records'
 
 defineProps<{
@@ -37,7 +37,7 @@ defineProps<{
         </span>
         <span class="nft-card__value">
           <!-- FIXME: fix `assetCode` after bekend -->
-          {{ formatFiatAsset(nft.price, 'USD') }}
+          {{ formatFiatAssetFromWei(nft.price, 'USD') }}
         </span>
       </div>
     </div>

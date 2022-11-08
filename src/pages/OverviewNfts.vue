@@ -12,6 +12,7 @@ import {
 
 import { ErrorHandler, getBooks } from '@/helpers'
 import { BookRecord } from '@/records'
+import { BOOK_DEPLOY_STATUSES } from '@/enums'
 
 const searchByString = ref('')
 const booksList = ref<BookRecord[]>([])
@@ -20,7 +21,9 @@ const isErrored = ref(false)
 const loadNfts = async () => {
   isLoaded.value = false
   try {
-    const data = await getBooks()
+    const data = await getBooks({
+      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+    })
     booksList.value = data.map(book => new BookRecord(book))
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)

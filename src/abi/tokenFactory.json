@@ -87,6 +87,12 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenContractId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "newTokenContractAddr",
         "type": "address"
@@ -165,6 +171,11 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "tokenContractId_",
+        "type": "uint256"
+      },
+      {
         "internalType": "string",
         "name": "tokenName_",
         "type": "string"
@@ -178,6 +189,21 @@
         "internalType": "uint256",
         "name": "pricePerOneToken_",
         "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "r_",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s_",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "v_",
+        "type": "uint8"
       }
     ],
     "name": "deployTokenContract",
@@ -412,6 +438,25 @@
     "name": "setNewImplementation",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokenContractByIndex",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

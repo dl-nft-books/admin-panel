@@ -71,14 +71,22 @@ export const useTokenFactory = (
   }
 
   const deployTokenContract = async (
+    tokenId: string,
     name: string,
     symbol: string,
     amount: string,
+    r: string,
+    s: string,
+    v: number,
   ) => {
     const contractTransaction = await _instance_rw.value?.deployTokenContract(
+      +tokenId,
       name,
       symbol,
       amount,
+      r,
+      s,
+      v,
     )
 
     const txReceipt = await contractTransaction?.wait()

@@ -14,13 +14,11 @@ const { t } = useI18n({ useScope: 'global' })
 const isCreateButton = computed(() => route.name === ROUTE_NAMES.nftsOverview)
 
 const buttonLinkText = computed(() =>
-  isCreateButton.value
-    ? t('app-navbar.create-button')
-    : t('app-navbar.edit-button'),
-)
-
-const breakpointLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small ? buttonLinkText.value : '',
+  width.value >= WINDOW_BREAKPOINTS.small
+    ? isCreateButton.value
+      ? t('app-navbar.create-button')
+      : t('app-navbar.edit-button')
+    : '',
 )
 
 const isButtonLinkShown = computed(() => {
@@ -58,7 +56,7 @@ const openSidebar = () => {
         class="app-navbar__link-button"
         size="small"
         :icon-left="$icons.edit"
-        :text="breakpointLinkText"
+        :text="buttonLinkText"
         :route="buttonLink"
       />
       <account-dropdown class="app-navbar__account-dropdown" />

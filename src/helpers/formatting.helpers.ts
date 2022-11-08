@@ -20,6 +20,14 @@ export function formatFiatAsset(amount: BnLike, currency = '') {
   return _formatMoney(formattedAmount, currency)
 }
 
+export function formatFiatAssetFromWei(amount: BnLike, currency = '') {
+  const formattedAmount = new BN(amount).fromWei().format({
+    decimals: 2,
+  })
+
+  return _formatMoney(formattedAmount, currency)
+}
+
 export function formatNumber(amount: BnLike) {
   const formattedAmount = new BN(amount).format({
     decimals: 2,

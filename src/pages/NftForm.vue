@@ -65,11 +65,6 @@ const submit = async () => {
   disableForm()
   try {
     const weiPrice = new BN(form.price).toWei().toString()
-    const newTokenAddress = await tokenFactory.deployTokenContract(
-      form.name,
-      form.symbol,
-      weiPrice,
-    )
 
     const book = new StoreDocument({
       name: form.book?.name || '',
@@ -83,11 +78,11 @@ const submit = async () => {
     })
     await Promise.all([book.uploadSelf(), banner.uploadSelf()])
 
-    await createBook({
-      name: form.name,
+    const bookSignature = await createBook({
+      tokenName: form.name,
+      tokenSymbol: form.symbol,
       description: form.description,
-      contractAddress: newTokenAddress,
-      price: form.price,
+      price: weiPrice,
       bookKey: book._key || '',
       bannerKey: banner._key || '',
       bookName: book._name || '',
@@ -95,6 +90,16 @@ const submit = async () => {
       bookType: book._mimeType || '',
       bannerType: banner._mimeType || '',
     })
+
+    await tokenFactory.deployTokenContract(
+      bookSignature.token_id,
+      form.name,
+      form.symbol,
+      weiPrice,
+      bookSignature.signature.r,
+      bookSignature.signature.s,
+      bookSignature.signature.v,
+    )
 
     Bus.success(t('nft-form.success-msg'))
     router.push({ name: ROUTE_NAMES.nfts })

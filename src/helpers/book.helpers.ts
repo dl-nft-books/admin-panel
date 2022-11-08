@@ -1,10 +1,11 @@
 import { api } from '@/api'
 import { BookResponse } from '@/types'
+import { BOOK_DEPLOY_STATUSES } from '@/enums'
 
 export async function createBook(opts: {
-  name: string
+  tokenName: string
+  tokenSymbol: string
   description: string
-  contractAddress: string
   price: string
   bookKey: string
   bannerKey: string
@@ -13,16 +14,23 @@ export async function createBook(opts: {
   bookType: string
   bannerType: string
 }) {
-  const response = await api.post('/integrations/books', {
+  const { data } = await api.post<{
+    token_id: string
+    book_id: string
+    signature: {
+      r: string
+      s: string
+      v: number
+    }
+  }>('/integrations/books', {
     data: {
       type: 'books',
       attributes: {
-        title: opts.name,
+        title: opts.tokenName,
         description: opts.description,
+        token_name: opts.tokenName,
+        token_symbol: opts.tokenSymbol,
         price: opts.price,
-        contract_address: opts.contractAddress,
-        contract_name: opts.name,
-        contract_version: '1',
         banner: {
           type: 'banners',
           attributes: {
@@ -43,11 +51,19 @@ export async function createBook(opts: {
     },
   })
 
-  return response
+  return data
 }
 
-export async function getBooks() {
-  const { data } = await api.get<BookResponse[]>('/integrations/books')
+export async function getBooks(opts: {
+  deployStatus?: BOOK_DEPLOY_STATUSES[]
+}) {
+  const { data } = await api.get<BookResponse[]>('/integrations/books', {
+    filter: {
+      ...(opts.deployStatus?.length
+        ? { deploy_status: opts.deployStatus.join(',') }
+        : {}),
+    },
+  })
 
   return data
 }

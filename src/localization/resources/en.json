@@ -72,17 +72,6 @@
   "web3-page": {
     "loading-error-msg": "Oops... Something went wrong"
   },
-  "erc20": {
-    "loading-error-msg": "Oops... Something went wrong",
-    "title": "ERC20",
-    "name-lbl": "Name",
-    "symbol-lbl": "Symbol",
-    "decimals-lbl": "Decimals",
-    "total-supply-lbl": "Total supply",
-    "balance-lbl": "Balance",
-    "transfer-lbl": "Transfer",
-    "mint-lbl": "Mint"
-  },
   "nft-form": {
     "create-title": "NFT Creation",
     "edit-title": "Edit NFT",
@@ -146,5 +135,11 @@
   "api-errors": {
     "session-expired-title": "Session expired",
     "session-expired-desc": "Please login again to continue using the application."
+  },
+  "kyc-requests": {
+    "no-data-message": "Currently no data"
+  },
+  "settings": {
+    "no-data-message": "Currently no data"
   }
 }

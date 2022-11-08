@@ -86,11 +86,17 @@ watch(asideElement, () => {
             <icon class="app-sidebar__link-icon" :name="$icons.photograph" />
             {{ $t('app-sidebar.nfts-link') }}
           </router-link>
-          <router-link class="app-sidebar__link" :to="{ name: $routes.uiKit }">
+          <router-link
+            class="app-sidebar__link"
+            :to="{ name: $routes.kycRequests }"
+          >
             <icon class="app-sidebar__link-icon" :name="$icons.database" />
             {{ $t('app-sidebar.kyc-requests-link') }}
           </router-link>
-          <router-link class="app-sidebar__link" :to="{ name: $routes.web3 }">
+          <router-link
+            class="app-sidebar__link"
+            :to="{ name: $routes.settings }"
+          >
             <icon class="app-sidebar__link-icon" :name="$icons.cog" />
             {{ $t('app-sidebar.settings-link') }}
           </router-link>

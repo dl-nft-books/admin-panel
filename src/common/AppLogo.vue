@@ -16,7 +16,7 @@ const props = withDefaults(
 <template>
   <router-link
     :class="`app-logo app-logo--${props.scheme}`"
-    :to="{ name: $routes.uiKit }"
+    :to="{ name: $routes.nfts }"
   >
     <icon class="app-logo__book-icon" :name="$icons.appLogo" />
   </router-link>

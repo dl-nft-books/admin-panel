@@ -96,6 +96,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.collapse__head {
+  background: var(--background-tertiary);
+  padding-top: toRem(26);
+  border-radius: toRem(6);
+}
+
 .collapse__body {
   overflow: hidden;
 }

@@ -103,7 +103,6 @@ $custom-breakpoint: 655px;
 .sale-history-item {
   border: toRem(1) solid var(--border-primary-dark);
   border-radius: toRem(6);
-  padding-top: toRem(26);
 }
 
 .sale-history-item__head {

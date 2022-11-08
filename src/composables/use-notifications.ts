@@ -9,7 +9,7 @@ import { ICON_NAMES } from '@/enums'
 
 export const useNotifications = (): void => {
   const toast = useToast()
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   Bus.on(Bus.eventList.success, payload => showToast(TYPE.SUCCESS, payload))
   Bus.on(Bus.eventList.warning, payload => showToast(TYPE.WARNING, payload))

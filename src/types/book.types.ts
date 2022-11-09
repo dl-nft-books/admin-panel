@@ -1,16 +1,17 @@
 export type BookSaleHistory = {
   id: number | string
-  purchaseDate?: string
-  price: {
-    amount: number
-    assetCode: string
+  type: string
+  payer_address: string
+  amount: string
+  price: string
+  purchase_timestamp: string
+  book_url: string
+  erc20_data: {
+    address: string
+    symbol: string
+    name: string
+    decimals: number
   }
-  token?: {
-    amount: string
-    assetCode: string
-  }
-  bookLink: string
-  buyerAddress: string
 }
 
 export interface BookFileResponse {

@@ -3,7 +3,6 @@ import { Loader, ErrorMessage } from '@/common'
 import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
 
 import { ErrorHandler, getBookById } from '@/helpers'
-import { BookSaleHistory } from '@/types'
 import { ref } from 'vue'
 import { BookRecord } from '@/records'
 
@@ -15,37 +14,16 @@ const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 
 const book = ref<BookRecord | undefined>()
-const history = ref<BookSaleHistory[]>([])
 
 const init = async () => {
   try {
     const bookData = await getBookById(props.id)
     book.value = new BookRecord(bookData)
-    await loadHistory()
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
   }
   isLoaded.value = true
-}
-
-const loadHistory = async () => {
-  history.value = [
-    {
-      id: 1,
-      purchaseDate: '2010-04-02T14:12:07',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      token: {
-        amount: '0,0056',
-        assetCode: 'BTC',
-      },
-      bookLink: 'http://gateway.ipfs.io/ipfs/25135613/books',
-      buyerAddress: '0x383E0c79540569a0F70d48c6cA31D0aF09B3B626',
-    },
-  ] as BookSaleHistory[]
 }
 
 init()
@@ -73,7 +51,7 @@ init()
             <nft-details :book="book" />
           </div>
         </div>
-        <sale-history :history="history" />
+        <sale-history :book-id="book.id" />
       </template>
     </template>
     <template v-else>

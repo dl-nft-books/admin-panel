@@ -1,5 +1,5 @@
 import { api } from '@/api'
-import { BookResponse } from '@/types'
+import { BookResponse, BookSaleHistory } from '@/types'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
 
 export async function createBook(opts: {
@@ -70,6 +70,19 @@ export async function getBooks(opts: {
 
 export async function getBookById(id: number | string) {
   const { data } = await api.get<BookResponse>(`/integrations/books/${id}`)
+
+  return data
+}
+
+export async function getSaleHistory(opts: { bookId: number | string }) {
+  const { data } = await api.get<BookSaleHistory[]>(
+    '/integrations/token-tracker/payments',
+    {
+      filter: {
+        book_id: opts.bookId,
+      },
+    },
+  )
 
   return data
 }

@@ -3,7 +3,7 @@ import { BookSaleHistory } from '@/types'
 import { Collapse, AppButton } from '@/common'
 import { cropAddress } from '@/helpers'
 import { formatDMY } from '@/helpers'
-import { formatFiatAsset } from '@/helpers'
+import { formatFiatAssetFromWei } from '@/helpers'
 
 defineProps<{ historyItem: BookSaleHistory }>()
 </script>
@@ -17,7 +17,7 @@ defineProps<{ historyItem: BookSaleHistory }>()
             {{ $t('sale-history-item.buyer-address-lbl') }}
           </p>
           <p class="sale-history-item__value">
-            {{ cropAddress(historyItem.buyerAddress, 10) }}
+            {{ cropAddress(historyItem.payer_address, 10) }}
           </p>
         </div>
         <div class="sale-history-item__head-col">
@@ -25,7 +25,7 @@ defineProps<{ historyItem: BookSaleHistory }>()
             {{ $t('sale-history-item.purchase-date-lbl') }}
           </p>
           <p class="sale-history-item__value">
-            {{ formatDMY(historyItem.purchaseDate) }}
+            {{ formatDMY(historyItem.purchase_timestamp) }}
           </p>
         </div>
 
@@ -34,12 +34,7 @@ defineProps<{ historyItem: BookSaleHistory }>()
             {{ $t('sale-history-item.price-lbl') }}
           </p>
           <p class="sale-history-item__value">
-            {{
-              formatFiatAsset(
-                historyItem.price.amount,
-                historyItem.price.assetCode,
-              )
-            }}
+            {{ formatFiatAssetFromWei(historyItem.minted_token_price, 'USD') }}
           </p>
         </div>
         <div class="sale-history-item__header-action">
@@ -62,32 +57,32 @@ defineProps<{ historyItem: BookSaleHistory }>()
         {{ $t('sale-history-item.buyer-address-lbl') }}
       </p>
       <p class="sale-history-item__value sale-history-item__value--overflow">
-        {{ historyItem.buyerAddress }}
+        {{ historyItem.payer_address }}
       </p>
 
       <p class="sale-history-item__label">
         {{ $t('sale-history-item.token-lbl') }}
       </p>
       <p class="sale-history-item__value">
-        {{ historyItem.token?.assetCode }}
+        {{ historyItem.erc20_data.symbol }}
       </p>
 
       <p class="sale-history-item__label">
         {{ $t('sale-history-item.token-amount-lbl') }}
       </p>
       <p class="sale-history-item__value">
-        {{ historyItem.token?.amount }}
+        {{ historyItem.amount }}
       </p>
       <p class="sale-history-item__label">
         {{ $t('sale-history-item.book-link-lbl') }}
       </p>
       <a
         class="sale-history-item__value sale-history-item__value--overflow"
-        :href="historyItem.bookLink"
+        :href="historyItem.book_url"
         target="_blank"
         rel="noopener"
       >
-        {{ historyItem.bookLink }}
+        {{ historyItem.book_url }}
       </a>
     </div>
   </collapse>

@@ -74,7 +74,6 @@ Lint and Test:
   image:
     name: "registry.gitlab.com/tokend/devops/docker-containers:front14-a7d73669fd1fa97a461226c292357bc33d478070"
     entrypoint: [""]
-  <<: *before_script_templ
   script:
     - yarn install
     - yarn test

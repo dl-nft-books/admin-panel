@@ -34,7 +34,7 @@ defineProps<{ historyItem: BookSaleHistory }>()
             {{ $t('sale-history-item.price-lbl') }}
           </p>
           <p class="sale-history-item__value">
-            {{ formatFiatAssetFromWei(historyItem.price, 'USD') }}
+            {{ formatFiatAssetFromWei(historyItem.minted_token_price, 'USD') }}
           </p>
         </div>
         <div class="sale-history-item__header-action">

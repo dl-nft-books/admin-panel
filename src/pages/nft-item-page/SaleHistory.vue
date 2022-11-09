@@ -60,4 +60,9 @@ init()
 .sale-history__header {
   margin-bottom: toRem(20);
 }
+
+.sale-history__list {
+  display: grid;
+  grid-gap: toRem(16);
+}
 </style>

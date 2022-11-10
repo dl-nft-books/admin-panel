@@ -104,7 +104,7 @@ const submit = async () => {
     Bus.success(t('nft-form.success-msg'))
     router.push({ name: ROUTE_NAMES.nfts })
   } catch (e) {
-    ErrorHandler.process(e)
+    ErrorHandler.processWithoutFeedback(e)
   }
   enableForm()
 }

@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n'
 import { ErrorHandler } from '@/helpers/error-handler'
 import { formatBytes } from '@/helpers'
 
-type FileExtension = 'jpg' | 'png' | 'pdf'
+type FileExtension = 'jpg' | 'png' | 'pdf' | 'jpeg'
 
 const props = withDefaults(
   defineProps<{

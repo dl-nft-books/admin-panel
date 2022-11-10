@@ -2,7 +2,7 @@
 import { AppButton } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
-import { ErrorHandler, getAuthNonce, sleep, Bus } from '@/helpers'
+import { ErrorHandler, getAuthNonce, sleep } from '@/helpers'
 
 import { useRouter } from 'vue-router'
 import { ROUTE_NAMES } from '@/enums'
@@ -28,8 +28,7 @@ const submit = async () => {
       router.push({ name: ROUTE_NAMES.nfts })
     }
   } catch (error) {
-    Bus.error('login-form.login-error')
-    ErrorHandler.processWithoutFeedback(error)
+    ErrorHandler.process(error)
   }
 }
 </script>

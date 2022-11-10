@@ -56,8 +56,7 @@
     "subtitle": "To log in, please connect to your\n MetaMask wallet"
   },
   "login-form": {
-    "submit-btn": "Connect Metamask",
-    "login-error": "Access not allowed. Try again."
+    "submit-btn": "Connect Metamask"
   },
   "ui-kit-page": {
     "button": "Button",

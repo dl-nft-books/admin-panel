@@ -3,7 +3,7 @@ import { BookSaleHistory } from '@/types'
 import { Collapse, AppButton } from '@/common'
 import { cropAddress } from '@/helpers'
 import { formatDMY } from '@/helpers'
-import { formatFiatAssetFromWei } from '@/helpers'
+import { formatFiatAssetFromWei, formatAssetFromWei } from '@/helpers'
 
 defineProps<{ historyItem: BookSaleHistory }>()
 </script>
@@ -71,7 +71,12 @@ defineProps<{ historyItem: BookSaleHistory }>()
         {{ $t('sale-history-item.token-amount-lbl') }}
       </p>
       <p class="sale-history-item__value">
-        {{ historyItem.amount }}
+        {{
+          formatAssetFromWei(
+            historyItem.amount,
+            historyItem.erc20_data.decimals,
+          )
+        }}
       </p>
       <p class="sale-history-item__label">
         {{ $t('sale-history-item.book-link-lbl') }}

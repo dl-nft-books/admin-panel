@@ -232,4 +232,5 @@ export enum ICON_NAMES {
   appLogo = 'app-logo',
   metamask = 'metamask',
   edit = 'edit',
+  account = 'account',
 }

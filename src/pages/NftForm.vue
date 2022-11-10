@@ -123,7 +123,7 @@ const submit = async () => {
         <file-field
           class="nft-form__upload-field"
           v-model="form.photo"
-          :file-extensions="['jpg', 'png']"
+          :file-extensions="['jpg', 'png', 'jpeg']"
           :label="$t('nft-form.file-field-image-title')"
           :note="$t('nft-form.file-field-image-description')"
           :error-message="getFieldErrorMessage('photo')"

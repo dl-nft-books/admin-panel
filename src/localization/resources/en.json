@@ -88,7 +88,7 @@
     "cancel-button": "cancel",
     "create-button": "create",
     "file-field-image-title": "Upload Photo*",
-    "file-field-image-description": "JPG, PNG less than 2 mb",
+    "file-field-image-description": "JPG, PNG, JPEG less than 2 mb",
     "file-field-pdf-title": "Upload Main File*",
     "file-field-pdf-description": "PDF less than 500 mb",
     "success-msg": "Congratulations. A new book has been created."
@@ -141,5 +141,8 @@
   },
   "settings": {
     "no-data-message": "Currently no data"
+  },
+  "nft-item-page": {
+    "loading-error-msg": "Error while loading."
   }
 }

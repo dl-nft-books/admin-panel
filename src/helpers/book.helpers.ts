@@ -58,6 +58,9 @@ export async function getBooks(opts: {
   deployStatus?: BOOK_DEPLOY_STATUSES[]
 }) {
   const { data } = await api.get<BookResponse[]>('/integrations/books', {
+    page: {
+      limit: 100, // FIXME: add pagination
+    },
     filter: {
       ...(opts.deployStatus?.length
         ? { deploy_status: opts.deployStatus.join(',') }
@@ -78,6 +81,9 @@ export async function getSaleHistory(opts: { bookId: number | string }) {
   const { data } = await api.get<BookSaleHistory[]>(
     '/integrations/token-tracker/payments',
     {
+      page: {
+        limit: 100, // FIXME: add pagination
+      },
       filter: {
         book_id: opts.bookId,
       },

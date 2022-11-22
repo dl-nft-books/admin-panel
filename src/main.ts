@@ -12,6 +12,7 @@ import { i18n } from '@/localization'
 import { config } from '@config'
 import { router } from '@/router'
 import { store } from '@/store'
+import MountedTeleport from '@/common/MountedTeleport.vue'
 
 const app = createApp({
   setup() {
@@ -37,4 +38,5 @@ app.config.errorHandler = function (err, vm, info) {
   log.error(`Error: ${err}; Info: ${info}`)
 }
 
+app.component('mounted-teleport', MountedTeleport)
 app.mount('#app')

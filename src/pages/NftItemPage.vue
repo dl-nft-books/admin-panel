@@ -1,10 +1,14 @@
 <script lang="ts" setup>
-import { Loader, ErrorMessage } from '@/common'
+import { Loader, ErrorMessage, AppButton } from '@/common'
 import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
 
 import { ErrorHandler, getBookById } from '@/helpers'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { BookRecord } from '@/records'
+import { WINDOW_BREAKPOINTS, ROUTE_NAMES } from '@/enums'
+import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 const props = defineProps<{
   id: string
@@ -14,6 +18,10 @@ const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 
 const book = ref<BookRecord | undefined>()
+
+const { width } = useWindowSize()
+const { t } = useI18n({ useScope: 'global' })
+const route = useRoute()
 
 const init = async () => {
   try {
@@ -25,6 +33,10 @@ const init = async () => {
   }
   isLoaded.value = true
 }
+
+const buttonLinkText = computed(() =>
+  width.value >= WINDOW_BREAKPOINTS.small ? t('nft-item-page.edit-button') : '',
+)
 
 init()
 </script>
@@ -57,6 +69,19 @@ init()
     <template v-else>
       <loader />
     </template>
+
+    <mounted-teleport to="#app-navbar__right-buttons">
+      <app-button
+        class="nft-item-page__link-button"
+        size="small"
+        :icon-left="$icons.edit"
+        :text="buttonLinkText"
+        :route="{
+          name: ROUTE_NAMES.nftItemEdit,
+          params: { id: route.params.id },
+        }"
+      />
+    </mounted-teleport>
   </div>
 </template>
 
@@ -116,5 +141,16 @@ init()
 
 .nft-item-page__tabs {
   margin-bottom: toRem(40);
+}
+
+.nft-item-page__link-button {
+  width: toRem(180);
+  order: -1;
+
+  @include respond-to(small) {
+    width: toRem(54);
+    height: toRem(54);
+    order: 1;
+  }
 }
 </style>

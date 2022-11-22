@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { InputField } from '@/fields'
 import {
   Icon,
@@ -12,12 +12,18 @@ import {
 
 import { ErrorHandler, getBooks } from '@/helpers'
 import { BookRecord } from '@/records'
-import { BOOK_DEPLOY_STATUSES } from '@/enums'
+import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS, ROUTE_NAMES } from '@/enums'
+import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
 const searchByString = ref('')
 const booksList = ref<BookRecord[]>([])
 const isLoaded = ref(false)
 const isErrored = ref(false)
+
+const { width } = useWindowSize()
+const { t } = useI18n({ useScope: 'global' })
+
 const loadNfts = async () => {
   isLoaded.value = false
   try {
@@ -35,6 +41,12 @@ const loadNfts = async () => {
 const search = () => {
   return true
 }
+
+const buttonLinkText = computed(() =>
+  width.value >= WINDOW_BREAKPOINTS.small
+    ? t('overview-nfts.create-button')
+    : '',
+)
 
 loadNfts()
 </script>
@@ -84,6 +96,16 @@ loadNfts()
       </template>
     </template>
     <loader v-else />
+
+    <mounted-teleport to="#app-navbar__right-buttons">
+      <app-button
+        class="overview-nfts__link-button"
+        size="small"
+        :icon-left="$icons.plus"
+        :text="buttonLinkText"
+        :route="{ name: ROUTE_NAMES.nftsCreate }"
+      />
+    </mounted-teleport>
   </div>
 </template>
 
@@ -145,6 +167,17 @@ $z-icon: 2;
     grid-template-columns: repeat(auto-fill, minmax(toRem(240), 1fr));
     max-width: 100%;
     gap: toRem(20);
+  }
+}
+
+.overview-nfts__link-button {
+  width: toRem(180);
+  order: -1;
+
+  @include respond-to(small) {
+    width: toRem(54);
+    height: toRem(54);
+    order: 1;
   }
 }
 </style>

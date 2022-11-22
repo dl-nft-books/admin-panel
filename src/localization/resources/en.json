@@ -99,7 +99,8 @@
     "view-all-button": "View all",
     "error-message": "Error while loading",
     "error-title": "Error",
-    "no-data-message": "No NFT Books available"
+    "no-data-message": "No NFT Books available",
+    "create-button": "CREATE NFT"
   },
   "nft-card": {
     "name-description": "Name",
@@ -128,10 +129,6 @@
     "token-amount-lbl": "Amount of Token",
     "book-link-lbl": "Link to the book"
   },
-  "app-navbar": {
-    "create-button": "CREATE NFT",
-    "edit-button": "EDIT NFT"
-  },
   "api-errors": {
     "session-expired-title": "Session expired",
     "session-expired-desc": "Please login again to continue using the application."
@@ -143,6 +140,7 @@
     "no-data-message": "Currently no data"
   },
   "nft-item-page": {
-    "loading-error-msg": "Error while loading."
+    "loading-error-msg": "Error while loading.",
+    "edit-button": "EDIT NFT"
   }
 }

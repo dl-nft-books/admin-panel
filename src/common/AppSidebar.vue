@@ -178,11 +178,9 @@ $z-local: 5;
   border-radius: toRem(6);
   padding: toRem(40) toRem(4) toRem(20);
   height: 100%;
-
-  @include respond-to(medium) {
-    position: fixed;
-    max-height: calc(100vh - #{toRem(40)});
-  }
+  position: fixed;
+  overflow: scroll;
+  max-height: calc(100vh - #{toRem(40)});
 
   @include respond-to(tablet) {
     position: unset;

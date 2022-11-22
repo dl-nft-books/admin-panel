@@ -17,6 +17,9 @@ for further information about branching and tagging conventions.
 - App colors
 - Auth flow
 
+#### Fixed
+- A bug with a scrollable sidebar
+
 ## [1.0.0-rc.0] - 2022-10-15
 #### Under the hood changes
 - Merged from https://gitlab.com/distributed_lab/frontend/vue-template/-/commit/905e060b66b4fbdfa4bf102ac6c27e8edd11dbc2

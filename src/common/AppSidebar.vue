@@ -178,11 +178,9 @@ $z-local: 5;
   border-radius: toRem(6);
   padding: toRem(40) toRem(4) toRem(20);
   height: 100%;
-
-  @include respond-to(medium) {
-    position: fixed;
-    max-height: calc(100vh - #{toRem(40)});
-  }
+  position: fixed;
+  overflow: scroll;
+  max-height: calc(100vh - #{toRem(40)});
 
   @include respond-to(tablet) {
     position: unset;
@@ -225,11 +223,18 @@ $z-local: 5;
   }
 }
 
+.app-sidebar__logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .app-sidebar__logo-subtitle {
   text-transform: uppercase;
   text-align: center;
   font-size: toRem(14);
-  line-height: 1.2;
+  line-height: 1.14;
+  color: var(--text-secondary-invert-main);
 
   @include respond-to(tablet) {
     font-size: toRem(10);

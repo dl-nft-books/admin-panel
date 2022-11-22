@@ -225,7 +225,7 @@ const submit = async () => {
 
 .nft-form__uploadings {
   display: grid;
-  grid-template-columns: repeat(2, minmax(toRem(100), toRem(510)));
+  grid-template-columns: repeat(2, minmax(toRem(100), 1fr));
   grid-column-gap: toRem(20);
   margin-bottom: toRem(35);
   justify-content: space-evenly;

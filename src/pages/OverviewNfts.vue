@@ -12,7 +12,7 @@ import {
 
 import { ErrorHandler, getBooks } from '@/helpers'
 import { BookRecord } from '@/records'
-import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS, ROUTE_NAMES } from '@/enums'
+import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 
@@ -22,7 +22,7 @@ const isLoaded = ref(false)
 const isErrored = ref(false)
 
 const { width } = useWindowSize()
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const loadNfts = async () => {
   isLoaded.value = false
@@ -103,7 +103,7 @@ loadNfts()
         size="small"
         :icon-left="$icons.plus"
         :text="buttonLinkText"
-        :route="{ name: ROUTE_NAMES.nftsCreate }"
+        :route="{ name: $routes.nftsCreate }"
       />
     </mounted-teleport>
   </div>

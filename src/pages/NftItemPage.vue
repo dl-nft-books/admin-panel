@@ -5,10 +5,9 @@ import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
 import { ErrorHandler, getBookById } from '@/helpers'
 import { ref, computed } from 'vue'
 import { BookRecord } from '@/records'
-import { WINDOW_BREAKPOINTS, ROUTE_NAMES } from '@/enums'
+import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
 
 const props = defineProps<{
   id: string
@@ -20,8 +19,7 @@ const isLoadFailed = ref(false)
 const book = ref<BookRecord | undefined>()
 
 const { width } = useWindowSize()
-const { t } = useI18n({ useScope: 'global' })
-const route = useRoute()
+const { t } = useI18n()
 
 const init = async () => {
   try {
@@ -77,8 +75,8 @@ init()
         :icon-left="$icons.edit"
         :text="buttonLinkText"
         :route="{
-          name: ROUTE_NAMES.nftItemEdit,
-          params: { id: route.params.id },
+          name: $routes.nftItemEdit,
+          params: { id: props.id },
         }"
       />
     </mounted-teleport>

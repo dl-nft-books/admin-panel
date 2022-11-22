@@ -20,6 +20,7 @@ for further information about branching and tagging conventions.
 #### Fixed
 - A bug with a scrollable sidebar
 - A bug with logo
+- A bug with different width in create book form
 
 ## [1.0.0-rc.0] - 2022-10-15
 #### Under the hood changes

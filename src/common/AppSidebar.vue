@@ -223,11 +223,18 @@ $z-local: 5;
   }
 }
 
+.app-sidebar__logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .app-sidebar__logo-subtitle {
   text-transform: uppercase;
   text-align: center;
   font-size: toRem(14);
-  line-height: 1.2;
+  line-height: 1.14;
+  color: var(--text-secondary-invert-main);
 
   @include respond-to(tablet) {
     font-size: toRem(10);

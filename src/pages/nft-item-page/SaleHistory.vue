@@ -16,7 +16,9 @@ const history = ref<Payment[]>([])
 
 const init = async () => {
   try {
-    const { data } = await getPayments({ bookId: props.bookId })
+    const { data } = await getPayments({
+      bookIds: [props.bookId],
+    })
     history.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)

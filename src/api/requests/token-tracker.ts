@@ -3,7 +3,9 @@ import { Payment, PageOrder } from '@/types'
 import { config } from '@/config'
 
 export function getPayments(opts: {
-  bookId: number | string
+  bookIds?: (number | string)[]
+  ids?: (number | string)[]
+  tokenAddresses?: string[]
   pageLimit?: number
   pageOrder?: PageOrder
 }) {
@@ -13,7 +15,11 @@ export function getPayments(opts: {
       order: opts.pageOrder || 'desc',
     },
     filter: {
-      book_id: opts.bookId,
+      ...(opts?.bookIds?.length ? { book_id: opts.bookIds.join(',') } : {}),
+      ...(opts?.ids?.length ? { id: opts.ids.join(',') } : {}),
+      ...(opts?.tokenAddresses?.length
+        ? { token_address: opts.tokenAddresses.join(',') }
+        : {}),
     },
   })
 }

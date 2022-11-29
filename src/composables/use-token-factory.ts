@@ -1,14 +1,16 @@
 import { ref, watch } from 'vue'
-import { TokenFactory, TokenFactory__factory } from '@/types'
-import { ethers } from 'ethers'
-
 import {
+  TokenFactory,
+  TokenFactory__factory,
+  EthProviderRpcError,
   DesignatedProvider,
   ChainId,
   TransactionResponse,
   TxRequestBody,
 } from '@/types'
+import { ethers } from 'ethers'
 import { PROVIDERS } from '@/enums'
+import { handleEthError } from '@/helpers'
 
 export interface UseUnrefProvider {
   currentProvider: ethers.providers.Web3Provider | undefined
@@ -32,7 +34,7 @@ export interface UseUnrefProvider {
   getHashFromTxResponse: (txResponse: TransactionResponse) => string
   getTxUrl: (explorerUrl: string, txHash: string) => string
   getAddressUrl: (explorerUrl: string, address: string) => string
-  signMessage: (message: string) => Promise<string>
+  signMessage: (message: string) => Promise<string | undefined>
 }
 
 export const useTokenFactory = (
@@ -79,19 +81,23 @@ export const useTokenFactory = (
     s: string,
     v: number,
   ) => {
-    const contractTransaction = await _instance_rw.value?.deployTokenContract(
-      +tokenId,
-      name,
-      symbol,
-      amount,
-      r,
-      s,
-      v,
-    )
+    try {
+      const contractTransaction = await _instance_rw.value?.deployTokenContract(
+        +tokenId,
+        name,
+        symbol,
+        amount,
+        r,
+        s,
+        v,
+      )
 
-    const txReceipt = await contractTransaction?.wait()
+      const txReceipt = await contractTransaction?.wait()
 
-    return txReceipt ? getNewTokenContractAddress(txReceipt) : ''
+      return txReceipt ? getNewTokenContractAddress(txReceipt) : ''
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
   }
 
   const getNewTokenContractAddress = (txReceipt: ethers.ContractReceipt) => {

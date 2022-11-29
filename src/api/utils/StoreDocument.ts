@@ -1,4 +1,4 @@
-import { api } from '@/api'
+import { getDocument, uploadDocument } from '@/api'
 
 export class StoreDocument {
   _file?: File
@@ -22,7 +22,6 @@ export class StoreDocument {
   }
 
   async uploadSelf() {
-    const formData = new FormData()
     const arrayBuffer = await this._file?.arrayBuffer()
 
     if (!arrayBuffer) throw new Error('No array buffer')
@@ -30,23 +29,18 @@ export class StoreDocument {
     const blob = new Blob([new Uint8Array(arrayBuffer)], {
       type: this._mimeType,
     })
+
+    const formData = new FormData()
     formData.append('Document', blob)
-    const { data } = await api.post<{
-      id: string
-      type: string
-      key: string
-    }>('/integrations/documents', formData)
+    const { data } = await uploadDocument(formData)
 
     this._key = data.key
   }
 
   async load() {
-    const { data } = await api.get<{
-      id: string
-      type: string
-      url: string
-    }>(`/integrations/documents/${this._key}`)
+    if (!this._key) throw new Error('No file key')
 
+    const { data } = await getDocument(this._key)
     this._url = data.url
   }
 

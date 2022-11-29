@@ -26,7 +26,7 @@ const isLoadFailed = ref(false)
 const { width } = useWindowSize()
 const { t } = useI18n()
 
-const { loadNextPage, isLoading, isCollectionFetched } = usePaginate(
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   loadList,
   setList,
   concatList,
@@ -106,7 +106,7 @@ const buttonLinkText = computed(() =>
       </template>
 
       <app-button
-        v-if="!isCollectionFetched && !isLoading"
+        v-if="isLoadMoreBtnShown"
         class="overview-nfts__load-more-btn"
         size="small"
         scheme="flat"

@@ -14,7 +14,7 @@ const isLoadFailed = ref(false)
 
 const history = ref<Payment[]>([])
 
-const { loadNextPage, isLoading, isCollectionFetched } = usePaginate(
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   loadList,
   setList,
   concatList,
@@ -65,7 +65,7 @@ function onError(e: Error) {
       </template>
 
       <app-button
-        v-if="!isCollectionFetched && !isLoading"
+        v-if="isLoadMoreBtnShown"
         class="sale-history__load-more-btn"
         size="small"
         scheme="flat"

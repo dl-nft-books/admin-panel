@@ -1,7 +1,7 @@
 import { JsonApiResponse } from '@/api/json-api/response'
 import { JsonApiLinkFields } from '@/api/json-api/types'
 import { config } from '@config'
-import { onMounted, Ref, ref, watch } from 'vue'
+import { onMounted, Ref, ref, watch, computed, ComputedRef } from 'vue'
 import { ErrorHandler } from '@/helpers'
 
 export const usePaginate = <T>(
@@ -18,9 +18,14 @@ export const usePaginate = <T>(
   loadNextPage(): Promise<void>
   isLoading: Ref<boolean>
   isCollectionFetched: Ref<boolean>
+  isLoadMoreBtnShown: ComputedRef<boolean>
 } => {
   const isLoading = ref(false)
   const isCollectionFetched = ref(false)
+
+  const isLoadMoreBtnShown = computed(
+    () => !isCollectionFetched.value && !isLoading.value,
+  )
 
   let nextPageLoader: () => Promise<JsonApiResponse<T>>
 
@@ -73,5 +78,11 @@ export const usePaginate = <T>(
     )
   })
 
-  return { loadFirstPage, loadNextPage, isLoading, isCollectionFetched }
+  return {
+    loadFirstPage,
+    loadNextPage,
+    isLoading,
+    isCollectionFetched,
+    isLoadMoreBtnShown,
+  }
 }

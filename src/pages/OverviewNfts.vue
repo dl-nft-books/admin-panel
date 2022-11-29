@@ -16,27 +16,42 @@ import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { getBooks } from '@/api'
+import { usePaginate } from '@/composables'
+import { Book } from '@/types'
 
 const searchByString = ref('')
 const booksList = ref<BookRecord[]>([])
-const isLoaded = ref(false)
-const isErrored = ref(false)
+const isLoadFailed = ref(false)
 
 const { width } = useWindowSize()
 const { t } = useI18n()
 
-const loadNfts = async () => {
-  isLoaded.value = false
-  try {
-    const { data } = await getBooks({
-      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-    })
-    booksList.value = data.map(book => new BookRecord(book))
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-    isErrored.value = true
-  }
-  isLoaded.value = true
+const { loadNextPage, isLoading, isCollectionFetched } = usePaginate(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
+
+function loadList() {
+  return getBooks({
+    deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+  })
+}
+
+function setList(chunk: Book[]) {
+  booksList.value = chunk.map(book => new BookRecord(book)) ?? []
+}
+
+function concatList(chunk: Book[]) {
+  booksList.value = booksList.value.concat(
+    chunk.map(book => new BookRecord(book)) ?? [],
+  )
+}
+
+function onError(e: Error) {
+  ErrorHandler.processWithoutFeedback(e)
+  isLoadFailed.value = true
 }
 
 const search = () => {
@@ -48,55 +63,60 @@ const buttonLinkText = computed(() =>
     ? t('overview-nfts.create-button')
     : '',
 )
-
-loadNfts()
 </script>
 
 <template>
   <div class="overview-nfts">
-    <template v-if="isLoaded">
-      <template v-if="isErrored">
-        <error-message
-          :message="$t('overview-nfts.error-message')"
-          :title="$t('overview-nfts.error-title')"
+    <div class="overview-nfts__header">
+      <h2 class="overview-nfts__title">
+        {{ $t('overview-nfts.title') }}
+      </h2>
+      <div class="overview-nfts__search-wrapper">
+        <app-button
+          size="default"
+          scheme="default"
+          class="overview-nfts__search-button"
+          @click="search"
+        >
+          <icon class="overview-nfts__search-icon" :name="$icons.search" />
+        </app-button>
+        <input-field
+          class="overview-nfts__search"
+          v-model="searchByString"
+          :placeholder="$t('overview-nfts.search-placeholder')"
+          iconned
         />
-      </template>
-      <template v-else>
-        <template v-if="booksList.length">
-          <div class="overview-nfts__header">
-            <h2 class="overview-nfts__title">
-              {{ $t('overview-nfts.title') }}
-            </h2>
-            <div class="overview-nfts__search-wrapper">
-              <app-button
-                size="default"
-                scheme="default"
-                class="overview-nfts__search-button"
-                @click="search"
-              >
-                <icon
-                  class="overview-nfts__search-icon"
-                  :name="$icons.search"
-                />
-              </app-button>
-              <input-field
-                class="overview-nfts__search"
-                v-model="searchByString"
-                :placeholder="$t('overview-nfts.search-placeholder')"
-                iconned
-              />
-            </div>
-          </div>
-          <div class="overview-nfts__content">
-            <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
-          </div>
-        </template>
-        <template v-else>
-          <no-data-message :message="$t('overview-nfts.no-data-message')" />
-        </template>
-      </template>
+      </div>
+    </div>
+
+    <template v-if="isLoadFailed">
+      <error-message
+        :message="$t('overview-nfts.error-message')"
+        :title="$t('overview-nfts.error-title')"
+      />
     </template>
-    <loader v-else />
+    <template v-else-if="booksList.length || isLoading">
+      <template v-if="booksList.length">
+        <div class="overview-nfts__content">
+          <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
+        </div>
+      </template>
+      <template v-if="isLoading">
+        <loader />
+      </template>
+
+      <app-button
+        v-if="!isCollectionFetched && !isLoading"
+        class="overview-nfts__load-more-btn"
+        size="small"
+        scheme="flat"
+        :text="$t('overview-nfts.load-more-btn')"
+        @click="loadNextPage"
+      />
+    </template>
+    <template v-else>
+      <no-data-message :message="$t('overview-nfts.no-data-message')" />
+    </template>
 
     <mounted-teleport to="#app-navbar__right-buttons">
       <app-button
@@ -180,5 +200,9 @@ $z-icon: 2;
     height: toRem(54);
     order: 1;
   }
+}
+
+.overview-nfts__load-more-btn {
+  margin: toRem(20) auto 0;
 }
 </style>

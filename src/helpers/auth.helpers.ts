@@ -1,20 +1,10 @@
-import { api } from '@/api'
+import { getNonce } from '@/api'
 import { useAuthStore } from '@/store'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
 
 export const getAuthNonce = async (message: string) => {
-  const { data } = await api.post<{ message: string }>(
-    '/integrations/nonce-auth-svc/nonce',
-    {
-      data: {
-        type: 'auth_nonce_request',
-        attributes: {
-          address: message,
-        },
-      },
-    },
-  )
+  const { data } = await getNonce(message)
 
   /**
    * we are using split('\n')... instead of just authNonce message

@@ -16,3 +16,4 @@ export const api = new JsonApiClient({
 })
 
 export * from './utils'
+export * from './requests'

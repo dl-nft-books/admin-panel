@@ -7,9 +7,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { useTokenFactory, useForm, useFormValidation } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { StoreDocument } from '@/api'
+import { StoreDocument, createBook } from '@/api'
 import { required, minValue } from '@/validators'
-import { ErrorHandler, Bus, createBook } from '@/helpers'
+import { ErrorHandler, Bus } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { useI18n } from 'vue-i18n'
 import { config } from '@/config'
@@ -78,7 +78,7 @@ const submit = async () => {
     })
     await Promise.all([book.uploadSelf(), banner.uploadSelf()])
 
-    const bookSignature = await createBook({
+    const { data: bookSignature } = await createBook({
       tokenName: form.name,
       tokenSymbol: form.symbol,
       description: form.description,

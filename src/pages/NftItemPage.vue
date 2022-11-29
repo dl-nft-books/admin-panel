@@ -2,12 +2,13 @@
 import { Loader, ErrorMessage, AppButton } from '@/common'
 import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
 
-import { ErrorHandler, getBookById } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { ref, computed } from 'vue'
 import { BookRecord } from '@/records'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+import { getBookById } from '@/api'
 
 const props = defineProps<{
   id: string
@@ -23,8 +24,8 @@ const { t } = useI18n()
 
 const init = async () => {
   try {
-    const bookData = await getBookById(props.id)
-    book.value = new BookRecord(bookData)
+    const { data } = await getBookById(props.id)
+    book.value = new BookRecord(data)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true

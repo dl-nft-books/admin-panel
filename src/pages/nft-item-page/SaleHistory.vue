@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { Loader, ErrorMessage, NoDataMessage } from '@/common'
 import { SaleHistoryItem } from '@/pages/nft-item-page'
-import { BookSaleHistory } from '@/types'
+import { Payment } from '@/types'
 
-import { ErrorHandler, getSaleHistory } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
+import { getPayments } from '@/api'
 import { ref } from 'vue'
 
 const props = defineProps<{ bookId: string | number }>()
@@ -11,11 +12,12 @@ const props = defineProps<{ bookId: string | number }>()
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 
-const history = ref<BookSaleHistory[]>([])
+const history = ref<Payment[]>([])
 
 const init = async () => {
   try {
-    history.value = await getSaleHistory({ bookId: props.bookId })
+    const { data } = await getPayments({ bookId: props.bookId })
+    history.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true

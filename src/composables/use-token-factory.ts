@@ -92,19 +92,12 @@ export const useTokenFactory = (
         v,
       )
 
-      const txReceipt = await contractTransaction?.wait()
+      await contractTransaction?.wait()
 
-      return txReceipt ? getNewTokenContractAddress(txReceipt) : ''
+      return contractTransaction
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
-  }
-
-  const getNewTokenContractAddress = (txReceipt: ethers.ContractReceipt) => {
-    const event = txReceipt.events?.find(
-      i => i.event === 'TokenContractDeployed', // FIXME
-    )
-    return event?.args?.length ? event.args[0] : ''
   }
 
   return {

@@ -130,9 +130,14 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     return getEthExplorerAddressUrl(explorerUrl, address)
   }
 
-  const signMessage = (message: string) => {
-    const signer = currentProvider.value.getSigner()
-    return signer.signMessage(message)
+  const signMessage = async (message: string) => {
+    try {
+      const signer = currentProvider.value.getSigner()
+      const msg = await signer.signMessage(message)
+      return msg
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
   }
 
   return {

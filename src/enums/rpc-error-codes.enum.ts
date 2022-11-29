@@ -6,6 +6,10 @@ export enum EIP1193 {
   chainDisconnected = 4901,
 }
 
+export enum EIP1193String {
+  userRejectedRequest = 'ACTION_REJECTED',
+}
+
 export enum EIP1474 {
   parseError = -32700,
   invalidRequest = -32600,

@@ -73,8 +73,6 @@
     "loading-error-msg": "Oops... Something went wrong"
   },
   "nft-form": {
-    "create-title": "NFT Creation",
-    "edit-title": "Edit NFT",
     "uploading-subtitle": "1. Uploading",
     "details-subtitle": "2. Add Details",
     "input-name-label": "Name*",
@@ -93,6 +91,13 @@
     "file-field-pdf-description": "PDF less than 500 mb",
     "success-msg": "Congratulations. A new book has been created.",
     "switch-chain-button": "Switch Chain"
+  },
+  "create-nft-page": {
+    "title": "NFT Creation"
+  },
+  "edit-nft-page": {
+    "title": "Edit NFT",
+    "error-msg": "Oops... Something went wrong"
   },
   "overview-nfts": {
     "title": "NFTs",

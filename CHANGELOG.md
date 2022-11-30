@@ -21,6 +21,7 @@ for further information about branching and tagging conventions.
 - A bug with a scrollable sidebar
 - A bug with logo
 - A bug with different width in create book form
+
 #### Under the hood changes
 - Merged from https://gitlab.com/distributed_lab/frontend/vue-template/-/commit/905e060b66b4fbdfa4bf102ac6c27e8edd11dbc2
 

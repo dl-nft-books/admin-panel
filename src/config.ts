@@ -10,6 +10,7 @@ export const config = {
   TOKEN_FACTORY_CONTRACT_ADDRESS: import.meta.env
     .VITE_TOKEN_FACTORY_CONTRACT_ADDRESS,
   DEFAULT_PAGE_LIMIT: 15,
+  CHAIN_ID: import.meta.env.VITE_CHAIN_ID,
 } as const
 
 Object.assign(config, _mapEnvCfg(import.meta.env))

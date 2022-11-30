@@ -31,6 +31,10 @@ const pageTitle = computed(() =>
   ROUTE_NAMES.nftItemEdit === route.name ? 'edit' : 'create',
 )
 
+const isValidChain = computed(
+  () => Number(provider.value.chainId) === Number(config.CHAIN_ID),
+)
+
 const form = reactive<{
   name: string
   price: string
@@ -189,13 +193,25 @@ const submit = async () => {
             :route="{ name: $routes.nfts }"
             :disabled="isFormDisabled"
           />
-          <app-button
-            type="submit"
-            size="small"
-            class="nft-form__button"
-            :text="$t('nft-form.create-button')"
-            :disabled="isFormDisabled"
-          />
+
+          <template v-if="isValidChain">
+            <app-button
+              type="submit"
+              size="small"
+              class="nft-form__button"
+              :text="$t('nft-form.create-button')"
+              :disabled="isFormDisabled"
+            />
+          </template>
+          <template v-else>
+            <app-button
+              type="button"
+              class="nft-form__button"
+              size="small"
+              :text="$t('nft-form.switch-chain-button')"
+              @click="provider.switchChain(config.CHAIN_ID)"
+            />
+          </template>
         </div>
       </div>
     </form>

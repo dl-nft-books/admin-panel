@@ -8,7 +8,7 @@
         <error-message :message="$t('edit-nft-page.error-msg')" />
       </template>
       <template v-else>
-        <nft-form />
+        <nft-form :book="book" />
       </template>
     </template>
     <template v-else>

@@ -75,6 +75,7 @@
   "nft-form": {
     "uploading-subtitle": "1. Uploading",
     "details-subtitle": "2. Add Details",
+    "update-details-subtitle": "2. Update Details",
     "input-name-label": "Name*",
     "input-price-label": "Price (USD)*",
     "input-symbol-label": "NFT symbol*",
@@ -85,11 +86,13 @@
     "textarea-description-placeholder": "Description*",
     "cancel-button": "cancel",
     "create-button": "create",
+    "edit-button": "edit",
     "file-field-image-title": "Upload Photo*",
     "file-field-image-description": "JPG, PNG, JPEG less than 2 mb",
     "file-field-pdf-title": "Upload Main File*",
     "file-field-pdf-description": "PDF less than 500 mb",
-    "success-msg": "Congratulations. A new book has been created.",
+    "create-success-msg": "Congratulations. A new book has been created.",
+    "edit-success-msg": "Congratulations. A book has been updated.",
     "switch-chain-button": "Switch Chain"
   },
   "create-nft-page": {

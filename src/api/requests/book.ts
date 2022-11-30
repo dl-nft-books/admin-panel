@@ -1,4 +1,4 @@
-import { api } from '@/api'
+import { api, StoreDocument } from '@/api'
 import { Book, PageOrder, CreateBookResponse } from '@/types'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
 import { config } from '@/config'
@@ -32,12 +32,8 @@ export function createBook(opts: {
   tokenSymbol: string
   description: string
   price: string
-  bookKey: string
-  bannerKey: string
-  bookName: string
-  bannerName: string
-  bookType: string
-  bannerType: string
+  banner: StoreDocument
+  book: StoreDocument
 }) {
   return api.post<CreateBookResponse>('/integrations/books', {
     data: {
@@ -51,19 +47,61 @@ export function createBook(opts: {
         banner: {
           type: 'banners',
           attributes: {
-            name: opts.bannerName,
-            mime_type: opts.bannerType,
-            key: opts.bannerKey,
+            name: opts.banner._name,
+            mime_type: opts.banner._mimeType,
+            key: opts.banner._key,
           },
         },
         file: {
           type: 'files',
           attributes: {
-            name: opts.bookName,
-            mime_type: opts.bookType,
-            key: opts.bookKey,
+            name: opts.book._name,
+            mime_type: opts.book._mimeType,
+            key: opts.book._key,
           },
         },
+      },
+    },
+  })
+}
+
+export function updateBook(opts: {
+  bookId: string
+  title?: string
+  description?: string
+  banner?: StoreDocument
+  book?: StoreDocument
+}) {
+  return api.patch(`/integrations/books/${opts.bookId}`, {
+    data: {
+      type: 'books',
+      attributes: {
+        ...(opts.title ? { title: opts.title } : {}),
+        ...(opts.description ? { description: opts.description } : {}),
+        ...(opts.banner
+          ? {
+              banner: {
+                type: 'banners',
+                attributes: {
+                  name: opts.banner?._name,
+                  mime_type: opts.banner?._mimeType,
+                  key: opts.banner?._key,
+                },
+              },
+            }
+          : {}),
+        ...(opts.book
+          ? {
+              file: {
+                type: 'files',
+                attributes: {
+                  name: opts.book?._name,
+                  mime_type: opts.book?._mimeType,
+                  key: opts.book?._key,
+                },
+              },
+            }
+          : {}),
       },
     },
   })

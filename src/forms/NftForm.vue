@@ -25,7 +25,7 @@
       />
     </div>
     <h3 class="nft-form__subtitle">
-      {{ $t('nft-form.details-subtitle') }}
+      {{ secondSubtitleText }}
     </h3>
     <div class="nft-form__details">
       <input-field
@@ -79,7 +79,7 @@
             type="submit"
             size="small"
             class="nft-form__button"
-            :text="$t('nft-form.create-button')"
+            :text="submitButtonText"
             :disabled="isFormDisabled"
           />
         </template>
@@ -103,18 +103,28 @@ import { computed, reactive } from 'vue'
 import { AppButton } from '@/common'
 import { FIELD_LENGTH, ROUTE_NAMES } from '@/enums'
 import { useRouter } from 'vue-router'
-import { useTokenFactory, useForm, useFormValidation } from '@/composables'
+import {
+  useTokenFactory,
+  useForm,
+  useFormValidation,
+  useNftBookToken,
+} from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { StoreDocument, createBook } from '@/api'
+import { StoreDocument, createBook, updateBook } from '@/api'
 import { required, minValue } from '@/validators'
 import { ErrorHandler, Bus } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { useI18n } from 'vue-i18n'
 import { config } from '@/config'
+import { BookRecord } from '@/records'
 
 const MIN_PRICE_VALUE = '0.01'
 const MAX_BOOK_SIZE = 500 // mb
+
+const props = defineProps<{
+  book?: BookRecord
+}>()
 
 const { t } = useI18n()
 const router = useRouter()
@@ -124,10 +134,40 @@ const tokenFactory = useTokenFactory(
   provider.value,
   config.TOKEN_FACTORY_CONTRACT_ADDRESS,
 )
+const bookNft = useNftBookToken(provider.value)
 
 const isValidChain = computed(
   () => Number(provider.value.chainId) === Number(config.CHAIN_ID),
 )
+const isUpdateNft = computed(() => Boolean(props.book))
+
+const submitButtonText = computed(() =>
+  isUpdateNft.value ? t('nft-form.edit-button') : t('nft-form.create-button'),
+)
+
+const secondSubtitleText = computed(() =>
+  isUpdateNft.value
+    ? t('nft-form.update-details-subtitle')
+    : t('nft-form.details-subtitle'),
+)
+
+const nftPrice = new BN(props.book?.price || 0).fromWei().toString()
+
+const isContractValuesUpdated = computed(() => {
+  return (
+    form.symbol !== props.book?.contractSymbol ||
+    form.price !== nftPrice ||
+    form.name !== props.book?.contractName
+  )
+})
+
+const isDescriptionUpdated = computed(() => {
+  return form.description !== props.book?.description
+})
+
+const isTitleUpdated = computed(() => {
+  return form.name !== props.book?.title
+})
 
 const form = reactive<{
   name: string
@@ -137,10 +177,10 @@ const form = reactive<{
   photo?: File
   book?: File
 }>({
-  name: '',
-  price: '',
-  description: '',
-  symbol: '',
+  name: props.book?.contractName || '',
+  price: isUpdateNft.value ? nftPrice : '',
+  description: props.book?.description || '',
+  symbol: props.book?.contractSymbol || '',
   photo: undefined,
   book: undefined,
 })
@@ -162,8 +202,6 @@ const submit = async () => {
   if (!isFormValid() || !provider.value.selectedAddress) return
   disableForm()
   try {
-    const weiPrice = new BN(form.price).toWei().toString()
-
     const book = new StoreDocument({
       name: form.book?.name || '',
       file: form.book,
@@ -176,35 +214,57 @@ const submit = async () => {
     })
     await Promise.all([book.uploadSelf(), banner.uploadSelf()])
 
-    const { data: bookSignature } = await createBook({
-      tokenName: form.name,
-      tokenSymbol: form.symbol,
-      description: form.description,
-      price: weiPrice,
-      bookKey: book._key || '',
-      bannerKey: banner._key || '',
-      bookName: book._name || '',
-      bannerName: banner._name || '',
-      bookType: book._mimeType || '',
-      bannerType: banner._mimeType || '',
-    })
-
-    await tokenFactory.deployTokenContract(
-      bookSignature.token_id,
-      form.name,
-      form.symbol,
-      weiPrice,
-      bookSignature.signature.r,
-      bookSignature.signature.s,
-      bookSignature.signature.v,
-    )
-
-    Bus.success(t('nft-form.success-msg'))
+    if (isUpdateNft.value) {
+      await updateNftBook(book, banner)
+    } else {
+      await createNftBook(book, banner)
+    }
     router.push({ name: ROUTE_NAMES.nfts })
   } catch (e) {
     ErrorHandler.process(e)
   }
   enableForm()
+}
+
+const updateNftBook = async (book: StoreDocument, banner: StoreDocument) => {
+  if (isContractValuesUpdated.value) {
+    await bookNft.updateTokenContractParams(form.price, form.name, form.symbol)
+  }
+  if (isDescriptionUpdated.value || isTitleUpdated.value) {
+    await updateBook({
+      bookId: props.book?.id!,
+      ...(isDescriptionUpdated.value ? { description: form.description } : {}),
+      ...(isTitleUpdated.value ? { title: form.name } : {}),
+      ...(book._key ? { book } : {}),
+      ...(banner._key ? { banner } : {}),
+    })
+  }
+  Bus.success(t('nft-form.edit-success-msg'))
+}
+
+const createNftBook = async (book: StoreDocument, banner: StoreDocument) => {
+  const weiPrice = new BN(form.price).toWei().toString()
+
+  const { data: bookSignature } = await createBook({
+    tokenName: form.name,
+    tokenSymbol: form.symbol,
+    description: form.description,
+    price: weiPrice,
+    book: book,
+    banner: banner,
+  })
+
+  await tokenFactory.deployTokenContract(
+    bookSignature.token_id,
+    form.name,
+    form.symbol,
+    weiPrice,
+    bookSignature.signature.r,
+    bookSignature.signature.s,
+    bookSignature.signature.v,
+  )
+
+  Bus.success(t('nft-form.create-success-msg'))
 }
 </script>
 

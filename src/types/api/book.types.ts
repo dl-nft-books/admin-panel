@@ -15,6 +15,7 @@ export type Book = JsonApiRecordBase<'books'> & {
   contract_name: string
   contract_version: string
   created_at: string
+  contract_symbol: string
   description: string
   file: BookFile
   price: string

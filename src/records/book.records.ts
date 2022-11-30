@@ -15,6 +15,7 @@ export class BookRecord {
   fileName: string
   fileUrl: string
   bannerUrl: string
+  contractSymbol: string
 
   constructor(record: Book) {
     this.contractAddress = record.contract_address
@@ -22,6 +23,7 @@ export class BookRecord {
     this.contractVersion = record.contract_version
     this.createdAt = record.created_at
     this.description = record.description
+    this.contractSymbol = record.contract_symbol
     this.id = record.id
     this.price = record.price
     this.title = record.title

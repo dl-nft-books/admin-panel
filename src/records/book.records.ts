@@ -1,4 +1,4 @@
-import { BookResponse } from '@/types'
+import { Book } from '@/types'
 
 export class BookRecord {
   contractAddress: string
@@ -16,7 +16,7 @@ export class BookRecord {
   fileUrl: string
   bannerUrl: string
 
-  constructor(record: BookResponse) {
+  constructor(record: Book) {
     this.contractAddress = record.contract_address
     this.contractName = record.contract_name ?? ''
     this.contractVersion = record.contract_version

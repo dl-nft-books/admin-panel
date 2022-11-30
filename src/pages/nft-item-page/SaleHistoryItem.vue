@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { BookSaleHistory } from '@/types'
+import { Payment } from '@/types'
 import { Collapse, AppButton } from '@/common'
 import { cropAddress } from '@/helpers'
 import { formatDMY } from '@/helpers'
 import { formatFiatAssetFromWei, formatAssetFromWei } from '@/helpers'
 
-defineProps<{ historyItem: BookSaleHistory }>()
+defineProps<{ historyItem: Payment }>()
 </script>
 
 <template>

@@ -38,7 +38,7 @@ export interface UseProvider {
   getHashFromTxResponse: (txResponse: TransactionResponse) => string
   getTxUrl: (explorerUrl: string, txHash: string) => string
   getAddressUrl: (explorerUrl: string, address: string) => string
-  signMessage: (message: string) => Promise<string>
+  signMessage: (message: string) => Promise<string | undefined>
 }
 
 export const useProvider = (): UseProvider => {

@@ -6,6 +6,6 @@ export interface EthereumProvider extends ethers.providers.ExternalProvider {
 
 export type EthProviderRpcError = {
   message: string
-  code: number
+  code: number | string
   data?: unknown
 }

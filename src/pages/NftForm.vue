@@ -7,9 +7,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { useTokenFactory, useForm, useFormValidation } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { StoreDocument } from '@/api'
+import { StoreDocument, createBook } from '@/api'
 import { required, minValue } from '@/validators'
-import { ErrorHandler, Bus, createBook } from '@/helpers'
+import { ErrorHandler, Bus } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { useI18n } from 'vue-i18n'
 import { config } from '@/config'
@@ -29,6 +29,10 @@ const tokenFactory = useTokenFactory(
 
 const pageTitle = computed(() =>
   ROUTE_NAMES.nftItemEdit === route.name ? 'edit' : 'create',
+)
+
+const isValidChain = computed(
+  () => Number(provider.value.chainId) === Number(config.CHAIN_ID),
 )
 
 const form = reactive<{
@@ -78,7 +82,7 @@ const submit = async () => {
     })
     await Promise.all([book.uploadSelf(), banner.uploadSelf()])
 
-    const bookSignature = await createBook({
+    const { data: bookSignature } = await createBook({
       tokenName: form.name,
       tokenSymbol: form.symbol,
       description: form.description,
@@ -189,13 +193,25 @@ const submit = async () => {
             :route="{ name: $routes.nfts }"
             :disabled="isFormDisabled"
           />
-          <app-button
-            type="submit"
-            size="small"
-            class="nft-form__button"
-            :text="$t('nft-form.create-button')"
-            :disabled="isFormDisabled"
-          />
+
+          <template v-if="isValidChain">
+            <app-button
+              type="submit"
+              size="small"
+              class="nft-form__button"
+              :text="$t('nft-form.create-button')"
+              :disabled="isFormDisabled"
+            />
+          </template>
+          <template v-else>
+            <app-button
+              type="button"
+              class="nft-form__button"
+              size="small"
+              :text="$t('nft-form.switch-chain-button')"
+              @click="provider.switchChain(config.CHAIN_ID)"
+            />
+          </template>
         </div>
       </div>
     </form>

@@ -1,28 +1,44 @@
 <script lang="ts" setup>
-import { Loader, ErrorMessage, NoDataMessage } from '@/common'
+import { Loader, ErrorMessage, NoDataMessage, AppButton } from '@/common'
 import { SaleHistoryItem } from '@/pages/nft-item-page'
-import { BookSaleHistory } from '@/types'
+import { Payment } from '@/types'
 
-import { ErrorHandler, getSaleHistory } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
+import { getPayments } from '@/api'
 import { ref } from 'vue'
+import { usePaginate } from '@/composables'
 
 const props = defineProps<{ bookId: string | number }>()
 
-const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 
-const history = ref<BookSaleHistory[]>([])
+const history = ref<Payment[]>([])
 
-const init = async () => {
-  try {
-    history.value = await getSaleHistory({ bookId: props.bookId })
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
-  }
-  isLoaded.value = true
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
+
+function loadList() {
+  return getPayments({
+    bookIds: [props.bookId],
+  })
 }
-init()
+
+function setList(chunk: Payment[]) {
+  history.value = chunk ?? []
+}
+
+function concatList(chunk: Payment[]) {
+  history.value = history.value.concat(chunk ?? [])
+}
+
+function onError(e: Error) {
+  ErrorHandler.processWithoutFeedback(e)
+  isLoadFailed.value = true
+}
 </script>
 
 <template>
@@ -31,27 +47,34 @@ init()
       {{ $t('sale-history.header') }}
     </h2>
 
-    <template v-if="isLoaded">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('nft-item-page.loading-error-msg')" />
-      </template>
-      <template v-else>
+    <template v-if="isLoadFailed">
+      <error-message :message="$t('sale-history.loading-error-msg')" />
+    </template>
+    <template v-else-if="history.length || isLoading">
+      <template v-if="history.length">
         <div class="sale-history__list">
-          <template v-if="history.length">
-            <sale-history-item
-              v-for="item in history"
-              :key="item.id"
-              :history-item="item"
-            />
-          </template>
-          <template v-else>
-            <no-data-message :message="$t('sale-history.no-data-message')" />
-          </template>
+          <sale-history-item
+            v-for="item in history"
+            :key="item.id"
+            :history-item="item"
+          />
         </div>
       </template>
+      <template v-if="isLoading">
+        <loader />
+      </template>
+
+      <app-button
+        v-if="isLoadMoreBtnShown"
+        class="sale-history__load-more-btn"
+        size="small"
+        scheme="flat"
+        :text="$t('sale-history.load-more-btn')"
+        @click="loadNextPage"
+      />
     </template>
     <template v-else>
-      <loader />
+      <no-data-message :message="$t('sale-history.no-data-message')" />
     </template>
   </div>
 </template>
@@ -64,5 +87,9 @@ init()
 .sale-history__list {
   display: grid;
   grid-gap: toRem(16);
+}
+
+.sale-history__load-more-btn {
+  margin: toRem(20) auto 0;
 }
 </style>

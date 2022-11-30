@@ -1,5 +1,6 @@
 import {
   required as _required,
+  requiredIf as _requiredIf,
   email as _email,
   minLength as _minLength,
   maxLength as _maxLength,
@@ -20,6 +21,9 @@ const messagePath = ({ $validator }: MessageProps) =>
 const withI18nMessage = createI18nMessage({ t, messagePath })
 
 export const required = <ValidationRule>withI18nMessage(_required)
+export const requiredIf = (
+  rule: boolean | Ref<boolean> | string | (() => boolean | Promise<boolean>),
+): ValidationRule => <ValidationRule>withI18nMessage(_requiredIf(rule))
 
 export const email = <ValidationRule>withI18nMessage(_email)
 

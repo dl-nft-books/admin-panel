@@ -80,7 +80,7 @@
             size="small"
             class="nft-form__button"
             :text="submitButtonText"
-            :disabled="isFormDisabled"
+            :disabled="isSubmitBtnDisabled"
           />
         </template>
         <template v-else>
@@ -112,7 +112,7 @@ import {
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { StoreDocument, createBook, updateBook } from '@/api'
-import { required, minValue } from '@/validators'
+import { required, minValue, requiredIf } from '@/validators'
 import { ErrorHandler, Bus } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { useI18n } from 'vue-i18n'
@@ -161,12 +161,28 @@ const isContractValuesUpdated = computed(() => {
   )
 })
 
+const isApiValuesUpdated = computed(() => {
+  return (
+    isDescriptionUpdated.value ||
+    isTitleUpdated.value ||
+    form.book ||
+    form.photo
+  )
+})
+
 const isDescriptionUpdated = computed(() => {
   return form.description !== props.book?.description
 })
 
 const isTitleUpdated = computed(() => {
   return form.name !== props.book?.title
+})
+
+const isSubmitBtnDisabled = computed(() => {
+  return (
+    (!isApiValuesUpdated.value && !isContractValuesUpdated.value) ||
+    isFormDisabled.value
+  )
 })
 
 const form = reactive<{
@@ -193,8 +209,8 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     price: { required, minValue: minValue(MIN_PRICE_VALUE) },
     description: { required },
     symbol: { required },
-    photo: { required },
-    book: { required },
+    photo: { requiredIf: requiredIf(!isUpdateNft.value) },
+    book: { requiredIf: requiredIf(!isUpdateNft.value) },
   },
 )
 
@@ -202,22 +218,12 @@ const submit = async () => {
   if (!isFormValid() || !provider.value.selectedAddress) return
   disableForm()
   try {
-    const book = new StoreDocument({
-      name: form.book?.name || '',
-      file: form.book,
-      mimeType: form.book?.type || '',
-    })
-    const banner = new StoreDocument({
-      name: form.photo?.name || '',
-      file: form.photo,
-      mimeType: form.photo?.type || '',
-    })
-    await Promise.all([book.uploadSelf(), banner.uploadSelf()])
+    const { book, banner } = await uploadDocuments()
 
     if (isUpdateNft.value) {
       await updateNftBook(book, banner)
     } else {
-      await createNftBook(book, banner)
+      await createNftBook(book!, banner!)
     }
     router.push({ name: ROUTE_NAMES.nfts })
   } catch (e) {
@@ -226,17 +232,21 @@ const submit = async () => {
   enableForm()
 }
 
-const updateNftBook = async (book: StoreDocument, banner: StoreDocument) => {
+const updateNftBook = async (
+  book: StoreDocument | null,
+  banner: StoreDocument | null,
+) => {
   if (isContractValuesUpdated.value) {
+    bookNft.init(props.book?.contractAddress!)
     await bookNft.updateTokenContractParams(form.price, form.name, form.symbol)
   }
-  if (isDescriptionUpdated.value || isTitleUpdated.value) {
+  if (isApiValuesUpdated.value) {
     await updateBook({
       bookId: props.book?.id!,
       ...(isDescriptionUpdated.value ? { description: form.description } : {}),
       ...(isTitleUpdated.value ? { title: form.name } : {}),
-      ...(book._key ? { book } : {}),
-      ...(banner._key ? { banner } : {}),
+      ...(book?._key ? { book } : {}),
+      ...(banner?._key ? { banner } : {}),
     })
   }
   Bus.success(t('nft-form.edit-success-msg'))
@@ -265,6 +275,29 @@ const createNftBook = async (book: StoreDocument, banner: StoreDocument) => {
   )
 
   Bus.success(t('nft-form.create-success-msg'))
+}
+
+const uploadDocuments = async () => {
+  let book = null
+  let banner = null
+
+  if (form.book) {
+    book = new StoreDocument({
+      name: form.book?.name || '',
+      file: form.book,
+      mimeType: form.book?.type || '',
+    })
+  }
+  if (form.photo) {
+    banner = new StoreDocument({
+      name: form.photo?.name || '',
+      file: form.photo,
+      mimeType: form.photo?.type || '',
+    })
+  }
+  await Promise.all([book?.uploadSelf(), banner?.uploadSelf()])
+
+  return { book, banner }
 }
 </script>
 

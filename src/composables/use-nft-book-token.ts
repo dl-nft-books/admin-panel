@@ -1,6 +1,12 @@
 import { ref, watch } from 'vue'
-import { NftBookToken, NftBookToken__factory, UseUnrefProvider } from '@/types'
+import {
+  NftBookToken,
+  NftBookToken__factory,
+  UseUnrefProvider,
+  EthProviderRpcError,
+} from '@/types'
 import { BN } from '@/utils/math.util'
+import { handleEthError } from '@/helpers'
 
 export const useNftBookToken = (
   provider: UseUnrefProvider,
@@ -42,14 +48,18 @@ export const useNftBookToken = (
     name: string,
     symbol: string,
   ) => {
-    const convertedPrice = new BN(price).toWei().toString()
-    const updateTx = await _instance_rw.value?.updateTokenContractParams(
-      convertedPrice,
-      name,
-      symbol,
-    )
+    try {
+      const convertedPrice = new BN(price).toWei().toString()
+      const updateTx = await _instance_rw.value?.updateTokenContractParams(
+        convertedPrice,
+        name,
+        symbol,
+      )
 
-    await updateTx?.wait()
+      await updateTx?.wait()
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
   }
 
   return {

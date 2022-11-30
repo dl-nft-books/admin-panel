@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Book } from '@/types'
 import { formatDMY } from '@/helpers'
-import { formatFiatAsset } from '@/helpers'
+import { formatFiatAssetFromWei } from '@/helpers'
+import { BookRecord } from '@/records'
 
 defineProps<{
-  nft: Book
+  nft: BookRecord
 }>()
 </script>
 
@@ -13,7 +13,7 @@ defineProps<{
     class="nft-card"
     :to="{ name: $routes.nftItem, params: { id: nft.id } }"
   >
-    <img class="nft-card__img" :src="nft.coverUrl" alt="Book image" />
+    <img class="nft-card__img" :src="nft.bannerUrl" alt="Book image" />
     <div class="nft-card__content-wrapper">
       <div class="nft-card__content">
         <span class="nft-card__desc">
@@ -28,7 +28,7 @@ defineProps<{
           {{ $t('nft-card.date-description') }}
         </span>
         <span class="nft-card__value">
-          {{ formatDMY(nft.purchaseDate) }}
+          {{ formatDMY(nft.createdAt) }}
         </span>
       </div>
       <div class="nft-card__content">
@@ -36,7 +36,8 @@ defineProps<{
           {{ $t('nft-card.price-description') }}
         </span>
         <span class="nft-card__value">
-          {{ formatFiatAsset(nft.price.amount, nft.price.assetCode) }}
+          <!-- FIXME: fix `assetCode` after bekend -->
+          {{ formatFiatAssetFromWei(nft.price, 'USD') }}
         </span>
       </div>
     </div>
@@ -51,6 +52,7 @@ defineProps<{
   border: toRem(1) solid var(--border-primary-main);
   border-radius: toRem(6);
   padding: toRem(10) toRem(15);
+  background: var(--background-tertiary);
 
   @include respond-to(medium) {
     flex-direction: column;

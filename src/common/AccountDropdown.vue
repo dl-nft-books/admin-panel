@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Icon } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 import { cropAddress } from '@/helpers'
 
@@ -39,7 +40,7 @@ const toggleDropdown = () => {
       :title="web3ProviderStore.provider.selectedAddress"
       @click="toggleDropdown"
     >
-      <img src="" alt="" class="account-dropdown__avatar" />
+      <icon :name="$icons.account" class="account-dropdown__avatar" />
       <span class="account-dropdown__address">
         {{ cropAddress(web3ProviderStore.provider.selectedAddress) }}
       </span>
@@ -112,6 +113,15 @@ $z-index-overlap: 1;
 
   &:not([disabled]):hover {
     background: rgba(var(--black-rgb), 0.04);
+  }
+}
+
+.account-dropdown__address {
+  color: var(--text-primary-light);
+  font-weight: 500;
+
+  @include respond-to(xsmall) {
+    display: none;
   }
 }
 </style>

@@ -10,7 +10,6 @@ import {
 
 import { ROUTE_NAMES } from '@/enums'
 import { useAuthStore } from '@/store'
-import { ErrorHandler } from '@/helpers'
 
 enum ROUTE_METAS {
   isRequiredAuth = 'isRequiredAuth',
@@ -60,33 +59,40 @@ const routes: Array<RouteRecordRaw> = [
             },
             component: () => import('@/pages/OverviewNfts.vue'),
           },
+          {
+            path: '/nfts/:id',
+            name: ROUTE_NAMES.nftItem,
+            component: () => import('@/pages/NftItemPage.vue'),
+            props: true,
+            meta: {
+              [ROUTE_METAS.isRequiredAuth]: true,
+            },
+          },
+          {
+            path: '/nfts/:id/edit',
+            name: ROUTE_NAMES.nftItemEdit,
+            component: () => import('@/pages/NftForm.vue'),
+            meta: {
+              [ROUTE_METAS.isRequiredAuth]: true,
+            },
+          },
         ],
       },
       {
-        path: '/nfts/:id',
-        name: ROUTE_NAMES.nftItem,
-        component: () => import('@/pages/NftItemPage.vue'),
+        path: '/kyc-requests',
+        name: ROUTE_NAMES.kycRequests,
         meta: {
           [ROUTE_METAS.isRequiredAuth]: true,
         },
+        component: () => import('@/pages/KycRequests.vue'),
       },
       {
-        path: '/nfts/:id/edit',
-        name: ROUTE_NAMES.nftItemEdit,
-        component: () => import('@/pages/NftForm.vue'),
+        path: '/settings',
+        name: ROUTE_NAMES.settings,
         meta: {
           [ROUTE_METAS.isRequiredAuth]: true,
         },
-      },
-      {
-        path: '/ui-kit',
-        name: ROUTE_NAMES.uiKit,
-        component: () => import('@/pages/UiKitPage.vue'),
-      },
-      {
-        path: '/web3',
-        name: ROUTE_NAMES.web3,
-        component: () => import('@/pages/Web3Page.vue'),
+        component: () => import('@/pages/Settings.vue'),
       },
     ],
   },
@@ -99,13 +105,6 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const accountStore = useAuthStore()
-
-  try {
-    accountStore.initAuth()
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-  }
   if (to.name === ROUTE_NAMES.app) {
     redirectRouteGuard(to, from, next)
   } else if (

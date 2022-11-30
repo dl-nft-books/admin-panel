@@ -3,6 +3,8 @@ import { Bus } from '@/helpers'
 import { i18n } from '@/localization'
 import { errors } from '@/errors'
 
+const MAX_ERROR_LENGTH = 64
+
 export class ErrorHandler {
   static process(error: Error | unknown, errorMessage = ''): void {
     const msgTranslation = errorMessage || ErrorHandler._getErrorMessage(error)
@@ -20,7 +22,9 @@ export class ErrorHandler {
     let errorMessage = ''
 
     if (error instanceof Error) {
-      if (error.message) return error.message
+      if (error.message && error.message.length < MAX_ERROR_LENGTH) {
+        return error.message
+      }
 
       switch (error.constructor) {
         case errors.ProviderChainNotFoundError:

@@ -1,24 +1,31 @@
 <script lang="ts" setup>
-import { Loader, ErrorMessage } from '@/common'
+import { Loader, ErrorMessage, AppButton } from '@/common'
 import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
 
 import { ErrorHandler } from '@/helpers'
-import { Book, BookSaleHistory } from '@/types'
-import { useRoute } from 'vue-router'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { BookRecord } from '@/records'
+import { WINDOW_BREAKPOINTS } from '@/enums'
+import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { getBookById } from '@/api'
+
+const props = defineProps<{
+  id: string
+}>()
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 
-const book = ref<Book | undefined>()
-const history = ref<BookSaleHistory[]>([])
+const book = ref<BookRecord | undefined>()
 
-const route = useRoute()
+const { width } = useWindowSize()
+const { t } = useI18n()
 
 const init = async () => {
   try {
-    await loadBook()
-    await loadHistory()
+    const { data } = await getBookById(props.id)
+    book.value = new BookRecord(data)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true
@@ -26,54 +33,9 @@ const init = async () => {
   isLoaded.value = true
 }
 
-const loadBook = async () => {
-  book.value = {
-    id: route.params.id,
-    title: 'Blockchain and decentralized systems, Volume 1',
-    price: {
-      amount: 109,
-      assetCode: 'USD',
-    },
-    coverUrl:
-      'https://images.unsplash.com/photo-1629992101753-56d196c8aabb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=990&q=80',
-    description:
-      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae \n' +
-      'Mack nitevis. Mikropp antelånas londe. Tism svenna sitt liv i preliga. Sögisk euroråse belig. \n' +
-      'Pögt ont puhet och supravinade. Dis vil gesåbelt och vaheten. Aning elektrogram eftersom miligen. Renyde korat. \n',
-    meta: {
-      volume: 'Volume 2',
-    },
-    token: {
-      amount: '0,0056',
-      assetCode: 'BTC',
-    },
-    document: {
-      name: 'BDS_volume1.pdf',
-    },
-    signature:
-      'Lörem ipsum semiskop plaktig. Bent abvalens trera vipysamma. Rerade prer derade. Digisk nebelt fask. sdscqae',
-    purchaseDate: '2010-04-02T14:12:07',
-  } as Book
-}
-
-const loadHistory = async () => {
-  history.value = [
-    {
-      id: 1,
-      purchaseDate: '2010-04-02T14:12:07',
-      price: {
-        amount: 109,
-        assetCode: 'USD',
-      },
-      token: {
-        amount: '0,0056',
-        assetCode: 'BTC',
-      },
-      bookLink: 'http://gateway.ipfs.io/ipfs/25135613/books',
-      buyerAddress: '0x383E0c79540569a0F70d48c6cA31D0aF09B3B626',
-    },
-  ] as BookSaleHistory[]
-}
+const buttonLinkText = computed(() =>
+  width.value >= WINDOW_BREAKPOINTS.small ? t('nft-item-page.edit-button') : '',
+)
 
 init()
 </script>
@@ -88,7 +50,7 @@ init()
         <div class="nft-item-page__book">
           <div class="nft-item-page__cover-wrp">
             <img
-              :src="book.coverUrl"
+              :src="book.bannerUrl"
               :alt="book.title"
               class="nft-item-page__cover"
             />
@@ -100,12 +62,25 @@ init()
             <nft-details :book="book" />
           </div>
         </div>
-        <sale-history :history="history" />
+        <sale-history :book-id="book.id" />
       </template>
     </template>
     <template v-else>
       <loader />
     </template>
+
+    <mounted-teleport to="#app-navbar__right-buttons">
+      <app-button
+        class="nft-item-page__link-button"
+        size="small"
+        :icon-left="$icons.edit"
+        :text="buttonLinkText"
+        :route="{
+          name: $routes.nftItemEdit,
+          params: { id: props.id },
+        }"
+      />
+    </mounted-teleport>
   </div>
 </template>
 
@@ -165,5 +140,16 @@ init()
 
 .nft-item-page__tabs {
   margin-bottom: toRem(40);
+}
+
+.nft-item-page__link-button {
+  width: toRem(180);
+  order: -1;
+
+  @include respond-to(small) {
+    width: toRem(54);
+    height: toRem(54);
+    order: 1;
+  }
 }
 </style>

@@ -86,11 +86,17 @@ watch(asideElement, () => {
             <icon class="app-sidebar__link-icon" :name="$icons.photograph" />
             {{ $t('app-sidebar.nfts-link') }}
           </router-link>
-          <router-link class="app-sidebar__link" :to="{ name: $routes.uiKit }">
+          <router-link
+            class="app-sidebar__link"
+            :to="{ name: $routes.kycRequests }"
+          >
             <icon class="app-sidebar__link-icon" :name="$icons.database" />
             {{ $t('app-sidebar.kyc-requests-link') }}
           </router-link>
-          <router-link class="app-sidebar__link" :to="{ name: $routes.web3 }">
+          <router-link
+            class="app-sidebar__link"
+            :to="{ name: $routes.settings }"
+          >
             <icon class="app-sidebar__link-icon" :name="$icons.cog" />
             {{ $t('app-sidebar.settings-link') }}
           </router-link>
@@ -172,9 +178,15 @@ $z-local: 5;
   border-radius: toRem(6);
   padding: toRem(40) toRem(4) toRem(20);
   height: 100%;
+  position: fixed;
+  overflow: scroll;
+  max-height: calc(100vh - #{toRem(40)});
 
   @include respond-to(tablet) {
+    position: unset;
+    max-height: 100%;
     max-width: toRem(320);
+    border-radius: 0 toRem(6) toRem(6) 0;
   }
 
   @include respond-to(small) {
@@ -211,11 +223,18 @@ $z-local: 5;
   }
 }
 
+.app-sidebar__logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .app-sidebar__logo-subtitle {
   text-transform: uppercase;
   text-align: center;
   font-size: toRem(14);
-  line-height: 1.2;
+  line-height: 1.14;
+  color: var(--text-secondary-invert-main);
 
   @include respond-to(tablet) {
     font-size: toRem(10);

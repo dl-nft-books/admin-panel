@@ -5,7 +5,7 @@ $black-rgb: hexToRGB($black);
 
 $background-primary: $white;
 $background-secondary: #111010;
-$background-tertiary: $white;
+$background-tertiary: #fdfdfd;
 
 /* status colors */
 
@@ -45,13 +45,13 @@ $primary-inverted-dark: #ffffff;
 
 /* typography colors */
 
-$text-primary-light: #484848;
-$text-primary-main: #818181;
-$text-primary-dark: #000000;
+$text-primary-light: #978d8d;
+$text-primary-main: #464646;
+$text-primary-dark: #262626;
 
-$text-secondary-light: #978d8d;
-$text-secondary-main: #464646;
-$text-secondary-dark: #262626;
+$text-secondary-light: #484848;
+$text-secondary-main: #818181;
+$text-secondary-dark: #000000;
 
 $text-tertiary-light: #81a0df;
 $text-tertiary-main: #5072ad;

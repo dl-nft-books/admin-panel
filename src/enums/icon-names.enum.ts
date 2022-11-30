@@ -231,4 +231,6 @@ export enum ICON_NAMES {
   zoomOut = 'zoom-out',
   appLogo = 'app-logo',
   metamask = 'metamask',
+  edit = 'edit',
+  account = 'account',
 }

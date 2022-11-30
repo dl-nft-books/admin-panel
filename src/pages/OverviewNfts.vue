@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { InputField } from '@/fields'
 import {
   Icon,
@@ -9,111 +9,124 @@ import {
   NoDataMessage,
   AppButton,
 } from '@/common'
-import { Book } from '@/types'
+
 import { ErrorHandler } from '@/helpers'
+import { BookRecord } from '@/records'
+import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
+import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { getBooks } from '@/api'
+import { usePaginate } from '@/composables'
+import { Book } from '@/types'
 
 const searchByString = ref('')
+const booksList = ref<BookRecord[]>([])
+const isLoadFailed = ref(false)
 
-const isLoaded = ref(false)
-const isErrored = ref(false)
+const { width } = useWindowSize()
+const { t } = useI18n()
 
-const NFT_MOCK_DATA: Array<Book> = [
-  {
-    id: 1,
-    title: 'Blockchain and Decentralized Sistems Vol. 1',
-    price: {
-      amount: 199.99,
-      assetCode: 'USD',
-    },
-    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
-  },
-  {
-    id: 2,
-    title: 'Blockchain and Decentralized Sistems Vol. 1',
-    price: {
-      amount: 199.99,
-      assetCode: 'USD',
-    },
-    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
-  },
-  {
-    id: 3,
-    title: 'Blockchain and Decentralized Sistems Vol. 1',
-    price: {
-      amount: 199.99,
-      assetCode: 'USD',
-    },
-    coverUrl: 'https://i.ibb.co/VmKdS97/book-image.png',
-  },
-]
+const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
 
-const loadNfts = () => {
-  isLoaded.value = false
-  try {
-    setTimeout(() => true)
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-    isErrored.value = true
-  }
-  isLoaded.value = true
+function loadList() {
+  return getBooks({
+    deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+  })
+}
+
+function setList(chunk: Book[]) {
+  booksList.value = chunk.map(book => new BookRecord(book)) ?? []
+}
+
+function concatList(chunk: Book[]) {
+  booksList.value = booksList.value.concat(
+    chunk.map(book => new BookRecord(book)) ?? [],
+  )
+}
+
+function onError(e: Error) {
+  ErrorHandler.processWithoutFeedback(e)
+  isLoadFailed.value = true
 }
 
 const search = () => {
   return true
 }
 
-loadNfts()
+const buttonLinkText = computed(() =>
+  width.value >= WINDOW_BREAKPOINTS.small
+    ? t('overview-nfts.create-button')
+    : '',
+)
 </script>
 
 <template>
   <div class="overview-nfts">
-    <template v-if="isLoaded">
-      <template v-if="isErrored">
-        <error-message
-          :message="$t('overview-nfts.error-message')"
-          :title="$t('overview-nfts.error-title')"
+    <div class="overview-nfts__header">
+      <h2 class="overview-nfts__title">
+        {{ $t('overview-nfts.title') }}
+      </h2>
+      <div class="overview-nfts__search-wrapper">
+        <app-button
+          size="default"
+          scheme="default"
+          class="overview-nfts__search-button"
+          @click="search"
+        >
+          <icon class="overview-nfts__search-icon" :name="$icons.search" />
+        </app-button>
+        <input-field
+          class="overview-nfts__search"
+          v-model="searchByString"
+          :placeholder="$t('overview-nfts.search-placeholder')"
+          iconned
         />
-      </template>
-      <template v-else>
-        <template v-if="NFT_MOCK_DATA.length">
-          <div class="overview-nfts__header">
-            <h2 class="overview-nfts__title">
-              {{ $t('overview-nfts.title') }}
-            </h2>
-            <div class="overview-nfts__search-wrapper">
-              <app-button
-                size="default"
-                scheme="default"
-                class="overview-nfts__search-button"
-                @click="search"
-              >
-                <icon
-                  class="overview-nfts__search-icon"
-                  :name="$icons.search"
-                />
-              </app-button>
-              <input-field
-                class="overview-nfts__search"
-                v-model="searchByString"
-                :placeholder="$t('overview-nfts.search-placeholder')"
-                iconned
-              />
-            </div>
-          </div>
-          <div class="overview-nfts__content">
-            <nft-card
-              v-for="(nft, idx) in NFT_MOCK_DATA"
-              :key="idx"
-              :nft="nft"
-            />
-          </div>
-        </template>
-        <template v-else>
-          <no-data-message :message="$t('overview-nfts.no-data-message')" />
-        </template>
-      </template>
+      </div>
+    </div>
+
+    <template v-if="isLoadFailed">
+      <error-message
+        :message="$t('overview-nfts.error-message')"
+        :title="$t('overview-nfts.error-title')"
+      />
     </template>
-    <loader v-else />
+    <template v-else-if="booksList.length || isLoading">
+      <template v-if="booksList.length">
+        <div class="overview-nfts__content">
+          <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
+        </div>
+      </template>
+      <template v-if="isLoading">
+        <loader />
+      </template>
+
+      <app-button
+        v-if="isLoadMoreBtnShown"
+        class="overview-nfts__load-more-btn"
+        size="small"
+        scheme="flat"
+        :text="$t('overview-nfts.load-more-btn')"
+        @click="loadNextPage"
+      />
+    </template>
+    <template v-else>
+      <no-data-message :message="$t('overview-nfts.no-data-message')" />
+    </template>
+
+    <mounted-teleport to="#app-navbar__right-buttons">
+      <app-button
+        class="overview-nfts__link-button"
+        size="small"
+        :icon-left="$icons.plus"
+        :text="buttonLinkText"
+        :route="{ name: $routes.nftsCreate }"
+      />
+    </mounted-teleport>
   </div>
 </template>
 
@@ -176,5 +189,20 @@ $z-icon: 2;
     max-width: 100%;
     gap: toRem(20);
   }
+}
+
+.overview-nfts__link-button {
+  width: toRem(180);
+  order: -1;
+
+  @include respond-to(small) {
+    width: toRem(54);
+    height: toRem(54);
+    order: 1;
+  }
+}
+
+.overview-nfts__load-more-btn {
+  margin: toRem(20) auto 0;
 }
 </style>

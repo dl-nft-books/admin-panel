@@ -2,8 +2,8 @@ import fs from 'fs'
 import path, { dirname } from 'path'
 import chalk from 'chalk'
 import childProcess from 'child_process'
-import {fileURLToPath} from "url";
-import {createRequire} from "module";
+import { fileURLToPath } from 'url'
+import { createRequire } from 'module'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -14,7 +14,7 @@ const CHANGELOG_MD_CONTENT = readFile('../CHANGELOG.md')
 
 const issuesFound = []
 
-function runAllValidations () {
+function runAllValidations() {
   if (!VERSION) {
     return reportCheckSkipped()
   }
@@ -27,7 +27,7 @@ function runAllValidations () {
   report()
 }
 
-function validateSemverCompatibility () {
+function validateSemverCompatibility() {
   const semverRe = /^\d+\.\d+\.\d+((-rc|-x)\.\d+)?$/i
 
   if (!semverRe.test(VERSION)) {
@@ -35,29 +35,33 @@ function validateSemverCompatibility () {
   }
 }
 
-function validatePackageJsonVersion () {
+function validatePackageJsonVersion() {
   if (PACKAGE_JSON.version !== VERSION) {
-    issuesFound
-      .push(`package.json version should equal ${VERSION}, got ${PACKAGE_JSON.version}`)
+    issuesFound.push(
+      `package.json version should equal ${VERSION}, got ${PACKAGE_JSON.version}`,
+    )
   }
 }
 
-function validateChangelogHasVersion () {
+function validateChangelogHasVersion() {
   const todayYmd = new Date().toISOString().split('T')[0] // YYYY-MM-DD
-  const releaseTagRe =
-    new RegExp(`^## \\[${escapeRe(VERSION)}\\] - ${todayYmd}$`, 'm')
+  const releaseTagRe = new RegExp(
+    `^## \\[${escapeRe(VERSION)}\\] - ${todayYmd}$`,
+    'm',
+  )
 
   if (!releaseTagRe.test(CHANGELOG_MD_CONTENT)) {
-    issuesFound
-      .push(`"## [${VERSION}] - ${todayYmd}" is absent in CHANGELOG.md`)
+    issuesFound.push(
+      `"## [${VERSION}] - ${todayYmd}" is absent in CHANGELOG.md`,
+    )
   }
 }
 
-function validateChangelogHasVersionOnTop () {
+function validateChangelogHasVersionOnTop() {
   const todayYmd = new Date().toISOString().split('T')[0] // YYYY-MM-DD
   const releaseTagIsNotTopRe = new RegExp(
     '## \\[\\d+\\.\\d+\\.\\d+((-rc|-x)\\.\\d+)?\\][\\s\\S]*' + // any other tag
-    `## \\[${escapeRe(VERSION)}\\] - ${todayYmd}`, // the new
+      `## \\[${escapeRe(VERSION)}\\] - ${todayYmd}`, // the new
     'i',
   )
 
@@ -66,32 +70,36 @@ function validateChangelogHasVersionOnTop () {
   }
 }
 
-function validateChangelogAnchorsLegend () {
-  const baseRepoUrl = 'https://gitlab.com/tokend/nft-books/admin-panel-nft-books'
+function validateChangelogAnchorsLegend() {
+  const baseRepoUrl =
+    'https://gitlab.com/tokend/nft-books/admin-panel-nft-books'
   const anyReleaseTagRe =
     /## \[\d+\.\d+\.\d+((-rc|-x)\.\d+)?\] - \d{4}-\d{2}-\d{2}/gi
 
   const expectedAnchorsLegend =
-    `[Unreleased]: ${baseRepoUrl}/compare/${VERSION}...main\n` +
-    CHANGELOG_MD_CONTENT
-      .match(anyReleaseTagRe)
+    `[Unreleased]: ${baseRepoUrl}/compare/v${VERSION}...main\n` +
+    CHANGELOG_MD_CONTENT.match(anyReleaseTagRe)
       .map(tag => tag.match(/\[(.*)\]/)[1])
       .map((cur, curId, arr) => {
         return curId === arr.length - 1
-          ? `[${cur}]: ${baseRepoUrl}/tags/${cur}`
-          : `[${cur}]: ${baseRepoUrl}/compare/${arr[curId + 1]}...${cur}`
+          ? `[${cur}]: ${baseRepoUrl}/tags/v${cur}`
+          : `[${cur}]: ${baseRepoUrl}/compare/v${arr[curId + 1]}...v${cur}`
       })
       .join('\n')
 
   if (!CHANGELOG_MD_CONTENT.includes(expectedAnchorsLegend)) {
-    issuesFound.push(`The anchors legend is invalid, should be:\n${expectedAnchorsLegend}`)
+    issuesFound.push(
+      `The anchors legend is invalid, should be:\n${expectedAnchorsLegend}`,
+    )
   }
 }
 
-function report () {
+function report() {
   /* eslint-disable no-console */
   if (issuesFound.length) {
-    console.error(chalk.red(`Release sanity check for ${chalk.yellow(VERSION)} failed!`))
+    console.error(
+      chalk.red(`Release sanity check for ${chalk.yellow(VERSION)} failed!`),
+    )
 
     for (const issue of issuesFound) {
       console.error(`${chalk.red(issue)}`)
@@ -99,17 +107,23 @@ function report () {
 
     process.exitCode = 1
   } else {
-    console.log(`${chalk.green(`Release sanity check for ${chalk.yellow(VERSION)} passed`)}`)
+    console.log(
+      `${chalk.green(
+        `Release sanity check for ${chalk.yellow(VERSION)} passed`,
+      )}`,
+    )
   }
   /* eslint-enable no-console */
 }
 
-function reportCheckSkipped () {
+function reportCheckSkipped() {
   /* eslint-disable-next-line no-console */
-  console.log(chalk.gray('No version tag found, skipping release sanity check...'))
+  console.log(
+    chalk.gray('No version tag found, skipping release sanity check...'),
+  )
 }
 
-function getVersion () {
+function getVersion() {
   if (process.argv[2]) {
     return process.argv[2]
   }
@@ -119,21 +133,21 @@ function getVersion () {
   return versionMatch ? versionMatch[1] : ''
 }
 
-function getPackageJson () {
+function getPackageJson() {
   const require = createRequire(import.meta.url)
   return require('../package.json')
 }
 
-function readFile (relativePath) {
+function readFile(relativePath) {
   const resolvedPath = path.resolve(__dirname, relativePath)
   return fs.readFileSync(resolvedPath, 'utf8')
 }
 
-function escapeRe (string) {
+function escapeRe(string) {
   return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
-function exec (command) {
+function exec(command) {
   return childProcess.execSync(command, {
     cwd: path.resolve(__dirname, '..'),
   })

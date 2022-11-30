@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Book } from '@/types'
 import { Icon } from '@/common'
-import { formatFiatAsset } from '@/helpers'
+import { formatFiatAssetFromWei } from '@/helpers'
 import { formatMDY } from '@/helpers'
+import { BookRecord } from '@/records'
 
-defineProps<{ book: Book }>()
+defineProps<{ book: BookRecord }>()
 </script>
 
 <template>
@@ -14,7 +14,7 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.creation-date-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ formatMDY(book.purchaseDate) }}
+        {{ formatMDY(book.createdAt) }}
       </p>
     </div>
     <div class="nft-details__row">
@@ -22,17 +22,25 @@ defineProps<{ book: Book }>()
         {{ $t('nft-details.price-lbl') }}
       </p>
       <p class="nft-details__row-value">
-        {{ formatFiatAsset(book.price.amount, book.price.assetCode) }}
+        <!-- FIXME: fix `assetCode` after bekend -->
+        {{ formatFiatAssetFromWei(book.price, 'USD') }}
       </p>
     </div>
     <div class="nft-details__row">
       <p class="nft-details__row-label">
         {{ $t('nft-details.document-lbl') }}
       </p>
-      <p class="nft-details__row-value nft-details__row-value--document">
-        {{ book.document?.name }}
+      <a
+        target="_blank"
+        rel="noopener"
+        :href="book.fileUrl"
+        class="nft-details__row-value nft-details__row-value--document"
+      >
+        <span class="nft-details__row-value--document-text">
+          {{ book.fileName }}
+        </span>
         <icon class="nft-details__row-icon" :name="$icons.download" />
-      </p>
+      </a>
     </div>
     <div class="nft-details__row">
       <p class="nft-details__row-label">
@@ -46,6 +54,8 @@ defineProps<{ book: Book }>()
 </template>
 
 <style lang="scss" scoped>
+$icon-size: toRem(20);
+
 .nft-details {
   display: flex;
   flex-direction: column;
@@ -56,6 +66,7 @@ defineProps<{ book: Book }>()
   display: grid;
   grid-template-columns: toRem(185) 1fr;
   grid-gap: toRem(20);
+  position: relative;
 
   @include respond-to(xmedium) {
     grid-template-columns: toRem(100) 1fr;
@@ -77,6 +88,7 @@ defineProps<{ book: Book }>()
 }
 
 .nft-details__row-value {
+  font-weight: 400;
   font-size: toRem(20);
   line-height: 1.2;
 
@@ -89,14 +101,22 @@ defineProps<{ book: Book }>()
   display: flex;
   align-items: center;
   cursor: pointer;
-  max-width: max-content;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.nft-details__row-value--document-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .nft-details__row-icon {
-  display: block;
-  margin-left: toRem(10);
-  width: toRem(24);
-  height: toRem(24);
+  display: inline-block;
+  width: $icon-size;
+  height: $icon-size;
+  min-width: $icon-size;
   color: var(--primary-main);
+  margin-left: toRem(10);
 }
 </style>

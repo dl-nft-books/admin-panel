@@ -1,18 +1,10 @@
-import { api } from '@/api'
-import { AuthToken } from '@/types'
+import { getNonce } from '@/api'
+import { useAuthStore } from '@/store'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
 
 export const getAuthNonce = async (message: string) => {
-  const { data } = await api.post<{ message: string }>(
-    '/integrations/nonce-auth-svc/nonce',
-    {
-      data: {
-        type: 'auth_nonce_request',
-        attributes: {
-          address: message,
-        },
-      },
-    },
-  )
+  const { data } = await getNonce(message)
 
   /**
    * we are using split('\n')... instead of just authNonce message
@@ -24,19 +16,8 @@ export const getAuthNonce = async (message: string) => {
   return data.message.split('\n')[data.message.split('\n').length - 1]
 }
 
-export const saveAuthAccess = (
-  accessToken: AuthToken,
-  refreshToken: AuthToken,
-) => {
-  const accessTokenString = JSON.stringify(accessToken)
-  const refreshTokenString = JSON.stringify(refreshToken)
-  localStorage.setItem('accessToken', accessTokenString)
-  localStorage.setItem('refreshToken', refreshTokenString)
-}
-
 export const logout = () => {
-  localStorage.removeItem('accessToken')
-  localStorage.removeItem('refreshToken')
-
-  location.reload()
+  const authStore = useAuthStore()
+  authStore.logout()
+  router.push({ name: ROUTE_NAMES.login })
 }

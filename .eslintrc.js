@@ -154,5 +154,7 @@ module.exports = {
     'promise/no-nesting': 'warn',
     'promise/no-callback-in-promise': 'warn',
     'promise/prefer-await-to-then': 'warn',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
   },
 }

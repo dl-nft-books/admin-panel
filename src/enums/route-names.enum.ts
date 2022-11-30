@@ -9,4 +9,6 @@ export enum ROUTE_NAMES {
   nftItemEdit = 'nft-item-edit',
   nftsCreate = 'nfts-create',
   nftsOverview = 'nfts-overview',
+  kycRequests = 'kyc-requests',
+  settings = 'settings',
 }

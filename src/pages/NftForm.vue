@@ -1,26 +1,116 @@
 <script lang="ts" setup>
 import { InputField, TextareaField, AmountField, FileField } from '@/fields'
-import { computed, ref } from 'vue'
+import { computed, reactive } from 'vue'
 import { AppButton } from '@/common'
 import { FIELD_LENGTH, ROUTE_NAMES } from '@/enums'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useTokenFactory, useForm, useFormValidation } from '@/composables'
+import { useWeb3ProvidersStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import { StoreDocument, createBook } from '@/api'
+import { required, minValue } from '@/validators'
+import { ErrorHandler, Bus } from '@/helpers'
+import { BN } from '@/utils/math.util'
+import { useI18n } from 'vue-i18n'
+import { config } from '@/config'
 
+const MIN_PRICE_VALUE = '0.01'
+const MAX_BOOK_SIZE = 500 // mb
+
+const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
+const { provider } = storeToRefs(useWeb3ProvidersStore())
+
+const tokenFactory = useTokenFactory(
+  provider.value,
+  config.TOKEN_FACTORY_CONTRACT_ADDRESS,
+)
 
 const pageTitle = computed(() =>
   ROUTE_NAMES.nftItemEdit === route.name ? 'edit' : 'create',
 )
 
-const form = ref({
+const isValidChain = computed(
+  () => Number(provider.value.chainId) === Number(config.CHAIN_ID),
+)
+
+const form = reactive<{
+  name: string
+  price: string
+  description: string
+  symbol: string
+  photo?: File
+  book?: File
+}>({
   name: '',
   price: '',
   description: '',
+  symbol: '',
   photo: undefined,
   book: undefined,
 })
 
-const submit = () => {
-  return true
+const { disableForm, enableForm, isFormDisabled } = useForm()
+const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
+  form,
+  {
+    name: { required },
+    price: { required, minValue: minValue(MIN_PRICE_VALUE) },
+    description: { required },
+    symbol: { required },
+    photo: { required },
+    book: { required },
+  },
+)
+
+const submit = async () => {
+  if (!isFormValid() || !provider.value.selectedAddress) return
+  disableForm()
+  try {
+    const weiPrice = new BN(form.price).toWei().toString()
+
+    const book = new StoreDocument({
+      name: form.book?.name || '',
+      file: form.book,
+      mimeType: form.book?.type || '',
+    })
+    const banner = new StoreDocument({
+      name: form.photo?.name || '',
+      file: form.photo,
+      mimeType: form.photo?.type || '',
+    })
+    await Promise.all([book.uploadSelf(), banner.uploadSelf()])
+
+    const { data: bookSignature } = await createBook({
+      tokenName: form.name,
+      tokenSymbol: form.symbol,
+      description: form.description,
+      price: weiPrice,
+      bookKey: book._key || '',
+      bannerKey: banner._key || '',
+      bookName: book._name || '',
+      bannerName: banner._name || '',
+      bookType: book._mimeType || '',
+      bannerType: banner._mimeType || '',
+    })
+
+    await tokenFactory.deployTokenContract(
+      bookSignature.token_id,
+      form.name,
+      form.symbol,
+      weiPrice,
+      bookSignature.signature.r,
+      bookSignature.signature.s,
+      bookSignature.signature.v,
+    )
+
+    Bus.success(t('nft-form.success-msg'))
+    router.push({ name: ROUTE_NAMES.nfts })
+  } catch (e) {
+    ErrorHandler.process(e)
+  }
+  enableForm()
 }
 </script>
 
@@ -37,9 +127,11 @@ const submit = () => {
         <file-field
           class="nft-form__upload-field"
           v-model="form.photo"
-          :file-extensions="['jpg', 'png']"
+          :file-extensions="['jpg', 'png', 'jpeg']"
           :label="$t('nft-form.file-field-image-title')"
           :note="$t('nft-form.file-field-image-description')"
+          :error-message="getFieldErrorMessage('photo')"
+          :disabled="isFormDisabled"
         />
         <file-field
           class="nft-form__upload-field"
@@ -47,6 +139,9 @@ const submit = () => {
           :file-extensions="['pdf']"
           :label="$t('nft-form.file-field-pdf-title')"
           :note="$t('nft-form.file-field-pdf-description')"
+          :error-message="getFieldErrorMessage('book')"
+          :disabled="isFormDisabled"
+          :max-size="MAX_BOOK_SIZE"
         />
       </div>
       <h3 class="nft-form__subtitle">
@@ -58,11 +153,26 @@ const submit = () => {
           :max-length="FIELD_LENGTH.name"
           :placeholder="$t('nft-form.input-name-placeholder')"
           :label="$t('nft-form.input-name-label')"
+          :error-message="getFieldErrorMessage('name')"
+          :disabled="isFormDisabled"
+          @blur="touchField('name')"
         />
         <amount-field
           v-model="form.price"
           :placeholder="$t('nft-form.input-price-placeholder')"
           :label="$t('nft-form.input-price-label')"
+          :error-message="getFieldErrorMessage('price')"
+          :disabled="isFormDisabled"
+          @blur="touchField('price')"
+        />
+        <input-field
+          v-model="form.symbol"
+          :max-length="FIELD_LENGTH.tokenSymbol"
+          :placeholder="$t('nft-form.input-symbol-placeholder')"
+          :label="$t('nft-form.input-symbol-label')"
+          :error-message="getFieldErrorMessage('symbol')"
+          :disabled="isFormDisabled"
+          @blur="touchField('symbol')"
         />
         <textarea-field
           class="nft-form__textarea"
@@ -70,22 +180,39 @@ const submit = () => {
           :max-length="FIELD_LENGTH.description"
           :placeholder="$t('nft-form.textarea-description-placeholder')"
           :label="$t('nft-form.textarea-description-label')"
+          :error-message="getFieldErrorMessage('description')"
+          :disabled="isFormDisabled"
+          @blur="touchField('description')"
         />
-      </div>
-      <div class="nft-form__action-buttons">
-        <app-button
-          class="nft-form__button"
-          scheme="flat"
-          size="small"
-          :text="$t('nft-form.cancel-button')"
-          :route="{ name: $routes.nfts }"
-        />
-        <app-button
-          type="submit"
-          size="small"
-          class="nft-form__button"
-          :text="$t('nft-form.create-button')"
-        />
+        <div class="nft-form__action-buttons">
+          <app-button
+            class="nft-form__button"
+            scheme="flat"
+            size="small"
+            :text="$t('nft-form.cancel-button')"
+            :route="{ name: $routes.nfts }"
+            :disabled="isFormDisabled"
+          />
+
+          <template v-if="isValidChain">
+            <app-button
+              type="submit"
+              size="small"
+              class="nft-form__button"
+              :text="$t('nft-form.create-button')"
+              :disabled="isFormDisabled"
+            />
+          </template>
+          <template v-else>
+            <app-button
+              type="button"
+              class="nft-form__button"
+              size="small"
+              :text="$t('nft-form.switch-chain-button')"
+              @click="provider.switchChain(config.CHAIN_ID)"
+            />
+          </template>
+        </div>
       </div>
     </form>
   </div>
@@ -114,7 +241,7 @@ const submit = () => {
 
 .nft-form__uploadings {
   display: grid;
-  grid-template-columns: repeat(2, minmax(toRem(100), toRem(510)));
+  grid-template-columns: repeat(2, minmax(toRem(100), 1fr));
   grid-column-gap: toRem(20);
   margin-bottom: toRem(35);
   justify-content: space-evenly;
@@ -138,8 +265,13 @@ const submit = () => {
   }
 }
 
+.nft-form__textarea {
+  grid-column: 1/2;
+}
+
 .nft-form__action-buttons {
   display: flex;
+  align-items: flex-end;
   justify-content: flex-end;
   column-gap: toRem(20);
 
@@ -162,5 +294,10 @@ const submit = () => {
   text-transform: uppercase;
   width: toRem(182);
   padding: toRem(15);
+  max-height: toRem(50);
+
+  &:first-child {
+    font-weight: 500;
+  }
 }
 </style>

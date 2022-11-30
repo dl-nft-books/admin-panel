@@ -1,7 +1,8 @@
 {
   "validations": {
     "field-error_required": "Please fill out this field",
-    "field-error_email": "Field must be a valid email"
+    "field-error_email": "Field must be a valid email",
+    "field-error_minValue": "Value must be at least {min}"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -71,17 +72,6 @@
   "web3-page": {
     "loading-error-msg": "Oops... Something went wrong"
   },
-  "erc20": {
-    "loading-error-msg": "Oops... Something went wrong",
-    "title": "ERC20",
-    "name-lbl": "Name",
-    "symbol-lbl": "Symbol",
-    "decimals-lbl": "Decimals",
-    "total-supply-lbl": "Total supply",
-    "balance-lbl": "Balance",
-    "transfer-lbl": "Transfer",
-    "mint-lbl": "Mint"
-  },
   "nft-form": {
     "create-title": "NFT Creation",
     "edit-title": "Edit NFT",
@@ -89,16 +79,20 @@
     "details-subtitle": "2. Add Details",
     "input-name-label": "Name*",
     "input-price-label": "Price (USD)*",
+    "input-symbol-label": "NFT symbol*",
     "textarea-description-label": "Description*",
     "input-name-placeholder": "Name*",
+    "input-symbol-placeholder": "Enter NFT symbol",
     "input-price-placeholder": "Price (USD)*",
     "textarea-description-placeholder": "Description*",
     "cancel-button": "cancel",
     "create-button": "create",
     "file-field-image-title": "Upload Photo*",
-    "file-field-image-description": "JPG, PNG less than 2 mb",
+    "file-field-image-description": "JPG, PNG, JPEG less than 2 mb",
     "file-field-pdf-title": "Upload Main File*",
-    "file-field-pdf-description": "PDF less than 500 mb"
+    "file-field-pdf-description": "PDF less than 500 mb",
+    "success-msg": "Congratulations. A new book has been created.",
+    "switch-chain-button": "Switch Chain"
   },
   "overview-nfts": {
     "title": "NFTs",
@@ -106,7 +100,9 @@
     "view-all-button": "View all",
     "error-message": "Error while loading",
     "error-title": "Error",
-    "no-data-message": "No NFT Books available"
+    "no-data-message": "No NFT Books available",
+    "create-button": "CREATE NFT",
+    "load-more-btn": "Load More"
   },
   "nft-card": {
     "name-description": "Name",
@@ -125,7 +121,9 @@
   },
   "sale-history": {
     "header": "Sale History",
-    "no-data-message": "No history available"
+    "no-data-message": "No history available",
+    "loading-error-msg": "Error while loading.",
+    "load-more-btn": "Load More"
   },
   "sale-history-item": {
     "buyer-address-lbl": "Buyer's Address",
@@ -135,8 +133,18 @@
     "token-amount-lbl": "Amount of Token",
     "book-link-lbl": "Link to the book"
   },
-  "app-navbar": {
-    "create-button": "CREATE NFT",
+  "api-errors": {
+    "session-expired-title": "Session expired",
+    "session-expired-desc": "Please login again to continue using the application."
+  },
+  "kyc-requests": {
+    "no-data-message": "Currently no data"
+  },
+  "settings": {
+    "no-data-message": "Currently no data"
+  },
+  "nft-item-page": {
+    "loading-error-msg": "Error while loading.",
     "edit-button": "EDIT NFT"
   }
 }

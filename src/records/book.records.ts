@@ -1,4 +1,5 @@
 import { Book } from '@/types'
+import { Document } from '@/api'
 
 export class BookRecord {
   contractAddress: string
@@ -16,6 +17,8 @@ export class BookRecord {
   fileUrl: string
   bannerUrl: string
   contractSymbol: string
+  file: Document
+  banner: Document
 
   constructor(record: Book) {
     this.contractAddress = record.contract_address
@@ -29,9 +32,11 @@ export class BookRecord {
     this.title = record.title
     this.type = record.type
 
+    this.file = new Document(record.file.attributes)
     this.fileKey = record.file.attributes.key
     this.fileName = record.file.attributes.name
     this.fileUrl = record.file.attributes.url
+    this.banner = new Document(record.banner.attributes)
     this.bannerKey = record.banner.attributes.key
     this.bannerUrl = record.banner.attributes.url
   }

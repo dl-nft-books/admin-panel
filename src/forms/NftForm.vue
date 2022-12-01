@@ -197,8 +197,8 @@ const form = reactive<{
   price: isUpdateNft.value ? nftPrice : '',
   description: props.book?.description || '',
   symbol: props.book?.contractSymbol || '',
-  photo: new Document(),
-  book: new Document(),
+  photo: props.book?.banner || new Document(),
+  book: props.book?.file || new Document(),
 })
 
 const { disableForm, enableForm, isFormDisabled } = useForm()

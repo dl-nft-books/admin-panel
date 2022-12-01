@@ -7,12 +7,13 @@ import { Bus } from '@/helpers'
 import { useI18n } from 'vue-i18n'
 import { ErrorHandler } from '@/helpers/error-handler'
 import { formatBytes } from '@/helpers'
+import { Document } from '@/api'
 
 type FileExtension = 'jpg' | 'png' | 'pdf' | 'jpeg'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: File | undefined
+    modelValue: Document
     errorMessage?: string
     disabled?: boolean | string
     label?: string
@@ -31,7 +32,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: File | undefined): void
+  (e: 'update:modelValue', value: Document): void
 }>()
 
 const { t } = useI18n()
@@ -113,7 +114,14 @@ const onChange = (file: File) => {
     return
   }
 
-  emit('update:modelValue', file)
+  emit(
+    'update:modelValue',
+    new Document({
+      mimeType: file.type,
+      name: file.name,
+      file,
+    }),
+  )
 }
 
 function onDrop(files: File[] | null) {
@@ -148,8 +156,8 @@ const setHeightCSSVar = (element: HTMLElement) => {
           <p class="file-field__file-name">
             {{ modelValue?.name }}
           </p>
-          <p class="file-field__file-size">
-            {{ formatBytes(modelValue?.size) }}
+          <p v-if="modelValue.file?.size" class="file-field__file-size">
+            {{ formatBytes(modelValue.file?.size) }}
           </p>
           <app-button
             class="file-field__reset-btn"
@@ -157,7 +165,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
             size="default"
             color="secondary"
             :icon-right="$icons.x"
-            @click="emit('update:modelValue', undefined)"
+            @click="emit('update:modelValue', new Document())"
           />
         </div>
       </template>

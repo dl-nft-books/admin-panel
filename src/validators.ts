@@ -12,6 +12,7 @@ import { Ref } from 'vue'
 import { createI18nMessage, MessageProps } from '@vuelidate/validators'
 import { get } from 'lodash-es'
 import { i18n } from '@/localization'
+import { Document } from '@/api'
 
 const { t } = i18n.global || i18n
 
@@ -42,3 +43,7 @@ export const minValue = (
 ): ValidationRule => {
   return <ValidationRule>withI18nMessage(_minValue(minValue))
 }
+
+export const nonEmptyDocument = <ValidationRule>(
+  withI18nMessage((i: Document) => !i.isEmpty)
+)

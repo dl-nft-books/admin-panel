@@ -1,4 +1,4 @@
-import { api, StoreDocument } from '@/api'
+import { api, Document } from '@/api'
 import { Book, PageOrder, CreateBookResponse } from '@/types'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
 import { config } from '@/config'
@@ -32,8 +32,8 @@ export function createBook(opts: {
   tokenSymbol: string
   description: string
   price: string
-  banner: StoreDocument
-  book: StoreDocument
+  banner: Document
+  book: Document
 }) {
   return api.post<CreateBookResponse>('/integrations/books', {
     data: {
@@ -46,19 +46,11 @@ export function createBook(opts: {
         price: opts.price,
         banner: {
           type: 'banners',
-          attributes: {
-            name: opts.banner._name,
-            mime_type: opts.banner._mimeType,
-            key: opts.banner._key,
-          },
+          attributes: opts.banner,
         },
         file: {
           type: 'files',
-          attributes: {
-            name: opts.book._name,
-            mime_type: opts.book._mimeType,
-            key: opts.book._key,
-          },
+          attributes: opts.book,
         },
       },
     },
@@ -69,8 +61,8 @@ export function updateBook(opts: {
   bookId: string
   title?: string
   description?: string
-  banner?: StoreDocument
-  book?: StoreDocument
+  banner: Document
+  book: Document
 }) {
   return api.patch(`/integrations/books/${opts.bookId}`, {
     data: {
@@ -78,27 +70,19 @@ export function updateBook(opts: {
       attributes: {
         ...(opts.title ? { title: opts.title } : {}),
         ...(opts.description ? { description: opts.description } : {}),
-        ...(opts.banner
+        ...(opts.banner.file
           ? {
               banner: {
                 type: 'banners',
-                attributes: {
-                  name: opts.banner?._name,
-                  mime_type: opts.banner?._mimeType,
-                  key: opts.banner?._key,
-                },
+                attributes: opts.banner,
               },
             }
           : {}),
-        ...(opts.book
+        ...(opts.book.file
           ? {
               file: {
                 type: 'files',
-                attributes: {
-                  name: opts.book?._name,
-                  mime_type: opts.book?._mimeType,
-                  key: opts.book?._key,
-                },
+                attributes: opts.book,
               },
             }
           : {}),

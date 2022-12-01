@@ -1,1 +1,1 @@
-export * from './StoreDocument'
+export * from './Document'

@@ -111,8 +111,8 @@ import {
 } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { StoreDocument, createBook, updateBook } from '@/api'
-import { required, minValue, requiredIf } from '@/validators'
+import { Document, createBook, updateBook } from '@/api'
+import { required, minValue, nonEmptyDocument } from '@/validators'
 import { ErrorHandler, Bus } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { useI18n } from 'vue-i18n'
@@ -165,8 +165,8 @@ const isApiValuesUpdated = computed(() => {
   return (
     isDescriptionUpdated.value ||
     isTitleUpdated.value ||
-    form.book ||
-    form.photo
+    form.book.key !== props.book?.fileKey ||
+    form.photo.key !== props.book?.bannerKey
   )
 })
 
@@ -190,15 +190,15 @@ const form = reactive<{
   price: string
   description: string
   symbol: string
-  photo?: File
-  book?: File
+  photo: Document
+  book: Document
 }>({
   name: props.book?.contractName || '',
   price: isUpdateNft.value ? nftPrice : '',
   description: props.book?.description || '',
   symbol: props.book?.contractSymbol || '',
-  photo: undefined,
-  book: undefined,
+  photo: new Document(),
+  book: new Document(),
 })
 
 const { disableForm, enableForm, isFormDisabled } = useForm()
@@ -209,8 +209,8 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     price: { required, minValue: minValue(MIN_PRICE_VALUE) },
     description: { required },
     symbol: { required },
-    photo: { requiredIf: requiredIf(!isUpdateNft.value) },
-    book: { requiredIf: requiredIf(!isUpdateNft.value) },
+    photo: { nonEmptyDocument },
+    book: { nonEmptyDocument },
   },
 )
 
@@ -218,12 +218,12 @@ const submit = async () => {
   if (!isFormValid() || !provider.value.selectedAddress) return
   disableForm()
   try {
-    const { book, banner } = await uploadDocuments()
+    await Document.uploadDocuments([form.book, form.photo])
 
     if (isUpdateNft.value) {
-      await updateNftBook(book, banner)
+      await updateNftBook(form.book, form.photo)
     } else {
-      await createNftBook(book!, banner!)
+      await createNftBook(form.book, form.photo)
     }
     router.push({ name: ROUTE_NAMES.nfts })
   } catch (e) {
@@ -232,10 +232,7 @@ const submit = async () => {
   enableForm()
 }
 
-const updateNftBook = async (
-  book: StoreDocument | null,
-  banner: StoreDocument | null,
-) => {
+const updateNftBook = async (book: Document, banner: Document) => {
   if (isContractValuesUpdated.value) {
     bookNft.init(props.book?.contractAddress!)
     await bookNft.updateTokenContractParams(form.price, form.name, form.symbol)
@@ -243,16 +240,16 @@ const updateNftBook = async (
   if (isApiValuesUpdated.value) {
     await updateBook({
       bookId: props.book?.id!,
+      book,
+      banner,
       ...(isDescriptionUpdated.value ? { description: form.description } : {}),
       ...(isTitleUpdated.value ? { title: form.name } : {}),
-      ...(book?._key ? { book } : {}),
-      ...(banner?._key ? { banner } : {}),
     })
   }
   Bus.success(t('nft-form.edit-success-msg'))
 }
 
-const createNftBook = async (book: StoreDocument, banner: StoreDocument) => {
+const createNftBook = async (book: Document, banner: Document) => {
   const weiPrice = new BN(form.price).toWei().toString()
 
   const { data: bookSignature } = await createBook({
@@ -260,8 +257,8 @@ const createNftBook = async (book: StoreDocument, banner: StoreDocument) => {
     tokenSymbol: form.symbol,
     description: form.description,
     price: weiPrice,
-    book: book,
-    banner: banner,
+    book,
+    banner,
   })
 
   await tokenFactory.deployTokenContract(
@@ -275,29 +272,6 @@ const createNftBook = async (book: StoreDocument, banner: StoreDocument) => {
   )
 
   Bus.success(t('nft-form.create-success-msg'))
-}
-
-const uploadDocuments = async () => {
-  let book = null
-  let banner = null
-
-  if (form.book) {
-    book = new StoreDocument({
-      name: form.book?.name || '',
-      file: form.book,
-      mimeType: form.book?.type || '',
-    })
-  }
-  if (form.photo) {
-    banner = new StoreDocument({
-      name: form.photo?.name || '',
-      file: form.photo,
-      mimeType: form.photo?.type || '',
-    })
-  }
-  await Promise.all([book?.uploadSelf(), banner?.uploadSelf()])
-
-  return { book, banner }
 }
 </script>
 

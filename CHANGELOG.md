@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.1.0] - 2022-12-02
 #### Added
 - Edit NFT page
 
@@ -29,5 +29,6 @@ for further information about branching and tagging conventions.
 #### Under the hood changes
 - Merged from https://gitlab.com/distributed_lab/frontend/vue-template/-/commit/905e060b66b4fbdfa4bf102ac6c27e8edd11dbc2
 
-[Unreleased]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.0.0...main
+[Unreleased]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.1.0...main
+[1.1.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.0.0...v1.1.0
 [1.0.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/tags/v1.0.0

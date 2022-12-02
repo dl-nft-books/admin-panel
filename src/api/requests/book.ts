@@ -1,4 +1,4 @@
-import { api } from '@/api'
+import { api, Document } from '@/api'
 import { Book, PageOrder, CreateBookResponse } from '@/types'
 import { BOOK_DEPLOY_STATUSES } from '@/enums'
 import { config } from '@/config'
@@ -32,12 +32,8 @@ export function createBook(opts: {
   tokenSymbol: string
   description: string
   price: string
-  bookKey: string
-  bannerKey: string
-  bookName: string
-  bannerName: string
-  bookType: string
-  bannerType: string
+  banner: Document
+  book: Document
 }) {
   return api.post<CreateBookResponse>('/integrations/books', {
     data: {
@@ -50,20 +46,46 @@ export function createBook(opts: {
         price: opts.price,
         banner: {
           type: 'banners',
-          attributes: {
-            name: opts.bannerName,
-            mime_type: opts.bannerType,
-            key: opts.bannerKey,
-          },
+          attributes: opts.banner,
         },
         file: {
           type: 'files',
-          attributes: {
-            name: opts.bookName,
-            mime_type: opts.bookType,
-            key: opts.bookKey,
-          },
+          attributes: opts.book,
         },
+      },
+    },
+  })
+}
+
+export function updateBook(opts: {
+  bookId: string
+  title?: string
+  description?: string
+  banner: Document
+  book: Document
+}) {
+  return api.patch(`/integrations/books/${opts.bookId}`, {
+    data: {
+      type: 'books',
+      attributes: {
+        ...(opts.title ? { title: opts.title } : {}),
+        ...(opts.description ? { description: opts.description } : {}),
+        ...(opts.banner.file
+          ? {
+              banner: {
+                type: 'banners',
+                attributes: opts.banner,
+              },
+            }
+          : {}),
+        ...(opts.book.file
+          ? {
+              file: {
+                type: 'files',
+                attributes: opts.book,
+              },
+            }
+          : {}),
       },
     },
   })

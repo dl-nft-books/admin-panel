@@ -1,30 +1,30 @@
 import { ref, watch } from 'vue'
 import {
-  TokenFactory,
-  TokenFactory__factory,
-  EthProviderRpcError,
+  NftBookToken,
+  NftBookToken__factory,
   UseUnrefProvider,
+  EthProviderRpcError,
 } from '@/types'
-
+import { BN } from '@/utils/math.util'
 import { handleEthError } from '@/helpers'
 
-export const useTokenFactory = (
+export const useNftBookToken = (
   provider: UseUnrefProvider,
   address?: string,
 ) => {
-  const _instance = ref<TokenFactory | undefined>()
-  const _instance_rw = ref<TokenFactory | undefined>()
+  const _instance = ref<NftBookToken | undefined>()
+  const _instance_rw = ref<NftBookToken | undefined>()
 
   watch(provider, () => {
     if (address) init(address)
   })
 
   if (address && provider.currentProvider && provider.currentSigner) {
-    _instance.value = TokenFactory__factory.connect(
+    _instance.value = NftBookToken__factory.connect(
       address,
       provider.currentProvider,
     )
-    _instance_rw.value = TokenFactory__factory.connect(
+    _instance_rw.value = NftBookToken__factory.connect(
       address,
       provider.currentSigner,
     )
@@ -32,40 +32,31 @@ export const useTokenFactory = (
 
   const init = (address: string) => {
     if (address && provider.currentProvider && provider.currentSigner) {
-      _instance.value = TokenFactory__factory.connect(
+      _instance.value = NftBookToken__factory.connect(
         address,
         provider.currentProvider,
       )
-      _instance_rw.value = TokenFactory__factory.connect(
+      _instance_rw.value = NftBookToken__factory.connect(
         address,
         provider.currentSigner,
       )
     }
   }
 
-  const deployTokenContract = async (
-    tokenId: string,
+  const updateTokenContractParams = async (
+    price: string,
     name: string,
     symbol: string,
-    amount: string,
-    r: string,
-    s: string,
-    v: number,
   ) => {
     try {
-      const contractTransaction = await _instance_rw.value?.deployTokenContract(
-        +tokenId,
+      const convertedPrice = new BN(price).toWei().toString()
+      const updateTx = await _instance_rw.value?.updateTokenContractParams(
+        convertedPrice,
         name,
         symbol,
-        amount,
-        r,
-        s,
-        v,
       )
 
-      await contractTransaction?.wait()
-
-      return contractTransaction
+      await updateTx?.wait()
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
@@ -73,6 +64,6 @@ export const useTokenFactory = (
 
   return {
     init,
-    deployTokenContract,
+    updateTokenContractParams,
   }
 }

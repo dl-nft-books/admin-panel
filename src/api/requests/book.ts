@@ -27,6 +27,10 @@ export function getBookById(id: number | string) {
   return api.get<Book>(`/integrations/books/${id}`)
 }
 
+export function getBookByTitle(id: number | string) {
+  return api.get<Book>(`/integrations/books/title${id}`)
+}
+
 export function createBook(opts: {
   tokenName: string
   tokenSymbol: string

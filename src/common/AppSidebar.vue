@@ -179,7 +179,6 @@ $z-local: 5;
   padding: toRem(40) toRem(4) toRem(20);
   height: 100%;
   position: fixed;
-  overflow: scroll;
   max-height: calc(100vh - #{toRem(40)});
 
   @include respond-to(tablet) {

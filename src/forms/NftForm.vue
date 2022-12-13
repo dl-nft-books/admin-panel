@@ -112,7 +112,7 @@ import {
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { Document, createBook, updateBook } from '@/api'
-import { required, minValue, nonEmptyDocument } from '@/validators'
+import { required, minValue, maxValue, nonEmptyDocument } from '@/validators'
 import { ErrorHandler, Bus } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { useI18n } from 'vue-i18n'
@@ -120,6 +120,7 @@ import { config } from '@/config'
 import { BookRecord } from '@/records'
 
 const MIN_PRICE_VALUE = '0.01'
+const MAX_PRICE_VALUE = 0xffffffff // UINT32 MAX VALUE
 const MAX_BOOK_SIZE = 500 // mb
 
 const props = defineProps<{
@@ -206,7 +207,11 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
     name: { required },
-    price: { required, minValue: minValue(MIN_PRICE_VALUE) },
+    price: {
+      required,
+      minValue: minValue(MIN_PRICE_VALUE),
+      maxValue: maxValue(MAX_PRICE_VALUE),
+    },
     description: { required },
     symbol: { required },
     photo: { nonEmptyDocument },

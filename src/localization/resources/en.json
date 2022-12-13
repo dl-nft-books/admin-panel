@@ -4,7 +4,8 @@
     "field-error_requiredIf": "Please fill out this field",
     "field-error_nonEmptyDocument": "Please fill out this field",
     "field-error_email": "Field must be a valid email",
-    "field-error_minValue": "Value must be at least {min}"
+    "field-error_minValue": "Value must be at least {min}",
+    "field-error_maxValue": "Value cannot be that big"
   },
   "errors": {
     "default": "Oops... Something went wrong",

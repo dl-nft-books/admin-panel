@@ -54,7 +54,18 @@ function onError(e: Error) {
   isLoadFailed.value = true
 }
 
-const search = () => {
+const search = async () => {
+  try {
+    const { data } = await getBooks({
+      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+      title: searchByString.value,
+    })
+
+    booksList.value = data.map(book => new BookRecord(book)) ?? []
+  } catch (e) {
+    isLoadFailed.value = true
+    ErrorHandler.processWithoutFeedback(e)
+  }
   return true
 }
 
@@ -71,7 +82,7 @@ const buttonLinkText = computed(() =>
       <h2 class="overview-nfts__title">
         {{ $t('overview-nfts.title') }}
       </h2>
-      <div class="overview-nfts__search-wrapper">
+      <div class="overview-nfts__search-wrapper" @v-on:keyup.enter="search">
         <app-button
           size="default"
           scheme="default"

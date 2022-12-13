@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [Unreleased]
+#### Fixed
+- Nft long title now displays correct
+- Drop down overlap fixed
+- Field price validation
+- Sidebar scrollbars
+
+#### Removed
+- Unused sidebar menu items
+
 ## [1.1.0] - 2022-12-02
 #### Added
 - Edit NFT page

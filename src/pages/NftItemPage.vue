@@ -113,6 +113,7 @@ init()
 .nft-item-page__cover {
   width: 100%;
   height: auto;
+  border-radius: toRem(8);
 }
 
 .nft-item-page__details {
@@ -127,14 +128,19 @@ init()
   font-size: toRem(30);
   line-height: 1.2;
   margin-bottom: toRem(30);
+  max-width: 45vw;
+
+  @include text-ellipsis;
 
   @include respond-to(xmedium) {
     font-size: toRem(20);
+    max-width: 30vw;
+    margin-top: toRem(20);
+    text-align: center;
   }
 
-  @include respond-to(medium) {
-    text-align: center;
-    margin-top: toRem(20);
+  @include respond-to(small) {
+    max-width: 90vw;
   }
 }
 

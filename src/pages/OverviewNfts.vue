@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { InputField } from '@/fields'
 import {
-  Icon,
   Loader,
   NftCard,
   ErrorMessage,
@@ -19,7 +17,8 @@ import { getBooks } from '@/api'
 import { usePaginate } from '@/composables'
 import { Book } from '@/types'
 
-const searchByString = ref('')
+// When functionality on backend is fixed it will be implemented
+// const searchByString = ref('')
 const booksList = ref<BookRecord[]>([])
 const isLoadFailed = ref(false)
 
@@ -53,10 +52,10 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
-
-const search = () => {
-  return true
-}
+// When functionality on backend is fixed it will be implemented
+// const search = () => {
+//   return true
+// }
 
 const buttonLinkText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.small
@@ -71,7 +70,8 @@ const buttonLinkText = computed(() =>
       <h2 class="overview-nfts__title">
         {{ $t('overview-nfts.title') }}
       </h2>
-      <div class="overview-nfts__search-wrapper">
+      <!-- When functionality on backend is fixed it will be implemented -->
+      <!-- <div class="overview-nfts__search-wrapper">
         <app-button
           size="default"
           scheme="default"
@@ -86,7 +86,7 @@ const buttonLinkText = computed(() =>
           :placeholder="$t('overview-nfts.search-placeholder')"
           iconned
         />
-      </div>
+      </div> -->
     </div>
 
     <template v-if="isLoadFailed">

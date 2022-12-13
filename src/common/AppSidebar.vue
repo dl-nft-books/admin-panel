@@ -86,20 +86,6 @@ watch(asideElement, () => {
             <icon class="app-sidebar__link-icon" :name="$icons.photograph" />
             {{ $t('app-sidebar.nfts-link') }}
           </router-link>
-          <router-link
-            class="app-sidebar__link"
-            :to="{ name: $routes.kycRequests }"
-          >
-            <icon class="app-sidebar__link-icon" :name="$icons.database" />
-            {{ $t('app-sidebar.kyc-requests-link') }}
-          </router-link>
-          <router-link
-            class="app-sidebar__link"
-            :to="{ name: $routes.settings }"
-          >
-            <icon class="app-sidebar__link-icon" :name="$icons.cog" />
-            {{ $t('app-sidebar.settings-link') }}
-          </router-link>
         </div>
         <app-button
           scheme="default"
@@ -111,17 +97,6 @@ watch(asideElement, () => {
           <icon class="app-sidebar__link-icon" :name="$icons.logout" />
           {{ $t('app-sidebar.logout-btn') }}
         </app-button>
-        <div class="app-sidebar__refs">
-          <a class="app-sidebar__refs-item">
-            {{ $t('app-sidebar.terms-link') }}
-          </a>
-          <a class="app-sidebar__refs-item">
-            {{ $t('app-sidebar.downloads-link') }}
-          </a>
-          <a class="app-sidebar__refs-item">
-            {{ $t('app-sidebar.support-link') }}
-          </a>
-        </div>
         <div class="app-sidebar__copyright">
           {{
             $t('app-sidebar.copyright', {
@@ -179,7 +154,6 @@ $z-local: 5;
   padding: toRem(40) toRem(4) toRem(20);
   height: 100%;
   position: fixed;
-  overflow: scroll;
   max-height: calc(100vh - #{toRem(40)});
 
   @include respond-to(tablet) {
@@ -242,7 +216,6 @@ $z-local: 5;
 }
 
 .app-sidebar__links-section {
-  display: grid;
   grid-gap: toRem(4);
   margin-top: toRem(90);
 
@@ -289,20 +262,7 @@ $z-local: 5;
 
 .app-sidebar__logout {
   margin-top: auto;
-}
-
-.app-sidebar__refs {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: toRem(36);
-  margin: toRem(60) 0 toRem(16);
-}
-
-.app-sidebar__refs-item {
-  font-size: toRem(12);
-  line-height: 1.3;
-  color: var(--text-primary-invert-main);
+  margin-bottom: toRem(100);
 }
 
 .app-sidebar__copyright {

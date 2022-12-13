@@ -94,11 +94,8 @@ $icon-size: toRem(20);
   max-width: 25vw;
   word-wrap: break-word;
 
-  @include respond-to(xmedium) {
-    font-size: toRem(16);
-  }
-
   @include respond-to(medium) {
+    font-size: toRem(16);
     max-width: 40vw;
   }
 

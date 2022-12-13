@@ -135,11 +135,8 @@ init()
   @include respond-to(xmedium) {
     font-size: toRem(20);
     max-width: 30vw;
-  }
-
-  @include respond-to(medium) {
-    text-align: center;
     margin-top: toRem(20);
+    text-align: center;
   }
 
   @include respond-to(small) {

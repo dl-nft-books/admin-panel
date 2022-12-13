@@ -119,11 +119,8 @@ defineProps<{
   color: var(--text-secondary-main);
   font-weight: 400;
 
-  @include respond-to(xmedium) {
-    font-size: toRem(14);
-  }
-
   @include respond-to(medium) {
+    font-size: toRem(14);
     text-align: center;
   }
 }
@@ -137,12 +134,9 @@ defineProps<{
 
   @include text-ellipsis;
 
-  @include respond-to(xmedium) {
-    font-size: toRem(14);
-  }
-
   @include respond-to(medium) {
     text-align: center;
+    font-size: toRem(14);
   }
 }
 </style>

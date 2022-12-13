@@ -27,6 +27,11 @@ export function getBookById(id: number | string) {
   return api.get<Book>(`/integrations/books/${id}`)
 }
 
+//  When functionality on backend is fixed it will be implemented
+export function getBookByTitle(title: string) {
+  return api.get<Book>(`/integrations/books/title${title}`)
+}
+
 export function createBook(opts: {
   tokenName: string
   tokenSymbol: string

@@ -46,12 +46,7 @@
   "app-sidebar": {
     "logo-subtitle": "Admin panel",
     "nfts-link": "NFTs",
-    "kyc-requests-link": "KYC Requests",
-    "settings-link": "Settings",
     "logout-btn": "Logout",
-    "terms-link": "Terms",
-    "downloads-link": "Downloads",
-    "support-link": "Support",
     "copyright": "{value}© Distributed Lab"
   },
   "login-page": {

@@ -14,6 +14,9 @@ for further information about branching and tagging conventions.
 - Field price validation
 - Sidebar scrollbars
 
+#### Removed
+- Unused sidebar menu items
+
 ## [1.1.0] - 2022-12-02
 #### Added
 - Edit NFT page

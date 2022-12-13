@@ -217,7 +217,6 @@ $z-local: 5;
 }
 
 .app-sidebar__links-section {
-  display: grid;
   grid-gap: toRem(4);
   margin-top: toRem(90);
 
@@ -260,11 +259,11 @@ $z-local: 5;
   max-width: toRem(16);
   max-height: toRem(16);
   margin-right: toRem(10);
-  margin-bottom: toRem(100);
 }
 
 .app-sidebar__logout {
   margin-top: auto;
+  margin-bottom: toRem(100);
 }
 
 .app-sidebar__copyright {

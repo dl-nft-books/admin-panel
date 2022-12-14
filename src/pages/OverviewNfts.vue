@@ -18,6 +18,7 @@ import { useI18n } from 'vue-i18n'
 import { getBooks } from '@/api'
 import { usePaginate } from '@/composables'
 import { Book } from '@/types'
+import { debounce } from 'lodash'
 
 const searchByString = ref('')
 const booksList = ref<BookRecord[]>([])
@@ -69,6 +70,8 @@ const search = async () => {
   return true
 }
 
+const searchHandler = debounce(search, 700)
+
 const buttonLinkText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.small
     ? t('overview-nfts.create-button')
@@ -82,12 +85,11 @@ const buttonLinkText = computed(() =>
       <h2 class="overview-nfts__title">
         {{ $t('overview-nfts.title') }}
       </h2>
-      <div class="overview-nfts__search-wrapper" @v-on:keyup.enter="search">
+      <div class="overview-nfts__search-wrapper" @keyup.stop="searchHandler">
         <app-button
           size="default"
           scheme="default"
           class="overview-nfts__search-button"
-          @click="search"
         >
           <icon class="overview-nfts__search-icon" :name="$icons.search" />
         </app-button>

@@ -13,6 +13,8 @@ for further information about branching and tagging conventions.
 - Drop down overlap fixed
 - Field price validation
 - Sidebar scrollbars
+- Logout dropdown
+- Sales history dropdown
 
 #### Removed
 - Unused sidebar menu items

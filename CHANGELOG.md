@@ -8,6 +8,9 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+#### Changed
+- Validating name, NFT symbol and description now requires only Latin chars and numbers
+
 #### Fixed
 - Nft long title now displays correct
 - Drop down overlap fixed

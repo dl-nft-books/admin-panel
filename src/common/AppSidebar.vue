@@ -66,7 +66,7 @@ watch(asideElement, () => {
       <aside class="app-sidebar__aside" ref="asideElement">
         <div class="app-sidebar__logo-wrp">
           <div class="app-sidebar__logo-container">
-            <app-logo class="app-sidebar__logo" />
+            <app-logo class="app-sidebar__logo" @click="hideSidebar" />
             <span class="app-sidebar__logo-subtitle">
               {{ $t('app-sidebar.logo-subtitle') }}
             </span>
@@ -82,7 +82,11 @@ watch(asideElement, () => {
           </app-button>
         </div>
         <div class="app-sidebar__links-section">
-          <router-link class="app-sidebar__link" :to="{ name: $routes.nfts }">
+          <router-link
+            class="app-sidebar__link"
+            :to="{ name: $routes.nfts }"
+            @click="hideSidebar"
+          >
             <icon class="app-sidebar__link-icon" :name="$icons.photograph" />
             {{ $t('app-sidebar.nfts-link') }}
           </router-link>

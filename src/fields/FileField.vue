@@ -124,6 +124,10 @@ const onChange = (file: File) => {
   )
 }
 
+const onReset = () => {
+  emit('update:modelValue', new Document())
+}
+
 function onDrop(files: File[] | null) {
   if (!files?.length) return
   onChange(files[0])
@@ -165,7 +169,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
             size="default"
             color="secondary"
             :icon-right="$icons.x"
-            @click="emit('update:modelValue', new Document())"
+            @click="onReset"
           />
         </div>
       </template>

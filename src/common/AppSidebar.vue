@@ -84,7 +84,14 @@ watch(asideElement, () => {
         <div class="app-sidebar__links-section">
           <router-link class="app-sidebar__link" :to="{ name: $routes.nfts }">
             <icon class="app-sidebar__link-icon" :name="$icons.photograph" />
-            {{ $t('app-sidebar.nfts-link') }}
+            <p>{{ $t('app-sidebar.nfts-link') }}</p>
+          </router-link>
+          <router-link
+            class="app-sidebar__link"
+            :to="{ name: $routes.promocodes }"
+          >
+            <icon class="app-sidebar__link-icon" :name="$icons.coupon" />
+            <p>{{ $t('app-sidebar.promocodes-link') }}</p>
           </router-link>
         </div>
         <app-button
@@ -228,10 +235,15 @@ $z-local: 5;
   position: relative;
   display: flex;
   align-items: center;
+  gap: toRem(10);
   color: var(--text-secondary-invert-main);
-  padding: toRem(14) toRem(30);
+  padding: toRem(6) toRem(30);
   transition: 0.3s ease-in-out;
   transition-property: background, color;
+
+  & > * {
+    color: var(--text-secondary-invert-main);
+  }
 
   &:before {
     content: '';
@@ -248,6 +260,10 @@ $z-local: 5;
     background: #{rgba(var(--white-rgb), 0.08)};
     color: var(--primary-main);
 
+    & > * {
+      color: var(--primary-main);
+    }
+
     &:before {
       height: 100%;
     }
@@ -255,9 +271,10 @@ $z-local: 5;
 }
 
 .app-sidebar__link-icon {
-  max-width: toRem(16);
-  max-height: toRem(16);
-  margin-right: toRem(10);
+  --size: #{toRem(22)};
+
+  max-width: var(--size);
+  max-height: var(--size);
 }
 
 .app-sidebar__logout {

@@ -1,0 +1,5 @@
+export enum PROMOCODE_STATUSES {
+  EXPIRED = 2,
+  FULLY_USED = 3,
+  ACTIVE = 1,
+}

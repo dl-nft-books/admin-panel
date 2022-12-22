@@ -5,7 +5,7 @@ import { onMounted, Ref, ref, watch, computed, ComputedRef } from 'vue'
 import { ErrorHandler } from '@/helpers'
 
 export const usePaginate = <T>(
-  firstPageLoader: () => Promise<JsonApiResponse<T>>,
+  firstPageLoader: ComputedRef<() => Promise<JsonApiResponse<T>>>,
   onFirstPageLoad: (response: T) => void,
   onNextPageLoad: (response: T) => void,
   onError?: (e: Error) => void,
@@ -31,7 +31,7 @@ export const usePaginate = <T>(
 
   const loadFirstPage = async () => {
     isCollectionFetched.value = false
-    return loadPage(firstPageLoader, onFirstPageLoad)
+    return loadPage(firstPageLoader.value, onFirstPageLoad)
   }
 
   const loadNextPage = async () => {
@@ -54,6 +54,7 @@ export const usePaginate = <T>(
     isLoading.value = true
     try {
       const response = await loaderFn()
+
       onLoad(response.data)
       nextPageLoader = () => response.fetchPage(JsonApiLinkFields.next)
 
@@ -71,11 +72,9 @@ export const usePaginate = <T>(
   }
 
   onMounted(() => {
-    watch(
-      () => firstPageLoader,
-      () => loadFirstPage(),
-      { immediate: opts?.isLoadOnMounted ?? true },
-    )
+    watch(firstPageLoader.value, () => loadFirstPage(), {
+      immediate: opts?.isLoadOnMounted ?? true,
+    })
   })
 
   return {

@@ -1,36 +1,38 @@
 <template>
   <div class="promocodes-page">
     <loader v-if="isLoading" />
-    <error-message
-      v-if="isLoadFailed"
-      :message="$t('overview-nfts.error-message')"
-      :title="$t('overview-nfts.error-title')"
-    />
     <template v-else>
-      <section class="promocodes-page__header">
-        <h1 class="promocodes-page__title">
-          {{ $t('promocodes-page.title') }}
-        </h1>
-        <div class="promocodes-page__filter">
-          <select-field v-model="filter" :value-options="filterOptions" />
-        </div>
-      </section>
-
-      <promocode-item
-        v-for="promocode in promocodesList"
-        :key="promocode.id"
-        :promocode="promocode"
-        :reloader-func="loadFirstPage"
+      <error-message
+        v-if="isLoadFailed"
+        :message="$t('overview-nfts.error-message')"
+        :title="$t('overview-nfts.error-title')"
       />
+      <template v-else>
+        <section class="promocodes-page__header">
+          <h1 class="promocodes-page__title">
+            {{ $t('promocodes-page.title') }}
+          </h1>
+          <div class="promocodes-page__filter">
+            <select-field v-model="filter" :value-options="filterOptions" />
+          </div>
+        </section>
 
-      <app-button
-        v-if="isLoadMoreBtnShown"
-        class="promocodes-page__load-more-btn"
-        size="small"
-        scheme="flat"
-        :text="$t('overview-nfts.load-more-btn')"
-        @click="loadNextPage"
-      />
+        <promocode-item
+          v-for="promocode in promocodesList"
+          :key="promocode.id"
+          :promocode="promocode"
+          :reloader-func="loadFirstPage"
+        />
+
+        <app-button
+          v-if="isLoadMoreBtnShown"
+          class="promocodes-page__load-more-btn"
+          size="small"
+          scheme="flat"
+          :text="$t('overview-nfts.load-more-btn')"
+          @click="loadNextPage"
+        />
+      </template>
     </template>
 
     <mounted-teleport to="#app-navbar__right-buttons">
@@ -84,15 +86,15 @@ const buttonText = computed(() =>
 const filter = ref<PROMOCODES_FILTERS>(PROMOCODES_FILTERS.ALL)
 const filterOptions = computed(() => [
   {
-    label: 'All tokens',
+    label: $t('promocodes-page.filter-all'),
     value: PROMOCODES_FILTERS.ALL,
   },
   {
-    label: 'Available for use',
+    label: $t('promocodes-page.filter-active'),
     value: PROMOCODES_FILTERS.ACTIVE,
   },
   {
-    label: 'Unavailable for use',
+    label: $t('promocodes-page.filter-inactive'),
     value: PROMOCODES_FILTERS.INACTIVE,
   },
 ])

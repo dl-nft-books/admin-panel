@@ -1,5 +1,5 @@
 <template>
-  <div class="date-field">
+  <div :class="classes">
     <label v-if="label" class="date-field__label">
       {{ label }}
     </label>
@@ -16,6 +16,15 @@
     <div class="date-field__icon-wrp">
       <icon class="date-field__icon" :name="iconName" />
     </div>
+    <transition
+      name="date-field__err-msg-transition"
+      @enter="setHeightCSSVar"
+      @before-leave="setHeightCSSVar"
+    >
+      <span v-if="errorMessage" class="date-field__err-msg">
+        {{ errorMessage }}
+      </span>
+    </transition>
   </div>
 </template>
 
@@ -32,6 +41,7 @@ interface Props {
   label?: string
   disabled?: boolean
   iconName?: ICON_NAMES
+  errorMessage?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -40,6 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
   label: '',
   disabled: false,
   iconName: ICON_NAMES.calendar,
+  errorMessage: '',
 })
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
@@ -54,6 +65,18 @@ const listeners = computed(() => ({
     emit('update:modelValue', eventTarget.value)
   },
 }))
+
+const setHeightCSSVar = (element: HTMLElement) => {
+  element.style.setProperty(
+    '--field-error-msg-height',
+    `${element.scrollHeight}px`,
+  )
+}
+
+const classes = computed(() => [
+  'date-field',
+  props.errorMessage ? 'date-field--error' : '',
+])
 </script>
 
 <style lang="scss" scoped>
@@ -85,6 +108,10 @@ const listeners = computed(() => ({
   @include field-text;
 
   @include field-border;
+
+  .date-field--error & {
+    border-color: var(--field-error);
+  }
 
   &:is([disabled]) {
     opacity: 0.5;
@@ -120,10 +147,40 @@ const listeners = computed(() => ({
   top: 60%;
   right: calc(var(--field-padding-right) * 3 / 2);
   transform: translate(50%, -50%);
+  transition: 0.1s ease-in-out;
+  transition-property: top;
+
+  .date-field--error & {
+    top: 50%;
+  }
 }
 
 .date-field__icon {
   width: toRem(18);
   height: toRem(18);
+}
+
+.date-field__err-msg-transition-enter-active {
+  animation: fade-down var(--field-transition-duration);
+}
+
+.date-field__err-msg-transition-leave-active {
+  animation: fade-down var(--field-transition-duration) reverse;
+}
+
+.date-field__err-msg {
+  @include field-error;
+
+  margin-top: 0;
+}
+
+@keyframes fade-down {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--field-error-msg-height);
+  }
 }
 </style>

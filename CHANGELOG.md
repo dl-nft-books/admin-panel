@@ -8,6 +8,12 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+#### Added
+- Promocodes page
+
+#### Changed
+- Hook use-paginate now works with reactive values, that allows to use filters etc.
+
 #### Fixed
 - Nft long title now displays correct
 - Drop down overlap fixed

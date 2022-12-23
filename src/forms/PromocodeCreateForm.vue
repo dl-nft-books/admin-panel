@@ -8,6 +8,8 @@
       v-model="form.expirationDate"
       :disabled="isFormDisabled"
       :label="$t('promocode-create-form.date-lbl')"
+      @blur="touchField('expirationDate')"
+      :error-message="getFieldErrorMessage('expirationDate')"
     />
     <input-field
       @blur="touchField('discount')"

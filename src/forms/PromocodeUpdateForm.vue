@@ -8,6 +8,14 @@
         {{ $t('promocode-update-form.subtitle') }}
       </p>
     </div>
+    <date-field
+      :min-date="minDate"
+      v-model="form.dueDate"
+      :disabled="isFormDisabled"
+      :label="$t('promocode-create-form.date-lbl')"
+      @blur="touchField('dueDate')"
+      :error-message="getFieldErrorMessage('dueDate')"
+    />
     <input-field
       @blur="touchField('numberOfUses')"
       :error-message="getFieldErrorMessage('numberOfUses')"
@@ -37,14 +45,15 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { updatePromocode } from '@/api'
 import { AppButton } from '@/common'
-import { InputField } from '@/fields'
+import { InputField, DateField } from '@/fields'
 import { useForm, useFormValidation, useContext } from '@/composables'
 import { required, minValue, maxValue } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { Promocode } from '@/types'
+import { DateUtil } from '@/utils/date.util'
 
 import { MAX_PROMOCODE_USES_VALUE } from '@/consts'
 
@@ -58,7 +67,12 @@ const props = defineProps<{
 
 const form = reactive({
   numberOfUses: props.promocode.initial_usages,
+  dueDate: DateUtil.format(props.promocode.expiration_date, 'YYYY-MM-DD'),
 })
+
+const minDate = computed(() =>
+  DateUtil.format(props.promocode.expiration_date, 'YYYY-MM-DD'),
+)
 
 const { disableForm, enableForm, isFormDisabled } = useForm()
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
@@ -66,8 +80,11 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   {
     numberOfUses: {
       required,
-      minValue: minValue(0),
+      minValue: minValue(props.promocode.initial_usages),
       maxValue: maxValue(MAX_PROMOCODE_USES_VALUE),
+    },
+    dueDate: {
+      required,
     },
   },
 )
@@ -77,7 +94,11 @@ const submit = async () => {
 
   disableForm()
   try {
-    await updatePromocode(Number(form.numberOfUses), props.promocode.id)
+    await updatePromocode({
+      id: props.promocode.id,
+      initial_usages: Number(form.numberOfUses),
+      expiration_date: DateUtil.toISO(form.dueDate),
+    })
 
     Bus.success($t('promocode-update-form.success-msg'))
     props.closeModal()

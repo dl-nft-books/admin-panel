@@ -63,12 +63,16 @@
     "active": "Available",
     "inactive": "Unavailable",
     "update-btn-lbl": "UPDATE",
-    "delete-success": "Promocode deleted"
+    "delete-success": "Promocode deleted",
+    "copy-success": "Promocode copied to clipboard",
+    "filter-all": "All tokens",
+    "filter-active": "Available for use",
+    "filter-inactive": "Unavailable for use"
   },
   "promocode-update-form": {
     "title": "Update Promocode",
     "subtitle": "You can update the available number of promocode usage",
-    "input-lbl": "Addable number of uses",
+    "input-lbl": "Number of uses",
     "cancel-btn-lbl": "Cancel",
     "submit-btn-lbl": "Update",
     "success-msg": "Promocode successfuly updated"

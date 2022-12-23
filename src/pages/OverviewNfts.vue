@@ -25,18 +25,19 @@ const isLoadFailed = ref(false)
 const { width } = useWindowSize()
 const { t } = useI18n()
 
+const loadList = computed(
+  () => () =>
+    getBooks({
+      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+    }),
+)
+
 const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   loadList,
   setList,
   concatList,
   onError,
 )
-
-function loadList() {
-  return getBooks({
-    deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-  })
-}
 
 function setList(chunk: Book[]) {
   booksList.value = chunk.map(book => new BookRecord(book)) ?? []

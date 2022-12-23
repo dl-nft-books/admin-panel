@@ -10,9 +10,15 @@
             <p class="promocode-item__head">
               {{ $t('promocodes-page.promocode-lbl') }}
             </p>
-            <p class="promocode-item__value">
-              {{ promocode.promocode }}
-            </p>
+            <div
+              class="promocode-item__copy-promocode"
+              @click="copyPromocode(promocode.promocode)"
+            >
+              <p class="promocode-item__value">
+                {{ promocode.promocode }}
+              </p>
+              <icon class="promocode-item__icon" :name="$icons.duplicate" />
+            </div>
           </div>
           <div class="promocode-item__info">
             <p class="promocode-item__head">
@@ -35,7 +41,7 @@
               {{ $t('promocodes-page.used-lbl') }}
             </p>
             <p class="promocode-item__value">
-              {{ promocode.initial_usages - promocode.left_usages }}
+              {{ promocode.usages }}
             </p>
           </div>
           <promocode-state
@@ -103,13 +109,14 @@
 
 <script setup lang="ts">
 import { deletePromocode } from '@/api'
-import { Collapse, AppButton, Modal, ConfirmationModal } from '@/common'
+import { Collapse, AppButton, Modal, ConfirmationModal, Icon } from '@/common'
 import { Promocode } from '@/types'
 import { PromocodeState } from '@/pages/promocodes-page'
 import { computed, ref, reactive } from 'vue'
 import { PROMOCODE_STATUSES } from '@/enums'
 import { useContext } from '@/composables'
 import { PromocodeUpdateForm } from '@/forms'
+import { Bus, copyToClipboard, ErrorHandler } from '@/helpers'
 
 const { $t } = useContext()
 
@@ -133,13 +140,40 @@ const _deletePromocode = async () => {
   await deletePromocode(props.promocode.id)
   await props.reloaderFunc()
 }
+
+const copyPromocode = async (promocode: string) => {
+  try {
+    await copyToClipboard(promocode)
+    Bus.info($t('promocodes-page.copy-success'))
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+.promocode-item__copy-promocode {
+  display: flex;
+  align-items: center;
+
+  & > * {
+    transition: 0.2s ease-in-out;
+    transition-property: color;
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    & > * {
+      color: var(--text-primary-light);
+    }
+  }
+}
+
 .promocode-item {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(toRem(120), 1fr));
-  column-gap: toRem(15);
+  column-gap: toRem(20);
   row-gap: toRem(20);
   align-items: center;
   padding: 0 toRem(15) toRem(20) toRem(25);
@@ -148,10 +182,6 @@ const _deletePromocode = async () => {
 
   & > *:last-child {
     justify-self: center;
-  }
-
-  &:hover {
-    cursor: pointer;
   }
 }
 
@@ -202,6 +232,11 @@ const _deletePromocode = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @include respond-to(small) {
+    flex-direction: column;
+    gap: toRem(15);
+  }
 }
 
 .promocode-item__collapse-wrapper {
@@ -211,7 +246,13 @@ const _deletePromocode = async () => {
   justify-content: space-between;
 
   @include respond-to(medium) {
+    width: 60%;
+  }
+
+  @include respond-to(small) {
     width: 100%;
+    flex-direction: column;
+    gap: toRem(10);
   }
 }
 
@@ -219,5 +260,17 @@ const _deletePromocode = async () => {
   display: flex;
   align-items: center;
   gap: toRem(20);
+
+  @include respond-to(small) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.promocode-item__icon {
+  --size: #{toRem(25)};
+
+  max-width: var(--size);
+  max-height: var(--size);
 }
 </style>

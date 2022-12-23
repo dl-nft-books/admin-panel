@@ -6,6 +6,6 @@ export type Promocode = JsonApiRecordBase<'promocode'> & {
   expiration_date: string
   promocode: string
   state: PROMOCODE_STATUSES
-  left_usages: number
+  usages: number
   initial_usages: number
 }

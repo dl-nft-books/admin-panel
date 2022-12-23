@@ -19,11 +19,16 @@ export function getPromocodes(opts: {
   })
 }
 
-export function updatePromocode(numberOfUses: number, id: string) {
-  return api.patch(`/integrations/generator/promocodes/${id}`, {
+export function updatePromocode(opts: {
+  id: string
+  initial_usages: number
+  expiration_date: string
+}) {
+  return api.patch(`/integrations/generator/promocodes/${opts.id}`, {
     data: {
       attributes: {
-        initial_usages: numberOfUses,
+        initial_usages: opts.initial_usages,
+        expiration_date: opts.expiration_date,
       },
     },
   })

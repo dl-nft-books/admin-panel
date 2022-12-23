@@ -17,7 +17,12 @@
           </div>
         </section>
 
+        <no-data-message
+          v-if="!promocodesList.length"
+          :message="$t('promocodes-page.no-data-message')"
+        />
         <promocode-item
+          v-else
           v-for="promocode in promocodesList"
           :key="promocode.id"
           :promocode="promocode"
@@ -57,7 +62,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { AppButton, Loader, ErrorMessage, Modal } from '@/common'
+import { AppButton, Loader, ErrorMessage, Modal, NoDataMessage } from '@/common'
 import { usePaginate, useContext } from '@/composables'
 import { SelectField } from '@/fields'
 import { getPromocodes } from '@/api'

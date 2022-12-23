@@ -67,7 +67,8 @@
     "copy-success": "Promocode copied to clipboard",
     "filter-all": "All tokens",
     "filter-active": "Available for use",
-    "filter-inactive": "Unavailable for use"
+    "filter-inactive": "Unavailable for use",
+    "no-data-message": "No promocodes available"
   },
   "promocode-update-form": {
     "title": "Update Promocode",

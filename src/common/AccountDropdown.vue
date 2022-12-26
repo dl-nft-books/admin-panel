@@ -93,6 +93,7 @@ $z-index-overlap: 1;
   box-shadow: 0 toRem(6) toRem(58) rgba(196, 203, 214, 0.103611);
   border-radius: toRem(6);
   width: 100%;
+  min-width: toRem(100);
   background-color: var(--white);
 }
 

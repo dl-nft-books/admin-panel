@@ -5,7 +5,7 @@ import { Payment } from '@/types'
 
 import { ErrorHandler } from '@/helpers'
 import { getPayments } from '@/api'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { usePaginate } from '@/composables'
 
 const props = defineProps<{ bookId: string | number }>()
@@ -14,18 +14,19 @@ const isLoadFailed = ref(false)
 
 const history = ref<Payment[]>([])
 
+const loadList = computed(
+  () => () =>
+    getPayments({
+      bookIds: [props.bookId],
+    }),
+)
+
 const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   loadList,
   setList,
   concatList,
   onError,
 )
-
-function loadList() {
-  return getPayments({
-    bookIds: [props.bookId],
-  })
-}
 
 function setList(chunk: Payment[]) {
   history.value = chunk ?? []

@@ -147,10 +147,6 @@ $custom-breakpoint: 655px;
   gap: toRem(20);
   padding: toRem(26) $padding-right $padding-bottom $padding-left;
   border-top: toRem(1) solid var(--border-primary-dark);
-
-  @include respond-to($custom-breakpoint) {
-    display: block;
-  }
 }
 
 .sale-history-item__label {

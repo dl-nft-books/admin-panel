@@ -1,29 +1,46 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import {
   Loader,
   NftCard,
   ErrorMessage,
   NoDataMessage,
   AppButton,
+  Icon,
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
 import { BookRecord } from '@/records'
 import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
-import { useI18n } from 'vue-i18n'
+import { InputField } from '@/fields'
 import { getBooks } from '@/api'
-import { usePaginate } from '@/composables'
+import { usePaginate, useContext } from '@/composables'
 import { Book } from '@/types'
+import { debounce } from 'lodash'
 
-// When functionality on backend is fixed it will be implemented
-// const searchByString = ref('')
+const searchByString = ref('')
+const searchModel = ref('')
 const booksList = ref<BookRecord[]>([])
 const isLoadFailed = ref(false)
 
 const { width } = useWindowSize()
-const { t } = useI18n()
+const { $t } = useContext()
+
+watch(
+  searchModel,
+  debounce(() => {
+    searchByString.value = searchModel.value
+  }, 400),
+)
+
+const loadList = computed(
+  () => () =>
+    getBooks({
+      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+      title: searchByString.value,
+    }),
+)
 
 const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   loadList,
@@ -31,12 +48,6 @@ const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   concatList,
   onError,
 )
-
-function loadList() {
-  return getBooks({
-    deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-  })
-}
 
 function setList(chunk: Book[]) {
   booksList.value = chunk.map(book => new BookRecord(book)) ?? []
@@ -52,14 +63,10 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
-// When functionality on backend is fixed it will be implemented
-// const search = () => {
-//   return true
-// }
 
 const buttonLinkText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.small
-    ? t('overview-nfts.create-button')
+    ? $t('overview-nfts.create-button')
     : '',
 )
 </script>
@@ -70,23 +77,18 @@ const buttonLinkText = computed(() =>
       <h2 class="overview-nfts__title">
         {{ $t('overview-nfts.title') }}
       </h2>
-      <!-- When functionality on backend is fixed it will be implemented -->
-      <!-- <div class="overview-nfts__search-wrapper">
-        <app-button
-          size="default"
-          scheme="default"
-          class="overview-nfts__search-button"
-          @click="search"
-        >
-          <icon class="overview-nfts__search-icon" :name="$icons.search" />
-        </app-button>
+
+      <div class="overview-nfts__search-wrapper">
         <input-field
-          class="overview-nfts__search"
-          v-model="searchByString"
+          v-model="searchModel"
           :placeholder="$t('overview-nfts.search-placeholder')"
           iconned
-        />
-      </div> -->
+        >
+          <template #nodeLeft>
+            <icon class="overview-nfts__search-icon" :name="$icons.search" />
+          </template>
+        </input-field>
+      </div>
     </div>
 
     <template v-if="isLoadFailed">
@@ -131,8 +133,6 @@ const buttonLinkText = computed(() =>
 </template>
 
 <style lang="scss" scoped>
-$z-icon: 2;
-
 .overview-nfts__header {
   display: flex;
   justify-content: space-between;
@@ -162,19 +162,11 @@ $z-icon: 2;
   }
 }
 
-.overview-nfts__search-button {
-  z-index: $z-icon;
-  width: toRem(20);
-  height: toRem(20);
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: toRem(20);
-}
-
 .overview-nfts__search-icon {
-  width: 100%;
-  height: 100%;
+  --size: #{toRem(20)};
+
+  max-width: var(--size);
+  height: var(--size);
 }
 
 .overview-nfts__content {

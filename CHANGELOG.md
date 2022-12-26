@@ -8,11 +8,20 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+#### Changed
+- Search feature now works on input change
+- Hook use-paginate now works with reactive values, that allows to use filters etc.
+- Using use-context hook instead of calling useI18n every time and specifying scope
+- Validating name, NFT symbol and description now requires only Latin chars and numbers
+
 #### Fixed
 - Nft long title now displays correct
 - Drop down overlap fixed
 - Field price validation
 - Sidebar scrollbars
+- Logout dropdown
+- Sales history dropdown
+- OG meta tags
 
 #### Removed
 - Unused sidebar menu items

@@ -63,6 +63,7 @@ defineProps<{
   max-width: toRem(100);
   max-height: toRem(100);
   margin-right: toRem(35);
+  border-radius: toRem(8);
 
   @include respond-to(xmedium) {
     max-width: toRem(75);

@@ -4,6 +4,7 @@ import { BOOK_DEPLOY_STATUSES } from '@/enums'
 import { config } from '@/config'
 
 export function getBooks(opts: {
+  title?: string
   deployStatus?: BOOK_DEPLOY_STATUSES[]
   chainId?: number
   pageLimit?: number
@@ -15,6 +16,7 @@ export function getBooks(opts: {
       order: opts.pageOrder || 'desc',
     },
     filter: {
+      ...(opts.title ? { title: opts.title } : {}),
       ...(opts.deployStatus?.length
         ? { deploy_status: opts.deployStatus.join(',') }
         : {}),

@@ -91,9 +91,16 @@ $icon-size: toRem(20);
   font-weight: 400;
   font-size: toRem(20);
   line-height: 1.2;
+  max-width: 25vw;
+  word-wrap: break-word;
 
-  @include respond-to(xmedium) {
+  @include respond-to(medium) {
     font-size: toRem(16);
+    max-width: 40vw;
+  }
+
+  @include respond-to(small) {
+    max-width: 90vw;
   }
 }
 

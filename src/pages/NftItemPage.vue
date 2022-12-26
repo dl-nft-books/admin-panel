@@ -7,7 +7,7 @@ import { ref, computed } from 'vue'
 import { BookRecord } from '@/records'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
-import { useI18n } from 'vue-i18n'
+import { useContext } from '@/composables'
 import { getBookById } from '@/api'
 
 const props = defineProps<{
@@ -20,7 +20,7 @@ const isLoadFailed = ref(false)
 const book = ref<BookRecord | undefined>()
 
 const { width } = useWindowSize()
-const { t } = useI18n()
+const { $t } = useContext()
 
 const init = async () => {
   try {
@@ -34,7 +34,9 @@ const init = async () => {
 }
 
 const buttonLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small ? t('nft-item-page.edit-button') : '',
+  width.value >= WINDOW_BREAKPOINTS.small
+    ? $t('nft-item-page.edit-button')
+    : '',
 )
 
 init()
@@ -113,6 +115,7 @@ init()
 .nft-item-page__cover {
   width: 100%;
   height: auto;
+  border-radius: toRem(8);
 }
 
 .nft-item-page__details {
@@ -127,14 +130,19 @@ init()
   font-size: toRem(30);
   line-height: 1.2;
   margin-bottom: toRem(30);
+  max-width: 45vw;
+
+  @include text-ellipsis;
 
   @include respond-to(xmedium) {
     font-size: toRem(20);
+    max-width: 30vw;
+    margin-top: toRem(20);
+    text-align: center;
   }
 
-  @include respond-to(medium) {
-    text-align: center;
-    margin-top: toRem(20);
+  @include respond-to(small) {
+    max-width: 90vw;
   }
 }
 

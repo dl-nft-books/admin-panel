@@ -9,7 +9,18 @@ for further information about branching and tagging conventions.
 
 ## [Unreleased]
 #### Changed
-- Search feature now working on input change
+- Search feature now works on input change
+- Hook use-paginate now works with reactive values, that allows to use filters etc.
+- Using use-context hook instead of calling useI18n every time and specifying scope
+
+#### Fixed
+- Nft long title now displays correct
+- Drop down overlap fixed
+- Field price validation
+- Sidebar scrollbars
+
+#### Removed
+- Unused sidebar menu items
 
 ## [1.1.0] - 2022-12-02
 #### Added

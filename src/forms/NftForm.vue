@@ -108,25 +108,26 @@ import {
   useForm,
   useFormValidation,
   useNftBookToken,
+  useContext,
 } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { Document, createBook, updateBook } from '@/api'
-import { required, minValue, nonEmptyDocument } from '@/validators'
+import { required, minValue, maxValue, nonEmptyDocument } from '@/validators'
 import { ErrorHandler, Bus } from '@/helpers'
 import { BN } from '@/utils/math.util'
-import { useI18n } from 'vue-i18n'
 import { config } from '@/config'
 import { BookRecord } from '@/records'
 
 const MIN_PRICE_VALUE = '0.01'
+const MAX_PRICE_VALUE = 0xffffffff // UINT32 MAX VALUE
 const MAX_BOOK_SIZE = 500 // mb
 
 const props = defineProps<{
   book?: BookRecord
 }>()
 
-const { t } = useI18n()
+const { $t } = useContext()
 const router = useRouter()
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
@@ -142,13 +143,13 @@ const isValidChain = computed(
 const isUpdateNft = computed(() => Boolean(props.book))
 
 const submitButtonText = computed(() =>
-  isUpdateNft.value ? t('nft-form.edit-button') : t('nft-form.create-button'),
+  isUpdateNft.value ? $t('nft-form.edit-button') : $t('nft-form.create-button'),
 )
 
 const secondSubtitleText = computed(() =>
   isUpdateNft.value
-    ? t('nft-form.update-details-subtitle')
-    : t('nft-form.details-subtitle'),
+    ? $t('nft-form.update-details-subtitle')
+    : $t('nft-form.details-subtitle'),
 )
 
 const nftPrice = new BN(props.book?.price || 0).fromWei().toString()
@@ -206,7 +207,11 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
     name: { required },
-    price: { required, minValue: minValue(MIN_PRICE_VALUE) },
+    price: {
+      required,
+      minValue: minValue(MIN_PRICE_VALUE),
+      maxValue: maxValue(MAX_PRICE_VALUE),
+    },
     description: { required },
     symbol: { required },
     photo: { nonEmptyDocument },
@@ -246,7 +251,7 @@ const updateNftBook = async (book: Document, banner: Document) => {
       ...(isTitleUpdated.value ? { title: form.name } : {}),
     })
   }
-  Bus.success(t('nft-form.edit-success-msg'))
+  Bus.success($t('nft-form.edit-success-msg'))
 }
 
 const createNftBook = async (book: Document, banner: Document) => {
@@ -271,7 +276,7 @@ const createNftBook = async (book: Document, banner: Document) => {
     bookSignature.signature.v,
   )
 
-  Bus.success(t('nft-form.create-success-msg'))
+  Bus.success($t('nft-form.create-success-msg'))
 }
 </script>
 

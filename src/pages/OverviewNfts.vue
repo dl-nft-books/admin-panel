@@ -1,31 +1,45 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { InputField } from '@/fields'
+import { ref, computed, watch } from 'vue'
 import {
-  Icon,
   Loader,
   NftCard,
   ErrorMessage,
   NoDataMessage,
   AppButton,
+  Icon,
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
 import { BookRecord } from '@/records'
 import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
-import { useI18n } from 'vue-i18n'
+import { InputField } from '@/fields'
 import { getBooks } from '@/api'
-import { usePaginate } from '@/composables'
+import { usePaginate, useContext } from '@/composables'
 import { Book } from '@/types'
 import { debounce } from 'lodash'
 
-const searchByString = ref('')
+const searchByString = ref<string>('')
+const searchModel = ref<string>('')
 const booksList = ref<BookRecord[]>([])
 const isLoadFailed = ref(false)
 
 const { width } = useWindowSize()
-const { t } = useI18n()
+const { $t } = useContext()
+
+watch(searchByString, () => (searchModel.value = searchByString.value))
+
+const searchHandler = debounce((e: InputEvent) => {
+  searchByString.value = e.target.value
+}, 400)
+
+const loadList = computed(
+  () => () =>
+    getBooks({
+      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
+      title: searchByString.value,
+    }),
+)
 
 const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   loadList,
@@ -33,12 +47,6 @@ const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
   concatList,
   onError,
 )
-
-function loadList() {
-  return getBooks({
-    deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-  })
-}
 
 function setList(chunk: Book[]) {
   booksList.value = chunk.map(book => new BookRecord(book)) ?? []
@@ -55,26 +63,9 @@ function onError(e: Error) {
   isLoadFailed.value = true
 }
 
-const search = async () => {
-  try {
-    const { data } = await getBooks({
-      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-      title: searchByString.value,
-    })
-
-    booksList.value = data.map(book => new BookRecord(book)) ?? []
-  } catch (e) {
-    isLoadFailed.value = true
-    ErrorHandler.processWithoutFeedback(e)
-  }
-  return true
-}
-
-const searchHandler = debounce(search, 700)
-
 const buttonLinkText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.small
-    ? t('overview-nfts.create-button')
+    ? $t('overview-nfts.create-button')
     : '',
 )
 </script>
@@ -85,7 +76,8 @@ const buttonLinkText = computed(() =>
       <h2 class="overview-nfts__title">
         {{ $t('overview-nfts.title') }}
       </h2>
-      <div class="overview-nfts__search-wrapper" @keyup.stop="searchHandler">
+
+      <div class="overview-nfts__search-wrapper">
         <app-button
           size="default"
           scheme="default"
@@ -94,8 +86,9 @@ const buttonLinkText = computed(() =>
           <icon class="overview-nfts__search-icon" :name="$icons.search" />
         </app-button>
         <input-field
+          @keyup.stop="searchHandler"
+          v-model="searchModel"
           class="overview-nfts__search"
-          v-model="searchByString"
           :placeholder="$t('overview-nfts.search-placeholder')"
           iconned
         />

@@ -119,11 +119,8 @@ defineProps<{
   color: var(--text-secondary-main);
   font-weight: 400;
 
-  @include respond-to(xmedium) {
-    font-size: toRem(14);
-  }
-
   @include respond-to(medium) {
+    font-size: toRem(14);
     text-align: center;
   }
 }
@@ -132,17 +129,14 @@ defineProps<{
   color: var(--text-primary-main);
   font-weight: 500;
   font-size: toRem(20);
-  text-overflow: ellipsis;
-  overflow: hidden;
   width: 100%;
-  white-space: nowrap;
+  max-width: 40vw;
 
-  @include respond-to(xmedium) {
-    font-size: toRem(14);
-  }
+  @include text-ellipsis;
 
   @include respond-to(medium) {
     text-align: center;
+    font-size: toRem(14);
   }
 }
 </style>

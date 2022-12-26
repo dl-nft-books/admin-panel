@@ -79,22 +79,6 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
-      {
-        path: '/kyc-requests',
-        name: ROUTE_NAMES.kycRequests,
-        meta: {
-          [ROUTE_METAS.isRequiredAuth]: true,
-        },
-        component: () => import('@/pages/KycRequests.vue'),
-      },
-      {
-        path: '/settings',
-        name: ROUTE_NAMES.settings,
-        meta: {
-          [ROUTE_METAS.isRequiredAuth]: true,
-        },
-        component: () => import('@/pages/Settings.vue'),
-      },
     ],
   },
 ]

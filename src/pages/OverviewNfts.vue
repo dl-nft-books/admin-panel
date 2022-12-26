@@ -19,15 +19,17 @@ import { usePaginate, useContext } from '@/composables'
 import { Book } from '@/types'
 import { debounce } from 'lodash'
 
-const searchByString = ref<string>('')
-const searchModel = ref<string>('')
+const searchByString = ref('')
+const searchModel = ref('')
 const booksList = ref<BookRecord[]>([])
 const isLoadFailed = ref(false)
 
 const { width } = useWindowSize()
 const { $t } = useContext()
 
-watch(searchByString, () => (searchModel.value = searchByString.value))
+watch(searchByString, () => {
+  searchModel.value = searchByString.value
+})
 
 const searchHandler = debounce((e: InputEvent) => {
   searchByString.value = e.target.value
@@ -78,20 +80,16 @@ const buttonLinkText = computed(() =>
       </h2>
 
       <div class="overview-nfts__search-wrapper">
-        <app-button
-          size="default"
-          scheme="default"
-          class="overview-nfts__search-button"
-        >
-          <icon class="overview-nfts__search-icon" :name="$icons.search" />
-        </app-button>
         <input-field
           @keyup.stop="searchHandler"
           v-model="searchModel"
-          class="overview-nfts__search"
           :placeholder="$t('overview-nfts.search-placeholder')"
           iconned
-        />
+        >
+          <template #nodeLeft>
+            <icon class="overview-nfts__search-icon" :name="$icons.search" />
+          </template>
+        </input-field>
       </div>
     </div>
 
@@ -179,8 +177,10 @@ $z-icon: 2;
 }
 
 .overview-nfts__search-icon {
-  width: 100%;
-  height: 100%;
+  --size: #{toRem(20)};
+
+  max-width: var(--size);
+  height: var(--size);
 }
 
 .overview-nfts__content {

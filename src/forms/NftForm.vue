@@ -113,7 +113,13 @@ import {
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { Document, createBook, updateBook } from '@/api'
-import { required, minValue, maxValue, nonEmptyDocument } from '@/validators'
+import {
+  required,
+  minValue,
+  maxValue,
+  nonEmptyDocument,
+  alphaNum,
+} from '@/validators'
 import { ErrorHandler, Bus } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { config } from '@/config'
@@ -206,14 +212,14 @@ const { disableForm, enableForm, isFormDisabled } = useForm()
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
-    name: { required },
+    name: { required, alphaNum },
     price: {
       required,
       minValue: minValue(MIN_PRICE_VALUE),
       maxValue: maxValue(MAX_PRICE_VALUE),
     },
-    description: { required },
-    symbol: { required },
+    description: { required, alphaNum },
+    symbol: { required, alphaNum },
     photo: { nonEmptyDocument },
     book: { nonEmptyDocument },
   },

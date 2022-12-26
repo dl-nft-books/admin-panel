@@ -45,6 +45,9 @@ export default defineComponent({
 @import 'vue-toastification/src/scss/index';
 
 .Vue-Toastification__toast {
+  border-radius: toRem(12);
+  padding: toRem(18) toRem(16);
+
   &--success {
     background: var(--success-dark);
   }

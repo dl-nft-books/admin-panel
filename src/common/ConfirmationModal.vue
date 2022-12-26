@@ -88,7 +88,6 @@ const onConfirm = async (closeModal: () => void) => {
 }
 
 .confirmation-modal__title {
-  font-weight: 500;
   font-size: toRem(32);
   line-height: 150%;
 }

@@ -7,7 +7,8 @@
     "field-error_minValue": "Value must be at least {min}",
     "field-error_maxValue": "Value can't be that big",
     "field-error_minLength": "Length must be at least {min}",
-    "field-error_maxLength": "Too long"
+    "field-error_maxLength": "Too long",
+    "field-error_alphaNum": "Only Latin characters are supported"
   },
   "errors": {
     "default": "Oops... Something went wrong",

@@ -135,8 +135,6 @@ const buttonLinkText = computed(() =>
 </template>
 
 <style lang="scss" scoped>
-$z-icon: 2;
-
 .overview-nfts__header {
   display: flex;
   justify-content: space-between;
@@ -164,16 +162,6 @@ $z-icon: 2;
   @include respond-to(small) {
     width: 100%;
   }
-}
-
-.overview-nfts__search-button {
-  z-index: $z-icon;
-  width: toRem(20);
-  height: toRem(20);
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: toRem(20);
 }
 
 .overview-nfts__search-icon {

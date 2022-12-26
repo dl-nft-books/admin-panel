@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import {
   Loader,
   NftCard,
@@ -27,12 +27,9 @@ const isLoadFailed = ref(false)
 const { width } = useWindowSize()
 const { $t } = useContext()
 
-watch(searchByString, () => {
-  searchModel.value = searchByString.value
-})
-
 const searchHandler = debounce((e: InputEvent) => {
   searchByString.value = e.target.value
+  searchModel.value = e.target.value
 }, 400)
 
 const loadList = computed(

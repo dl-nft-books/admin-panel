@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import {
   Loader,
   NftCard,
@@ -27,10 +27,12 @@ const isLoadFailed = ref(false)
 const { width } = useWindowSize()
 const { $t } = useContext()
 
-const searchHandler = debounce((e: InputEvent) => {
-  searchByString.value = e.target.value
-  searchModel.value = e.target.value
-}, 400)
+watch(
+  searchModel,
+  debounce(() => {
+    searchByString.value = searchModel.value
+  }, 400),
+)
 
 const loadList = computed(
   () => () =>
@@ -78,7 +80,6 @@ const buttonLinkText = computed(() =>
 
       <div class="overview-nfts__search-wrapper">
         <input-field
-          @keyup.stop="searchHandler"
           v-model="searchModel"
           :placeholder="$t('overview-nfts.search-placeholder')"
           iconned

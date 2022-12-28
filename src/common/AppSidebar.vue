@@ -267,10 +267,6 @@ $z-local: 5;
     background: #{rgba(var(--white-rgb), 0.08)};
     color: var(--primary-main);
 
-    & > * {
-      color: var(--primary-main);
-    }
-
     &:before {
       height: 100%;
     }

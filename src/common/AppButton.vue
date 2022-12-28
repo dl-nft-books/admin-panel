@@ -8,6 +8,7 @@ import { ICON_NAMES } from '@/enums'
 type SCHEMES = 'filled' | 'flat' | 'default'
 
 type MODIFICATIONS = 'border-circle' | 'border-rounded' | 'default'
+type ICON_SIZE = 'large' | 'medium'
 
 type COLORS =
   | 'primary'
@@ -32,6 +33,7 @@ const props = withDefaults(
     href?: string
     iconLeft?: ICON_NAMES
     iconRight?: ICON_NAMES
+    iconSize?: ICON_SIZE
   }>(),
   {
     text: '',
@@ -43,6 +45,7 @@ const props = withDefaults(
     href: '',
     iconLeft: undefined,
     iconRight: undefined,
+    iconSize: 'medium',
   },
 )
 
@@ -51,6 +54,14 @@ const attrs = useAttrs()
 const isDisabled = computed((): boolean =>
   ['', 'disabled', true].includes(attrs.disabled as string | boolean),
 )
+
+const iconClasses = computed(() => {
+  let defClass = ''
+  if (props.iconLeft) defClass = 'app-button__icon-left'
+  if (props.iconRight) defClass = 'app-button__icon-right'
+
+  return defClass.concat(` ${defClass}--${props.iconSize}`)
+})
 
 const buttonClasses = computed(() =>
   [
@@ -75,7 +86,7 @@ const buttonClasses = computed(() =>
       v-bind="$attrs"
       :to="route"
     >
-      <icon v-if="iconLeft" class="app-button__icon-left" :name="iconLeft" />
+      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
       <template v-if="$slots.default">
         <slot />
       </template>
@@ -84,12 +95,12 @@ const buttonClasses = computed(() =>
           {{ text }}
         </span>
       </template>
-      <icon v-if="iconRight" class="app-button__icon-right" :name="iconRight" />
+      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
     </router-link>
   </template>
   <template v-else-if="href">
     <a class="app-button" :class="buttonClasses" v-bind="$attrs" :href="href">
-      <icon v-if="iconLeft" class="app-button__icon-left" :name="iconLeft" />
+      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
       <template v-if="$slots.default">
         <slot />
       </template>
@@ -98,7 +109,7 @@ const buttonClasses = computed(() =>
           {{ text }}
         </span>
       </template>
-      <icon v-if="iconRight" class="app-button__icon-right" :name="iconRight" />
+      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
     </a>
   </template>
   <template v-else>
@@ -109,7 +120,7 @@ const buttonClasses = computed(() =>
       :disabled="isDisabled"
       :type="$attrs.type || 'button'"
     >
-      <icon v-if="iconLeft" class="app-button__icon-left" :name="iconLeft" />
+      <icon v-if="iconLeft" :class="iconClasses" :name="iconLeft" />
       <template v-if="$slots.default">
         <slot />
       </template>
@@ -118,7 +129,7 @@ const buttonClasses = computed(() =>
           {{ text }}
         </span>
       </template>
-      <icon v-if="iconRight" class="app-button__icon-right" :name="iconRight" />
+      <icon v-if="iconRight" :class="iconClasses" :name="iconRight" />
     </button>
   </template>
 </template>
@@ -323,9 +334,17 @@ const buttonClasses = computed(() =>
 
 .app-button__icon-left,
 .app-button__icon-right {
-  height: 1.2em;
-  width: 1.2em;
   color: inherit;
+
+  &--medium {
+    height: 1.2em;
+    width: 1.2em;
+  }
+
+  &--large {
+    height: 3em;
+    width: 3em;
+  }
 }
 
 .app-button__text {

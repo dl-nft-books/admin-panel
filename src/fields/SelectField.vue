@@ -1,120 +1,6 @@
-<script lang="ts" setup>
-import { Icon } from '@/common'
-
-import {
-  computed,
-  getCurrentInstance,
-  onMounted,
-  ref,
-  useAttrs,
-  watch,
-} from 'vue'
-import { useRouter } from '@/router'
-import { onClickOutside } from '@vueuse/core'
-
-const props = withDefaults(
-  defineProps<{
-    modelValue: string | number
-    valueOptions?: { label: string; value: number | string }[]
-    label?: string
-    placeholder?: string
-    errorMessage?: string
-  }>(),
-  {
-    valueOptions: () => [],
-    type: 'text',
-    label: '',
-    placeholder: ' ',
-    errorMessage: '',
-  },
-)
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: number | string): void
-}>()
-
-const attrs = useAttrs()
-
-const selectElement = ref<HTMLDivElement>()
-
-const isDropdownOpen = ref(false)
-const uid = getCurrentInstance()?.uid
-
-const router = useRouter()
-
-router.afterEach(() => {
-  closeDropdown()
-})
-
-const isDisabled = computed(() =>
-  ['', 'disabled', true].includes(attrs.disabled as string | boolean),
-)
-
-const isReadonly = computed(() =>
-  ['', 'readonly', true].includes(attrs.readonly as string | boolean),
-)
-
-const title = computed(
-  () => props.valueOptions.find(i => i.value === props.modelValue)?.label,
-)
-
-const selectFieldClasses = computed(() => ({
-  'select-field': true,
-  'select-field--error': props.errorMessage,
-  'select-field--open': isDropdownOpen.value,
-  'select-field--disabled': isDisabled.value,
-  'select-field--readonly': isReadonly.value,
-}))
-
-const setHeightCSSVar = (element: HTMLElement) => {
-  element.style.setProperty(
-    '--field-error-msg-height',
-    `${element.scrollHeight}px`,
-  )
-}
-
-const toggleDropdown = () => {
-  isDropdownOpen.value ? closeDropdown() : openDropdown()
-}
-
-const openDropdown = () => {
-  isDropdownOpen.value = true
-}
-
-const closeDropdown = () => {
-  isDropdownOpen.value = false
-}
-
-const select = (value: string | number) => {
-  if (isDisabled.value || isReadonly.value) return
-
-  emit('update:modelValue', value)
-  closeDropdown()
-}
-
-onMounted(() => {
-  if (selectElement.value) {
-    onClickOutside(selectElement, () => {
-      closeDropdown()
-    })
-  }
-})
-
-watch(
-  () => props.modelValue,
-  () => {
-    closeDropdown()
-  },
-)
-</script>
-
 <template>
   <div :class="selectFieldClasses">
-    <label
-      v-if="label"
-      class="select-field__label"
-      :for="`select-field--${uid}`"
-    >
+    <label v-if="label" class="select-field__label">
       {{ label }}
     </label>
     <div ref="selectElement" class="select-field__select-wrp">
@@ -199,6 +85,108 @@ watch(
     </transition>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { Icon } from '@/common'
+
+import { computed, onMounted, ref, useAttrs, watch } from 'vue'
+import { useRouter } from '@/router'
+import { onClickOutside } from '@vueuse/core'
+
+const props = withDefaults(
+  defineProps<{
+    modelValue: string | number
+    valueOptions?: { label: string; value: number | string }[]
+    label?: string
+    placeholder?: string
+    errorMessage?: string
+  }>(),
+  {
+    valueOptions: () => [],
+    type: 'text',
+    label: '',
+    placeholder: ' ',
+    errorMessage: '',
+  },
+)
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: number | string): void
+}>()
+
+const attrs = useAttrs()
+
+const selectElement = ref<HTMLDivElement>()
+
+const isDropdownOpen = ref(false)
+
+const router = useRouter()
+
+router.afterEach(() => {
+  closeDropdown()
+})
+
+const isDisabled = computed(() =>
+  ['', 'disabled', true].includes(attrs.disabled as string | boolean),
+)
+
+const isReadonly = computed(() =>
+  ['', 'readonly', true].includes(attrs.readonly as string | boolean),
+)
+
+const title = computed(
+  () => props.valueOptions.find(i => i.value === props.modelValue)?.label,
+)
+
+const selectFieldClasses = computed(() => ({
+  'select-field': true,
+  'select-field--error': props.errorMessage,
+  'select-field--open': isDropdownOpen.value,
+  'select-field--disabled': isDisabled.value,
+  'select-field--readonly': isReadonly.value,
+}))
+
+const setHeightCSSVar = (element: HTMLElement) => {
+  element.style.setProperty(
+    '--field-error-msg-height',
+    `${element.scrollHeight}px`,
+  )
+}
+
+const toggleDropdown = () => {
+  isDropdownOpen.value ? closeDropdown() : openDropdown()
+}
+
+const openDropdown = () => {
+  isDropdownOpen.value = true
+}
+
+const closeDropdown = () => {
+  isDropdownOpen.value = false
+}
+
+const select = (value: string | number) => {
+  if (isDisabled.value || isReadonly.value) return
+
+  emit('update:modelValue', value)
+  closeDropdown()
+}
+
+onMounted(() => {
+  if (selectElement.value) {
+    onClickOutside(selectElement, () => {
+      closeDropdown()
+    })
+  }
+})
+
+watch(
+  () => props.modelValue,
+  () => {
+    closeDropdown()
+  },
+)
+</script>
 
 <style lang="scss" scoped>
 $z-local-index: 1;

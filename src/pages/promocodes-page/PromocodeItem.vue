@@ -1,31 +1,28 @@
 <template>
   <section>
-    <collapse
-      class="promocode-item__wrapper"
-      :is-close-by-click-outside="false"
-    >
+    <collapse class="promocode-item" :is-close-by-click-outside="false">
       <template #head="{ collapse }">
-        <div class="promocode-item">
+        <div class="promocode-item__wrapper">
           <div class="promocode-item__info">
             <p class="promocode-item__head">
               {{ $t('promocodes-page.promocode-lbl') }}
             </p>
-            <div
+            <app-button
               class="promocode-item__copy-promocode"
+              scheme="default"
+              size="default"
+              icon-size="large"
+              :text="promocode.promocode"
+              :icon-right="$icons.duplicate"
               @click="copyPromocode(promocode.promocode)"
-            >
-              <p class="promocode-item__value">
-                {{ promocode.promocode }}
-              </p>
-              <icon class="promocode-item__icon" :name="$icons.duplicate" />
-            </div>
+            />
           </div>
           <div class="promocode-item__info">
             <p class="promocode-item__head">
               {{ $t('promocodes-page.discount-lbl') }}
             </p>
             <p class="promocode-item__value">
-              {{ `${promocode.discount * 100}%` }}
+              {{ `${(promocode.discount * 100).toFixed()}%` }}
             </p>
           </div>
           <div class="promocode-item__info">
@@ -46,11 +43,7 @@
           </div>
           <promocode-state
             :title="promocodeStatusText"
-            :scheme="
-              promocode.state !== PROMOCODE_STATUSES.ACTIVE
-                ? 'unavailable'
-                : 'available'
-            "
+            :scheme="promocodeStatusScheme"
           />
 
           <app-button
@@ -59,9 +52,9 @@
               'promocode-item__collapse-button--open': collapse.isOpen,
             }"
             scheme="flat"
-            :icon-right="$icons.arrowDown"
             size="small"
             color="secondary"
+            :icon-right="$icons.arrowDown"
             @click.stop="collapse.toggle"
           />
         </div>
@@ -77,68 +70,71 @@
         </div>
         <div class="promocode-item__actions">
           <app-button
-            @click="isUpdateModalShown = true"
             size="small"
             :icon-right="$icons.pencil"
+            @click="isUpdateModalShown = true"
           />
           <app-button
             size="small"
             :icon-right="$icons.trash"
-            @click="deletePromocodeConfirm.isModalShown = true"
+            @click="isDeleteModalShown = true"
           />
         </div>
       </div>
     </collapse>
     <modal v-model:is-shown="isUpdateModalShown">
       <template #default="{ modal }">
-        <promocode-update-form
-          :promocode="promocode"
-          :close-modal="modal.close"
-          :reloader-func="reloaderFunc"
-        />
+        <promocode-form :promocode="promocode" @on-form-close="modal.close" />
       </template>
     </modal>
     <confirmation-modal
-      :is-modal-shown="deletePromocodeConfirm"
-      :callback="_deletePromocode"
+      v-model:is-shown="isDeleteModalShown"
       :entity="$t('promocodes-page.promocode-lbl')"
-      :after-action-message="$t('promocodes-page.delete-success')"
+      @after-confirm-action="onDeleteConfirm"
     />
   </section>
 </template>
 
 <script setup lang="ts">
 import { deletePromocode } from '@/api'
-import { Collapse, AppButton, Modal, ConfirmationModal, Icon } from '@/common'
+import { Collapse, AppButton, Modal, ConfirmationModal } from '@/common'
 import { Promocode } from '@/types'
 import { PromocodeState } from '@/pages/promocodes-page'
-import { computed, ref, reactive } from 'vue'
+import { computed, ref } from 'vue'
 import { PROMOCODE_STATUSES } from '@/enums'
 import { useContext } from '@/composables'
-import { PromocodeUpdateForm } from '@/forms'
+import { PromocodeForm } from '@/forms'
 import { Bus, copyToClipboard, ErrorHandler } from '@/helpers'
 
 const { $t } = useContext()
 
-interface Props {
+const props = defineProps<{
   promocode: Promocode
-  reloaderFunc: () => Promise<void>
-}
-
-const props = defineProps<Props>()
+}>()
 
 const promocodeStatusText = computed(() =>
   props.promocode.state !== PROMOCODE_STATUSES.ACTIVE
     ? $t('promocodes-page.inactive')
     : $t('promocodes-page.active'),
 )
+const promocodeStatusScheme = computed(() =>
+  props.promocode.state !== PROMOCODE_STATUSES.ACTIVE
+    ? 'unavailable'
+    : 'available',
+)
 
-const isUpdateModalShown = ref<boolean>(false)
-const deletePromocodeConfirm = reactive({ isModalShown: false })
+const isUpdateModalShown = ref(false)
+const isDeleteModalShown = ref(false)
 
-const _deletePromocode = async () => {
-  await deletePromocode(props.promocode.id)
-  await props.reloaderFunc()
+const onDeleteConfirm = async () => {
+  try {
+    await deletePromocode(props.promocode.id)
+    Bus.emit(Bus.eventList.reloadPromocodesList)
+
+    Bus.success($t('promocodes-page.delete-success'))
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
 }
 
 const copyPromocode = async (promocode: string) => {
@@ -154,23 +150,19 @@ const copyPromocode = async (promocode: string) => {
 <style lang="scss" scoped>
 .promocode-item__copy-promocode {
   display: flex;
-  align-items: center;
-
-  & > * {
-    transition: 0.2s ease-in-out;
-    transition-property: color;
-  }
-
-  &:hover {
-    cursor: pointer;
-
-    & > * {
-      color: var(--text-primary-light);
-    }
-  }
+  max-width: 100%;
+  max-height: toRem(30);
+  font-weight: 500;
+  font-size: toRem(20);
+  line-height: toRem(24);
 }
 
 .promocode-item {
+  border: toRem(1) solid var(--border-primary-main);
+  border-radius: toRem(6);
+}
+
+.promocode-item__wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(toRem(120), 1fr));
   column-gap: toRem(20);
@@ -183,11 +175,6 @@ const copyPromocode = async (promocode: string) => {
   & > *:last-child {
     justify-self: center;
   }
-}
-
-.promocode-item__wrapper {
-  border: toRem(1) solid var(--border-primary-main);
-  border-radius: toRem(6);
 }
 
 .promocode-item__info {

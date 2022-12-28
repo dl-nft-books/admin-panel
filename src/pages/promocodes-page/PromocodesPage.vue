@@ -22,11 +22,10 @@
           :message="$t('promocodes-page.no-data-message')"
         />
         <promocode-item
-          v-else
           v-for="promocode in promocodesList"
+          v-else
           :key="promocode.id"
           :promocode="promocode"
-          :reloader-func="loadFirstPage"
         />
 
         <app-button
@@ -51,10 +50,7 @@
     </mounted-teleport>
     <modal v-model:is-shown="isCreateModalShown">
       <template #default="{ modal }">
-        <promocode-create-form
-          :close-modal="modal.close"
-          :reloader-func="loadFirstPage"
-        />
+        <promocode-form @on-form-close="modal.close" />
       </template>
     </modal>
   </div>
@@ -68,9 +64,9 @@ import { SelectField } from '@/fields'
 import { getPromocodes } from '@/api'
 import { PROMOCODE_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
 import { Promocode } from '@/types'
-import { ErrorHandler } from '@/helpers'
+import { Bus, ErrorHandler } from '@/helpers'
 import { PromocodeItem } from '@/pages/promocodes-page'
-import { PromocodeCreateForm } from '@/forms'
+import { PromocodeForm } from '@/forms'
 import { useWindowSize } from '@vueuse/core'
 
 enum PROMOCODES_FILTERS {
@@ -105,41 +101,42 @@ const filterOptions = computed(() => [
 ])
 
 const promocodesList = ref<Promocode[]>([])
-const isLoadFailed = ref<boolean>(false)
-const isCreateModalShown = ref<boolean>(false)
+const isLoadFailed = ref(false)
+const isCreateModalShown = ref(false)
 
 const getFilter = (filter: PROMOCODES_FILTERS): Array<PROMOCODE_STATUSES> => {
   switch (filter) {
-    case PROMOCODES_FILTERS.ALL:
-      return []
     case PROMOCODES_FILTERS.ACTIVE:
       return [PROMOCODE_STATUSES.ACTIVE]
     case PROMOCODES_FILTERS.INACTIVE:
       return [PROMOCODE_STATUSES.EXPIRED, PROMOCODE_STATUSES.FULLY_USED]
+    case PROMOCODES_FILTERS.ALL:
     default:
       return []
   }
 }
 
-const _loadList = computed(
+const loadList = computed(
   () => () => getPromocodes({ status: getFilter(filter.value) }),
 )
 
-const { loadNextPage, loadFirstPage, isLoading, isLoadMoreBtnShown } =
-  usePaginate(_loadList, setList, concatList, onError)
-
-function setList(chunk: Promocode[]) {
+const setList = (chunk: Promocode[]) => {
   promocodesList.value = chunk ?? []
 }
 
-function concatList(chunk: Promocode[]) {
+const concatList = (chunk: Promocode[]) => {
   promocodesList.value = promocodesList.value.concat(chunk ?? [])
 }
 
-function onError(e: Error) {
+const onError = (e: Error) => {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
+
+const { loadNextPage, loadFirstPage, isLoading, isLoadMoreBtnShown } =
+  usePaginate(loadList, setList, concatList, onError)
+
+Bus.on(Bus.eventList.reloadPromocodesList, loadFirstPage)
 </script>
 
 <style lang="scss" scoped>

@@ -71,22 +71,18 @@
     "filter-inactive": "Unavailable for use",
     "no-data-message": "No promocodes available"
   },
-  "promocode-update-form": {
-    "title": "Update Promocode",
-    "subtitle": "You can update the available number of promocode usage",
+  "promocode-form": {
+    "update-title": "Update Promocode",
+    "create-title": "Create Promocode",
+    "update-subtitle": "You can update the available number of promocode usage",
     "input-lbl": "Number of uses",
-    "cancel-btn-lbl": "Cancel",
-    "submit-btn-lbl": "Update",
-    "success-msg": "Promocode successfuly updated"
-  },
-  "promocode-create-form" : {
-    "title": "Create Promocode",
     "discount-lbl": "Discount amount (%)",
     "date-lbl": "Due date",
-    "uses-lbl": "Number of uses",
     "cancel-btn-lbl": "Cancel",
-    "submit-btn-lbl": "Create",
-    "success-msg": "Promocode successfuly created"
+    "submit-update-btn-lbl": "Update",
+    "submit-create-btn-lbl": "Create",
+    "success-update-msg": "Promocode successfuly updated",
+    "success-create-msg": "Promocode successfuly created"
   },
   "confirm-modal": {
     "title": "Delete {entity}",

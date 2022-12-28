@@ -34,24 +34,25 @@ import { Icon } from '@/common'
 
 import { computed, ref } from 'vue'
 
-interface Props {
-  modelValue?: string | number
-  minDate: string
-  placeholder?: string
-  label?: string
-  disabled?: boolean
-  iconName?: ICON_NAMES
-  errorMessage?: string
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: '',
-  placeholder: '',
-  label: '',
-  disabled: false,
-  iconName: ICON_NAMES.calendar,
-  errorMessage: '',
-})
+const props = withDefaults(
+  defineProps<{
+    modelValue?: string | number
+    minDate: string
+    placeholder?: string
+    label?: string
+    disabled?: boolean
+    iconName?: ICON_NAMES
+    errorMessage?: string
+  }>(),
+  {
+    modelValue: '',
+    placeholder: '',
+    label: '',
+    disabled: false,
+    iconName: ICON_NAMES.calendar,
+    errorMessage: '',
+  },
+)
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 

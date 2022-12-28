@@ -1,7 +1,10 @@
 <template>
-  <modal v-model:is-shown="isShown">
+  <modal v-model:is-shown="isModalShown">
     <template #default="{ modal }">
-      <form @submit.prevent="onConfirm(modal.close)" class="confirmation-modal">
+      <form
+        class="confirmation-modal__form"
+        @submit.prevent="onConfirm(modal.close)"
+      >
         <div class="confirmation-modal__header">
           <h1 class="confirmation-modal__title">
             {{ $t('confirm-modal.title', { entity: entity.toLowerCase() }) }}
@@ -22,8 +25,8 @@
           <app-button
             class="confirmation-modal__button"
             size="small"
-            :text="$t('confirm-modal.confirm-btn')"
             type="submit"
+            :text="$t('confirm-modal.confirm-btn')"
           />
         </section>
       </form>
@@ -32,41 +35,45 @@
 </template>
 
 <script setup lang="ts">
-import { toRef, Ref, ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Modal, AppButton } from '@/common'
-import { Bus, ErrorHandler } from '@/helpers'
 
-interface Props {
-  entity?: string
-  callback: () => Promise<void>
-  afterActionMessage?: string
-  isModalShown: Ref<{ isModalShown: boolean }>
-}
+const emit = defineEmits<{
+  (event: 'afterConfirmAction'): void
+  (event: 'update:is-shown', value: boolean): void
+}>()
 
-const props = withDefaults(defineProps<Props>(), {
-  afterActionMessage: '',
-  entity: '',
-  entityName: '',
+const props = withDefaults(
+  defineProps<{
+    entity?: string
+    isShown: boolean
+  }>(),
+  {
+    entity: '',
+  },
+)
+
+const isModalShown = ref(false)
+
+watch(
+  () => props.isShown,
+  value => {
+    isModalShown.value = value
+  },
+)
+
+watch(isModalShown, value => {
+  emit('update:is-shown', value)
 })
-const isShown = toRef(props.isModalShown, 'isModalShown')
-const isLoading = ref<boolean>(false)
 
 const onConfirm = async (closeModal: () => void) => {
-  try {
-    isLoading.value = true
-    await props.callback()
-
-    if (props.afterActionMessage) Bus.success(props.afterActionMessage)
-  } catch (error) {
-    ErrorHandler.process(error)
-  }
-  isLoading.value = false
+  emit('afterConfirmAction')
   closeModal()
 }
 </script>
 
 <style lang="scss" scoped>
-.confirmation-modal {
+.confirmation-modal__form {
   display: flex;
   flex-direction: column;
   align-items: center;

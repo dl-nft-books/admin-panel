@@ -14,10 +14,10 @@
             color="primary-inverted"
             size="default"
             class="app-sidebar__close-button"
+            icon-size="large"
+            :icon-left="$icons.x"
             @click="hideSidebar"
-          >
-            <icon class="app-sidebar__close-button-icon" :name="$icons.x" />
-          </app-button>
+          />
         </div>
         <div class="app-sidebar__links-section">
           <app-button
@@ -44,11 +44,11 @@
           color="primary-inverted"
           size="default"
           class="app-sidebar__link app-sidebar__logout"
+          :text="$t('app-sidebar.logout-btn')"
+          :icon-left="$icons.logout"
           @click="logout"
-        >
-          <icon class="app-sidebar__link-icon" :name="$icons.logout" />
-          {{ $t('app-sidebar.logout-btn') }}
-        </app-button>
+        />
+
         <div class="app-sidebar__copyright">
           {{
             $t('app-sidebar.copyright', {
@@ -65,7 +65,7 @@
 import { ref, watch, computed } from 'vue'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { Bus } from '@/helpers'
-import { AppLogo, Icon, AppButton } from '@/common'
+import { AppLogo, AppButton } from '@/common'
 import { logout } from '@/helpers'
 
 import {
@@ -304,9 +304,12 @@ $z-local: 5;
   display: none;
 
   @include respond-to(tablet) {
+    --size: #{toRem(30)};
+
     display: block;
-    width: toRem(30);
-    height: toRem(30);
+    color: var(--white);
+    width: var(--size);
+    height: var(--size);
   }
 }
 

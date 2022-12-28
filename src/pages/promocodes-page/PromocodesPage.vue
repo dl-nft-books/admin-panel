@@ -21,12 +21,13 @@
           v-if="!promocodesList.length"
           :message="$t('promocodes-page.no-data-message')"
         />
-        <promocode-item
-          v-for="promocode in promocodesList"
-          v-else
-          :key="promocode.id"
-          :promocode="promocode"
-        />
+        <template v-else>
+          <promocode-item
+            v-for="promocode in promocodesList"
+            :key="promocode.id"
+            :promocode="promocode"
+          />
+        </template>
 
         <app-button
           v-if="isLoadMoreBtnShown"
@@ -45,12 +46,12 @@
         size="small"
         :icon-left="$icons.plus"
         :text="buttonText"
-        @click="isCreateModalShown = true"
+        @click="showCreateModal"
       />
     </mounted-teleport>
     <modal v-model:is-shown="isCreateModalShown">
       <template #default="{ modal }">
-        <promocode-form @on-form-close="modal.close" />
+        <promocode-form @close="modal.close" />
       </template>
     </modal>
   </div>
@@ -103,6 +104,10 @@ const filterOptions = computed(() => [
 const promocodesList = ref<Promocode[]>([])
 const isLoadFailed = ref(false)
 const isCreateModalShown = ref(false)
+
+const showCreateModal = () => {
+  isCreateModalShown.value = true
+}
 
 const getFilter = (filter: PROMOCODES_FILTERS): Array<PROMOCODE_STATUSES> => {
   switch (filter) {

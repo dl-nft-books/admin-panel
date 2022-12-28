@@ -39,7 +39,7 @@ import { ref, watch } from 'vue'
 import { Modal, AppButton } from '@/common'
 
 const emit = defineEmits<{
-  (event: 'afterConfirmAction'): void
+  (event: 'confirm'): void
   (event: 'update:is-shown', value: boolean): void
 }>()
 
@@ -67,7 +67,7 @@ watch(isModalShown, value => {
 })
 
 const onConfirm = async (closeModal: () => void) => {
-  emit('afterConfirmAction')
+  emit('confirm')
   closeModal()
 }
 </script>

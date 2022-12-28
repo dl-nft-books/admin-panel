@@ -40,7 +40,7 @@
         size="medium"
         :disabled="isFormDisabled"
         :text="$t('promocode-form.cancel-btn-lbl')"
-        @click="emit('onFormClose')"
+        @click="emit('close')"
       />
       <app-button
         class="promocode-form__button"
@@ -59,7 +59,7 @@ import { updatePromocode, createPromocode } from '@/api'
 import { AppButton } from '@/common'
 import { InputField, DateField } from '@/fields'
 import { useForm, useFormValidation, useContext } from '@/composables'
-import { required, minValue, maxValue } from '@/validators'
+import { required, minValue, maxValue, requiredIf } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { Promocode } from '@/types'
 import { DateUtil } from '@/utils/date.util'
@@ -69,7 +69,7 @@ import { MAX_DISCOUNT, MAX_PROMOCODE_USES_VALUE } from '@/consts'
 const { $t } = useContext()
 
 const emit = defineEmits<{
-  (event: 'onFormClose'): void
+  (event: 'close'): void
 }>()
 
 const props = defineProps<{
@@ -115,7 +115,7 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
       required,
     },
     discount: {
-      required: !isUpdate.value ? required : {},
+      requiredIf: requiredIf(!isUpdate.value),
       minValue: minValue(1),
       maxValue: maxValue(MAX_DISCOUNT),
     },
@@ -135,9 +135,7 @@ const submit = async () => {
       })
 
       Bus.success($t('promocode-form.success-update-msg'))
-    }
-
-    if (!isUpdate.value) {
+    } else {
       await createPromocode({
         discount: Number(form.discount) / 100,
         expiration_date: DateUtil.toISO(form.dueDate),
@@ -147,7 +145,7 @@ const submit = async () => {
       Bus.success($t('promocode-form.success-create-msg'))
     }
 
-    emit('onFormClose')
+    emit('close')
     Bus.emit(Bus.eventList.reloadPromocodesList)
   } catch (error) {
     ErrorHandler.process(error)

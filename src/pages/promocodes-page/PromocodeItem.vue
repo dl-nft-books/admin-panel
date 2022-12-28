@@ -22,7 +22,11 @@
               {{ $t('promocodes-page.discount-lbl') }}
             </p>
             <p class="promocode-item__value">
-              {{ `${(promocode.discount * 100).toFixed()}%` }}
+              {{
+                $t('promocodes-page.discount-value', {
+                  amount: (promocode.discount * 100).toFixed(),
+                })
+              }}
             </p>
           </div>
           <div class="promocode-item__info">
@@ -72,31 +76,31 @@
           <app-button
             size="small"
             :icon-right="$icons.pencil"
-            @click="isUpdateModalShown = true"
+            @click="showUpdateModal"
           />
           <app-button
             size="small"
             :icon-right="$icons.trash"
-            @click="isDeleteModalShown = true"
+            @click="showDeleteModal"
           />
         </div>
       </div>
     </collapse>
     <modal v-model:is-shown="isUpdateModalShown">
       <template #default="{ modal }">
-        <promocode-form :promocode="promocode" @on-form-close="modal.close" />
+        <promocode-form :promocode="promocode" @close="modal.close" />
       </template>
     </modal>
     <confirmation-modal
       v-model:is-shown="isDeleteModalShown"
       :entity="$t('promocodes-page.promocode-lbl')"
-      @after-confirm-action="onDeleteConfirm"
+      @confirm="deletePromocode"
     />
   </section>
 </template>
 
 <script setup lang="ts">
-import { deletePromocode } from '@/api'
+import { deletePromocode as _deletePromocode } from '@/api'
 import { Collapse, AppButton, Modal, ConfirmationModal } from '@/common'
 import { Promocode } from '@/types'
 import { PromocodeState } from '@/pages/promocodes-page'
@@ -126,9 +130,17 @@ const promocodeStatusScheme = computed(() =>
 const isUpdateModalShown = ref(false)
 const isDeleteModalShown = ref(false)
 
-const onDeleteConfirm = async () => {
+const showUpdateModal = () => {
+  isUpdateModalShown.value = true
+}
+
+const showDeleteModal = () => {
+  isDeleteModalShown.value = true
+}
+
+const deletePromocode = async () => {
   try {
-    await deletePromocode(props.promocode.id)
+    await _deletePromocode(props.promocode.id)
     Bus.emit(Bus.eventList.reloadPromocodesList)
 
     Bus.success($t('promocodes-page.delete-success'))

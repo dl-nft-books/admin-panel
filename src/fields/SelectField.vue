@@ -56,6 +56,8 @@
           </template>
           <template v-else-if="valueOptions.length">
             <button
+              v-for="(option, idx) in valueOptions"
+              :key="`[${idx}] ${option.value}`"
               :class="[
                 'select-field__select-dropdown-item',
                 {
@@ -64,8 +66,6 @@
                 },
               ]"
               type="button"
-              v-for="(option, idx) in valueOptions"
-              :key="`[${idx}] ${option.value}`"
               @click="select(option.value)"
             >
               {{ option.label }}
@@ -154,7 +154,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
 }
 
 const toggleDropdown = () => {
-  isDropdownOpen.value ? closeDropdown() : openDropdown()
+  isDropdownOpen.value = !isDropdownOpen.value
 }
 
 const openDropdown = () => {

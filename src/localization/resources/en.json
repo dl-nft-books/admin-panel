@@ -58,6 +58,7 @@
     "title": "Promocodes",
     "promocode-lbl": "Promocode",
     "discount-lbl": "Discount amount",
+    "discount-value": "{amount}%",
     "uses-lbl": "Number of uses",
     "used-lbl": "Used times",
     "expire-date": "Expire date",

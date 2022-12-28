@@ -265,7 +265,7 @@ $z-local-index: 1;
   display: flex;
   flex-direction: column;
   position: absolute;
-  overflow: hidden auto;
+  overflow: hidden;
   top: 0;
   right: 0;
   width: 100%;
@@ -279,10 +279,6 @@ $z-local-index: 1;
 .select-field__select-dropdown-enter-active {
   animation: dropdown var(--field-transition-duration);
 }
-
-/* .select-field__select-dropdown-leave-active {
-  animation: dropdown var(--field-transition-duration) 0.1s reverse;
-} */
 
 @keyframes dropdown {
   from {

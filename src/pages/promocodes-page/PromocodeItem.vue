@@ -177,16 +177,15 @@ const copyPromocode = async (promocode: string) => {
 .promocode-item__wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(toRem(120), 1fr));
-  column-gap: toRem(20);
-  row-gap: toRem(20);
+  gap: toRem(20);
   align-items: center;
   padding: 0 toRem(15) toRem(20) toRem(25);
   background-color: var(--background-tertiary);
   border-radius: toRem(6);
+}
 
-  & > *:last-child {
-    justify-self: center;
-  }
+.promocode-item__collapse-button {
+  justify-self: center;
 }
 
 .promocode-item__info {

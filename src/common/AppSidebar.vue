@@ -252,10 +252,6 @@ $z-local: 5;
   transition: 0.3s ease-in-out;
   transition-property: background, color;
 
-  & > * {
-    color: var(--text-secondary-invert-main);
-  }
-
   &:before {
     content: '';
     position: absolute;

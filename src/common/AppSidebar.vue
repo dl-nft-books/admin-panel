@@ -1,8 +1,71 @@
+<template>
+  <transition name="app-sidebar__transition">
+    <div v-if="isSidebarShown" class="app-sidebar">
+      <aside class="app-sidebar__aside" ref="asideElement">
+        <div class="app-sidebar__logo-wrp">
+          <div class="app-sidebar__logo-container">
+            <app-logo class="app-sidebar__logo" @click="hideSidebar" />
+            <span class="app-sidebar__logo-subtitle">
+              {{ $t('app-sidebar.logo-subtitle') }}
+            </span>
+          </div>
+          <app-button
+            scheme="default"
+            color="primary-inverted"
+            size="default"
+            class="app-sidebar__close-button"
+            icon-size="large"
+            :icon-left="$icons.x"
+            @click="hideSidebar"
+          />
+        </div>
+        <div class="app-sidebar__links-section">
+          <app-button
+            class="app-sidebar__link"
+            scheme="default"
+            size="default"
+            :icon-left="$icons.photograph"
+            :route="{ name: $routes.nfts }"
+            :text="$t('app-sidebar.nfts-link')"
+            @click="hideSidebar"
+          />
+          <app-button
+            class="app-sidebar__link"
+            scheme="default"
+            size="default"
+            :icon-left="$icons.coupon"
+            :route="{ name: $routes.promocodes }"
+            :text="$t('app-sidebar.promocodes-link')"
+            @click="hideSidebar"
+          />
+        </div>
+        <app-button
+          scheme="default"
+          color="primary-inverted"
+          size="default"
+          class="app-sidebar__link app-sidebar__logout"
+          :text="$t('app-sidebar.logout-btn')"
+          :icon-left="$icons.logout"
+          @click="logout"
+        />
+
+        <div class="app-sidebar__copyright">
+          {{
+            $t('app-sidebar.copyright', {
+              value: new Date().getFullYear(),
+            })
+          }}
+        </div>
+      </aside>
+    </div>
+  </transition>
+</template>
+
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { Bus } from '@/helpers'
-import { AppLogo, Icon, AppButton } from '@/common'
+import { AppLogo, AppButton } from '@/common'
 import { logout } from '@/helpers'
 
 import {
@@ -59,59 +122,6 @@ watch(asideElement, () => {
   }
 })
 </script>
-
-<template>
-  <transition name="app-sidebar__transition">
-    <div v-if="isSidebarShown" class="app-sidebar">
-      <aside class="app-sidebar__aside" ref="asideElement">
-        <div class="app-sidebar__logo-wrp">
-          <div class="app-sidebar__logo-container">
-            <app-logo class="app-sidebar__logo" @click="hideSidebar" />
-            <span class="app-sidebar__logo-subtitle">
-              {{ $t('app-sidebar.logo-subtitle') }}
-            </span>
-          </div>
-          <app-button
-            scheme="default"
-            color="primary-inverted"
-            size="default"
-            class="app-sidebar__close-button"
-            @click="hideSidebar"
-          >
-            <icon class="app-sidebar__close-button-icon" :name="$icons.x" />
-          </app-button>
-        </div>
-        <div class="app-sidebar__links-section">
-          <router-link
-            class="app-sidebar__link"
-            :to="{ name: $routes.nfts }"
-            @click="hideSidebar"
-          >
-            <icon class="app-sidebar__link-icon" :name="$icons.photograph" />
-            {{ $t('app-sidebar.nfts-link') }}
-          </router-link>
-        </div>
-        <app-button
-          scheme="default"
-          color="primary-inverted"
-          size="default"
-          class="app-sidebar__link app-sidebar__logout"
-          @click="logout"
-        >
-          <icon class="app-sidebar__link-icon" :name="$icons.logout" />
-          {{ $t('app-sidebar.logout-btn') }}
-        </app-button>
-        <div class="app-sidebar__copyright">
-          {{
-            $t('app-sidebar.copyright', {
-              value: new Date().getFullYear(),
-            })
-          }}
-        </div>
-      </aside>
-    </div>
-  </transition>
-</template>
 
 <style lang="scss" scoped>
 $sidebar-padding-horizontal: toRem(16);
@@ -232,8 +242,13 @@ $z-local: 5;
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  gap: toRem(10);
   color: var(--text-secondary-invert-main);
-  padding: toRem(14) toRem(30);
+  padding: toRem(6) toRem(30);
+  border-radius: 0;
+  width: 100%;
+  height: toRem(44);
   transition: 0.3s ease-in-out;
   transition-property: background, color;
 
@@ -259,9 +274,10 @@ $z-local: 5;
 }
 
 .app-sidebar__link-icon {
-  max-width: toRem(16);
-  max-height: toRem(16);
-  margin-right: toRem(10);
+  --size: #{toRem(22)};
+
+  max-width: var(--size);
+  max-height: var(--size);
 }
 
 .app-sidebar__logout {
@@ -280,9 +296,12 @@ $z-local: 5;
   display: none;
 
   @include respond-to(tablet) {
+    --size: #{toRem(30)};
+
     display: block;
-    width: toRem(30);
-    height: toRem(30);
+    color: var(--white);
+    width: var(--size);
+    height: var(--size);
   }
 }
 

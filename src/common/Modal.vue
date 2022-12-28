@@ -72,7 +72,7 @@ export default defineComponent({
 .modal__pane {
   position: relative;
   background: var(--background-primary);
-  padding: toRem(50) toRem(100);
+  padding: toRem(35);
   border-radius: toRem(10);
 }
 

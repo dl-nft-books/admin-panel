@@ -6,6 +6,8 @@
     "field-error_email": "Field must be a valid email",
     "field-error_minValue": "Value must be at least {min}",
     "field-error_maxValue": "Value can't be that big",
+    "field-error_minLength": "Length must be at least {min}",
+    "field-error_maxLength": "Too long",
     "field-error_alphaNum": "Only Latin characters are supported"
   },
   "errors": {
@@ -47,9 +49,49 @@
   "app-sidebar": {
     "logo-subtitle": "Admin panel",
     "nfts-link": "NFTs",
+    "promocodes-link": "Promocodes",
     "logout-btn": "Logout",
     "copyright": "{value}© Distributed Lab"
   },
+  "promocodes-page": {
+    "create-lbl": "New promocode",
+    "title": "Promocodes",
+    "promocode-lbl": "Promocode",
+    "discount-lbl": "Discount amount",
+    "discount-value": "{amount}%",
+    "uses-lbl": "Number of uses",
+    "used-lbl": "Used times",
+    "expire-date": "Expire date",
+    "active": "Available",
+    "inactive": "Unavailable",
+    "update-btn-lbl": "UPDATE",
+    "delete-success": "Promocode deleted",
+    "copy-success": "Promocode copied to clipboard",
+    "filter-all": "All tokens",
+    "filter-active": "Available for use",
+    "filter-inactive": "Unavailable for use",
+    "no-data-message": "No promocodes available"
+  },
+  "promocode-form": {
+    "update-title": "Update Promocode",
+    "create-title": "Create Promocode",
+    "update-subtitle": "You can update the available number of promocode usage",
+    "input-lbl": "Number of uses",
+    "discount-lbl": "Discount amount (%)",
+    "date-lbl": "Due date",
+    "cancel-btn-lbl": "Cancel",
+    "submit-update-btn-lbl": "Update",
+    "submit-create-btn-lbl": "Create",
+    "success-update-msg": "Promocode successfuly updated",
+    "success-create-msg": "Promocode successfuly created"
+  },
+  "confirm-modal": {
+    "title": "Delete {entity}",
+    "subtitle": "You are about to delete this. This action cannot be undone.",
+    "decline-btn": "Cancel",
+    "confirm-btn": "Confirm"
+  },
+
   "login-page": {
     "title": "Welcome to distributed store",
     "subtitle": "To log in, please connect to your\n MetaMask wallet"

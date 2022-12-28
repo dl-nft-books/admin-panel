@@ -8,7 +8,13 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+
+## [1.2.0] - 2022-12-26
+#### Added
+- Promocodes page
+
 #### Changed
+- Hook use-paginate now works with reactive values, that allows to use filters etc.
 - Search feature now works on input change
 - Hook use-paginate now works with reactive values, that allows to use filters etc.
 - Using use-context hook instead of calling useI18n every time and specifying scope
@@ -48,6 +54,7 @@ for further information about branching and tagging conventions.
 #### Under the hood changes
 - Merged from https://gitlab.com/distributed_lab/frontend/vue-template/-/commit/905e060b66b4fbdfa4bf102ac6c27e8edd11dbc2
 
-[Unreleased]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.1.0...main
+[Unreleased]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.2.0...main
+[1.2.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.1.0...v1.2.0
 [1.1.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.0.0...v1.1.0
 [1.0.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/tags/v1.0.0

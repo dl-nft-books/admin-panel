@@ -72,6 +72,11 @@
   --border-primary-main: #{$border-primary-main};
   --border-primary-dark: #{$border-primary-dark};
 
+  /* other colors */
+  --promocode-available: #{$promocode-available};
+  --promocode-available-text: #{$promocode-available-text};
+  --promocode-unavailable: #{$promocode-unavailable};
+
   /* App variables */
   --app-txt: #{$text-primary-main};
   --app-font-family: 'Gilroy', sans-serif;

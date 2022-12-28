@@ -79,6 +79,14 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
+      {
+        path: '/promocodes',
+        name: ROUTE_NAMES.promocodes,
+        meta: {
+          [ROUTE_METAS.isRequiredAuth]: true,
+        },
+        component: () => import('@/pages/promocodes-page/PromocodesPage.vue'),
+      },
     ],
   },
 ]

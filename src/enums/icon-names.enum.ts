@@ -64,6 +64,7 @@ export enum ICON_NAMES {
   cog = 'cog',
   collection = 'collection',
   colorSwatch = 'color-swatch',
+  coupon = 'coupon',
   creditCard = 'credit-card',
   cubeTransparent = 'cube-transparent',
   cube = 'cube',

@@ -95,33 +95,47 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "uint256",
-        name: "tokenContractId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
         internalType: "address",
         name: "newTokenContractAddr",
         type: "address",
       },
       {
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenContractId",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "tokenName",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "tokenSymbol",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "pricePerOneToken",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "voucherTokenContract",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "voucherTokensAmount",
+            type: "uint256",
+          },
+        ],
         indexed: false,
-        internalType: "uint256",
-        name: "pricePerOneToken",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "tokenName",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "tokenSymbol",
-        type: "string",
+        internalType: "struct ITokenFactory.DeployTokenContractParams",
+        name: "tokenContractParams",
+        type: "tuple",
       },
     ],
     name: "TokenContractDeployed",
@@ -179,24 +193,41 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "tokenContractId_",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "tokenName_",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "tokenSymbol_",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "pricePerOneToken_",
-        type: "uint256",
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenContractId",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "tokenName",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "tokenSymbol",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "pricePerOneToken",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "voucherTokenContract",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "voucherTokensAmount",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct ITokenFactory.DeployTokenContractParams",
+        name: "params_",
+        type: "tuple",
       },
       {
         internalType: "bytes32",
@@ -378,19 +409,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "poolsBeacon",
-    outputs: [
-      {
-        internalType: "contract ProxyBeacon",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "priceDecimals",
     outputs: [
       {
@@ -460,6 +478,19 @@ const _abi = [
     outputs: [
       {
         internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "tokenContractsBeacon",
+    outputs: [
+      {
+        internalType: "contract ProxyBeacon",
         name: "",
         type: "address",
       },

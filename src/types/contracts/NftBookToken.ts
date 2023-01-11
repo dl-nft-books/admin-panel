@@ -28,16 +28,30 @@ import type {
   PromiseOrValue,
 } from "./common";
 
+export declare namespace ITokenContract {
+  export type MintedTokenInfoStruct = {
+    tokenId: PromiseOrValue<BigNumberish>;
+    pricePerOneToken: PromiseOrValue<BigNumberish>;
+    tokenURI: PromiseOrValue<string>;
+  };
+
+  export type MintedTokenInfoStructOutput = [BigNumber, BigNumber, string] & {
+    tokenId: BigNumber;
+    pricePerOneToken: BigNumber;
+    tokenURI: string;
+  };
+}
+
 export interface NftBookTokenInterface extends utils.Interface {
   functions: {
-    "__TokenContract_init(string,string,address,uint256)": FunctionFragment;
+    "__TokenContract_init(string,string,address,uint256,address,uint256)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "existingTokenURIs(string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getUserTokenIDs(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintToken(address,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
+    "mintToken(address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -56,7 +70,11 @@ export interface NftBookTokenInterface extends utils.Interface {
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "unpause()": FunctionFragment;
+    "updateAllParams(uint256,address,uint256,string,string)": FunctionFragment;
     "updateTokenContractParams(uint256,string,string)": FunctionFragment;
+    "updateVoucherParams(address,uint256)": FunctionFragment;
+    "voucherTokenContract()": FunctionFragment;
+    "voucherTokensAmount()": FunctionFragment;
     "withdrawPaidTokens(address,address)": FunctionFragment;
   };
 
@@ -88,7 +106,11 @@ export interface NftBookTokenInterface extends utils.Interface {
       | "totalSupply"
       | "transferFrom"
       | "unpause"
+      | "updateAllParams"
       | "updateTokenContractParams"
+      | "updateVoucherParams"
+      | "voucherTokenContract"
+      | "voucherTokensAmount"
       | "withdrawPaidTokens"
   ): FunctionFragment;
 
@@ -97,6 +119,8 @@ export interface NftBookTokenInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>
     ]
@@ -129,6 +153,7 @@ export interface NftBookTokenInterface extends utils.Interface {
     functionFragment: "mintToken",
     values: [
       PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
@@ -205,12 +230,34 @@ export interface NftBookTokenInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "updateAllParams",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateTokenContractParams",
     values: [
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateVoucherParams",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "voucherTokenContract",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "voucherTokensAmount",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawPaidTokens",
@@ -289,7 +336,23 @@ export interface NftBookTokenInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "updateAllParams",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updateTokenContractParams",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateVoucherParams",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "voucherTokenContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "voucherTokensAmount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -302,22 +365,22 @@ export interface NftBookTokenInterface extends utils.Interface {
     "ApprovalForAll(address,address,bool)": EventFragment;
     "PaidTokensWithdrawn(address,address,uint256)": EventFragment;
     "Paused(address)": EventFragment;
-    "PaymentSuccessful(address,address,uint256,uint256)": EventFragment;
+    "SuccessfullyMinted(address,tuple,address,uint256,uint256,uint256)": EventFragment;
     "TokenContractParamsUpdated(uint256,string,string)": EventFragment;
-    "TokenMinted(address,uint256,string)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
+    "VoucherParamsUpdated(address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaidTokensWithdrawn"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "PaymentSuccessful"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SuccessfullyMinted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenContractParamsUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TokenMinted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "VoucherParamsUpdated"): EventFragment;
 }
 
 export interface ApprovalEventObject {
@@ -364,19 +427,28 @@ export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
 export type PausedEventFilter = TypedEventFilter<PausedEvent>;
 
-export interface PaymentSuccessfulEventObject {
-  payerAddr: string;
-  tokenAddress: string;
-  tokenAmount: BigNumber;
-  tokenPrice: BigNumber;
+export interface SuccessfullyMintedEventObject {
+  recipient: string;
+  mintedTokenInfo: ITokenContract.MintedTokenInfoStructOutput;
+  paymentTokenAddress: string;
+  paidTokensAmount: BigNumber;
+  paymentTokenPrice: BigNumber;
+  discount: BigNumber;
 }
-export type PaymentSuccessfulEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  PaymentSuccessfulEventObject
+export type SuccessfullyMintedEvent = TypedEvent<
+  [
+    string,
+    ITokenContract.MintedTokenInfoStructOutput,
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ],
+  SuccessfullyMintedEventObject
 >;
 
-export type PaymentSuccessfulEventFilter =
-  TypedEventFilter<PaymentSuccessfulEvent>;
+export type SuccessfullyMintedEventFilter =
+  TypedEventFilter<SuccessfullyMintedEvent>;
 
 export interface TokenContractParamsUpdatedEventObject {
   newPrice: BigNumber;
@@ -390,18 +462,6 @@ export type TokenContractParamsUpdatedEvent = TypedEvent<
 
 export type TokenContractParamsUpdatedEventFilter =
   TypedEventFilter<TokenContractParamsUpdatedEvent>;
-
-export interface TokenMintedEventObject {
-  recipient: string;
-  tokenId: BigNumber;
-  tokenURI: string;
-}
-export type TokenMintedEvent = TypedEvent<
-  [string, BigNumber, string],
-  TokenMintedEventObject
->;
-
-export type TokenMintedEventFilter = TypedEventFilter<TokenMintedEvent>;
 
 export interface TransferEventObject {
   from: string;
@@ -421,6 +481,18 @@ export interface UnpausedEventObject {
 export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
+
+export interface VoucherParamsUpdatedEventObject {
+  newVoucherTokenContract: string;
+  newVoucherTokensAmount: BigNumber;
+}
+export type VoucherParamsUpdatedEvent = TypedEvent<
+  [string, BigNumber],
+  VoucherParamsUpdatedEventObject
+>;
+
+export type VoucherParamsUpdatedEventFilter =
+  TypedEventFilter<VoucherParamsUpdatedEvent>;
 
 export interface NftBookToken extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -454,6 +526,8 @@ export interface NftBookToken extends BaseContract {
       tokenSymbol_: PromiseOrValue<string>,
       tokenFactoryAddr_: PromiseOrValue<string>,
       pricePerOneToken_: PromiseOrValue<BigNumberish>,
+      voucherTokenContract_: PromiseOrValue<string>,
+      voucherTokensAmount_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -492,6 +566,7 @@ export interface NftBookToken extends BaseContract {
     mintToken(
       paymentTokenAddress_: PromiseOrValue<string>,
       paymentTokenPrice_: PromiseOrValue<BigNumberish>,
+      discount_: PromiseOrValue<BigNumberish>,
       endTimestamp_: PromiseOrValue<BigNumberish>,
       tokenURI_: PromiseOrValue<string>,
       r_: PromiseOrValue<BytesLike>,
@@ -576,12 +651,31 @@ export interface NftBookToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    updateAllParams(
+      newPrice_: PromiseOrValue<BigNumberish>,
+      newVoucherTokenContract_: PromiseOrValue<string>,
+      newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+      newTokenName_: PromiseOrValue<string>,
+      newTokenSymbol_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     updateTokenContractParams(
       newPrice_: PromiseOrValue<BigNumberish>,
       newTokenName_: PromiseOrValue<string>,
       newTokenSymbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    updateVoucherParams(
+      newVoucherTokenContract_: PromiseOrValue<string>,
+      newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    voucherTokenContract(overrides?: CallOverrides): Promise<[string]>;
+
+    voucherTokensAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     withdrawPaidTokens(
       tokenAddr_: PromiseOrValue<string>,
@@ -595,6 +689,8 @@ export interface NftBookToken extends BaseContract {
     tokenSymbol_: PromiseOrValue<string>,
     tokenFactoryAddr_: PromiseOrValue<string>,
     pricePerOneToken_: PromiseOrValue<BigNumberish>,
+    voucherTokenContract_: PromiseOrValue<string>,
+    voucherTokensAmount_: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -633,6 +729,7 @@ export interface NftBookToken extends BaseContract {
   mintToken(
     paymentTokenAddress_: PromiseOrValue<string>,
     paymentTokenPrice_: PromiseOrValue<BigNumberish>,
+    discount_: PromiseOrValue<BigNumberish>,
     endTimestamp_: PromiseOrValue<BigNumberish>,
     tokenURI_: PromiseOrValue<string>,
     r_: PromiseOrValue<BytesLike>,
@@ -717,12 +814,31 @@ export interface NftBookToken extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  updateAllParams(
+    newPrice_: PromiseOrValue<BigNumberish>,
+    newVoucherTokenContract_: PromiseOrValue<string>,
+    newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+    newTokenName_: PromiseOrValue<string>,
+    newTokenSymbol_: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   updateTokenContractParams(
     newPrice_: PromiseOrValue<BigNumberish>,
     newTokenName_: PromiseOrValue<string>,
     newTokenSymbol_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  updateVoucherParams(
+    newVoucherTokenContract_: PromiseOrValue<string>,
+    newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  voucherTokenContract(overrides?: CallOverrides): Promise<string>;
+
+  voucherTokensAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
   withdrawPaidTokens(
     tokenAddr_: PromiseOrValue<string>,
@@ -736,6 +852,8 @@ export interface NftBookToken extends BaseContract {
       tokenSymbol_: PromiseOrValue<string>,
       tokenFactoryAddr_: PromiseOrValue<string>,
       pricePerOneToken_: PromiseOrValue<BigNumberish>,
+      voucherTokenContract_: PromiseOrValue<string>,
+      voucherTokensAmount_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -774,6 +892,7 @@ export interface NftBookToken extends BaseContract {
     mintToken(
       paymentTokenAddress_: PromiseOrValue<string>,
       paymentTokenPrice_: PromiseOrValue<BigNumberish>,
+      discount_: PromiseOrValue<BigNumberish>,
       endTimestamp_: PromiseOrValue<BigNumberish>,
       tokenURI_: PromiseOrValue<string>,
       r_: PromiseOrValue<BytesLike>,
@@ -854,12 +973,31 @@ export interface NftBookToken extends BaseContract {
 
     unpause(overrides?: CallOverrides): Promise<void>;
 
+    updateAllParams(
+      newPrice_: PromiseOrValue<BigNumberish>,
+      newVoucherTokenContract_: PromiseOrValue<string>,
+      newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+      newTokenName_: PromiseOrValue<string>,
+      newTokenSymbol_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     updateTokenContractParams(
       newPrice_: PromiseOrValue<BigNumberish>,
       newTokenName_: PromiseOrValue<string>,
       newTokenSymbol_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateVoucherParams(
+      newVoucherTokenContract_: PromiseOrValue<string>,
+      newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    voucherTokenContract(overrides?: CallOverrides): Promise<string>;
+
+    voucherTokensAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdrawPaidTokens(
       tokenAddr_: PromiseOrValue<string>,
@@ -905,18 +1043,22 @@ export interface NftBookToken extends BaseContract {
     "Paused(address)"(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
 
-    "PaymentSuccessful(address,address,uint256,uint256)"(
-      payerAddr?: PromiseOrValue<string> | null,
-      tokenAddress?: PromiseOrValue<string> | null,
-      tokenAmount?: null,
-      tokenPrice?: null
-    ): PaymentSuccessfulEventFilter;
-    PaymentSuccessful(
-      payerAddr?: PromiseOrValue<string> | null,
-      tokenAddress?: PromiseOrValue<string> | null,
-      tokenAmount?: null,
-      tokenPrice?: null
-    ): PaymentSuccessfulEventFilter;
+    "SuccessfullyMinted(address,tuple,address,uint256,uint256,uint256)"(
+      recipient?: PromiseOrValue<string> | null,
+      mintedTokenInfo?: null,
+      paymentTokenAddress?: PromiseOrValue<string> | null,
+      paidTokensAmount?: null,
+      paymentTokenPrice?: null,
+      discount?: null
+    ): SuccessfullyMintedEventFilter;
+    SuccessfullyMinted(
+      recipient?: PromiseOrValue<string> | null,
+      mintedTokenInfo?: null,
+      paymentTokenAddress?: PromiseOrValue<string> | null,
+      paidTokensAmount?: null,
+      paymentTokenPrice?: null,
+      discount?: null
+    ): SuccessfullyMintedEventFilter;
 
     "TokenContractParamsUpdated(uint256,string,string)"(
       newPrice?: null,
@@ -928,17 +1070,6 @@ export interface NftBookToken extends BaseContract {
       tokenName?: null,
       tokenSymbol?: null
     ): TokenContractParamsUpdatedEventFilter;
-
-    "TokenMinted(address,uint256,string)"(
-      recipient?: PromiseOrValue<string> | null,
-      tokenId?: null,
-      tokenURI?: null
-    ): TokenMintedEventFilter;
-    TokenMinted(
-      recipient?: PromiseOrValue<string> | null,
-      tokenId?: null,
-      tokenURI?: null
-    ): TokenMintedEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: PromiseOrValue<string> | null,
@@ -953,6 +1084,15 @@ export interface NftBookToken extends BaseContract {
 
     "Unpaused(address)"(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
+
+    "VoucherParamsUpdated(address,uint256)"(
+      newVoucherTokenContract?: null,
+      newVoucherTokensAmount?: null
+    ): VoucherParamsUpdatedEventFilter;
+    VoucherParamsUpdated(
+      newVoucherTokenContract?: null,
+      newVoucherTokensAmount?: null
+    ): VoucherParamsUpdatedEventFilter;
   };
 
   estimateGas: {
@@ -961,6 +1101,8 @@ export interface NftBookToken extends BaseContract {
       tokenSymbol_: PromiseOrValue<string>,
       tokenFactoryAddr_: PromiseOrValue<string>,
       pricePerOneToken_: PromiseOrValue<BigNumberish>,
+      voucherTokenContract_: PromiseOrValue<string>,
+      voucherTokensAmount_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -999,6 +1141,7 @@ export interface NftBookToken extends BaseContract {
     mintToken(
       paymentTokenAddress_: PromiseOrValue<string>,
       paymentTokenPrice_: PromiseOrValue<BigNumberish>,
+      discount_: PromiseOrValue<BigNumberish>,
       endTimestamp_: PromiseOrValue<BigNumberish>,
       tokenURI_: PromiseOrValue<string>,
       r_: PromiseOrValue<BytesLike>,
@@ -1083,12 +1226,31 @@ export interface NftBookToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    updateAllParams(
+      newPrice_: PromiseOrValue<BigNumberish>,
+      newVoucherTokenContract_: PromiseOrValue<string>,
+      newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+      newTokenName_: PromiseOrValue<string>,
+      newTokenSymbol_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     updateTokenContractParams(
       newPrice_: PromiseOrValue<BigNumberish>,
       newTokenName_: PromiseOrValue<string>,
       newTokenSymbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    updateVoucherParams(
+      newVoucherTokenContract_: PromiseOrValue<string>,
+      newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    voucherTokenContract(overrides?: CallOverrides): Promise<BigNumber>;
+
+    voucherTokensAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdrawPaidTokens(
       tokenAddr_: PromiseOrValue<string>,
@@ -1103,6 +1265,8 @@ export interface NftBookToken extends BaseContract {
       tokenSymbol_: PromiseOrValue<string>,
       tokenFactoryAddr_: PromiseOrValue<string>,
       pricePerOneToken_: PromiseOrValue<BigNumberish>,
+      voucherTokenContract_: PromiseOrValue<string>,
+      voucherTokensAmount_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1141,6 +1305,7 @@ export interface NftBookToken extends BaseContract {
     mintToken(
       paymentTokenAddress_: PromiseOrValue<string>,
       paymentTokenPrice_: PromiseOrValue<BigNumberish>,
+      discount_: PromiseOrValue<BigNumberish>,
       endTimestamp_: PromiseOrValue<BigNumberish>,
       tokenURI_: PromiseOrValue<string>,
       r_: PromiseOrValue<BytesLike>,
@@ -1225,11 +1390,34 @@ export interface NftBookToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    updateAllParams(
+      newPrice_: PromiseOrValue<BigNumberish>,
+      newVoucherTokenContract_: PromiseOrValue<string>,
+      newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+      newTokenName_: PromiseOrValue<string>,
+      newTokenSymbol_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     updateTokenContractParams(
       newPrice_: PromiseOrValue<BigNumberish>,
       newTokenName_: PromiseOrValue<string>,
       newTokenSymbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateVoucherParams(
+      newVoucherTokenContract_: PromiseOrValue<string>,
+      newVoucherTokensAmount_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    voucherTokenContract(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    voucherTokensAmount(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     withdrawPaidTokens(

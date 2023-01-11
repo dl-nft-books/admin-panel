@@ -101,29 +101,58 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "payerAddr",
+        name: "recipient",
         type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "pricePerOneToken",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "tokenURI",
+            type: "string",
+          },
+        ],
+        indexed: false,
+        internalType: "struct ITokenContract.MintedTokenInfo",
+        name: "mintedTokenInfo",
+        type: "tuple",
       },
       {
         indexed: true,
         internalType: "address",
-        name: "tokenAddress",
+        name: "paymentTokenAddress",
         type: "address",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "tokenAmount",
+        name: "paidTokensAmount",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "tokenPrice",
+        name: "paymentTokenPrice",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "discount",
         type: "uint256",
       },
     ],
-    name: "PaymentSuccessful",
+    name: "SuccessfullyMinted",
     type: "event",
   },
   {
@@ -149,31 +178,6 @@ const _abi = [
       },
     ],
     name: "TokenContractParamsUpdated",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "tokenURI",
-        type: "string",
-      },
-    ],
-    name: "TokenMinted",
     type: "event",
   },
   {
@@ -215,6 +219,25 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newVoucherTokenContract",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newVoucherTokensAmount",
+        type: "uint256",
+      },
+    ],
+    name: "VoucherParamsUpdated",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "string",
@@ -234,6 +257,16 @@ const _abi = [
       {
         internalType: "uint256",
         name: "pricePerOneToken_",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "voucherTokenContract_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "voucherTokensAmount_",
         type: "uint256",
       },
     ],
@@ -370,6 +403,11 @@ const _abi = [
       {
         internalType: "uint256",
         name: "paymentTokenPrice_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "discount_",
         type: "uint256",
       },
       {
@@ -708,6 +746,39 @@ const _abi = [
         type: "uint256",
       },
       {
+        internalType: "address",
+        name: "newVoucherTokenContract_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "newVoucherTokensAmount_",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "newTokenName_",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "newTokenSymbol_",
+        type: "string",
+      },
+    ],
+    name: "updateAllParams",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "newPrice_",
+        type: "uint256",
+      },
+      {
         internalType: "string",
         name: "newTokenName_",
         type: "string",
@@ -721,6 +792,50 @@ const _abi = [
     name: "updateTokenContractParams",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newVoucherTokenContract_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "newVoucherTokensAmount_",
+        type: "uint256",
+      },
+    ],
+    name: "updateVoucherParams",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "voucherTokenContract",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "voucherTokensAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

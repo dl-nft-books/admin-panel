@@ -20,6 +20,8 @@ export type Book = JsonApiRecordBase<'books'> & {
   file: BookFile
   price: string
   title: string
+  voucher_token: string
+  voucher_token_amount: string
 }
 
 export type CreateBookResponse = JsonApiRecordBase<'create_signatures'> & {

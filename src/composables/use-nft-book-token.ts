@@ -50,6 +50,7 @@ export const useNftBookToken = (
   ) => {
     try {
       const convertedPrice = new BN(price).toWei().toString()
+
       const updateTx = await _instance_rw.value?.updateTokenContractParams(
         convertedPrice,
         name,
@@ -62,8 +63,27 @@ export const useNftBookToken = (
     }
   }
 
+  const updateVoucherParams = async (
+    voucherTokenAddress: string,
+    voucherTokenAmount: string,
+  ) => {
+    try {
+      const convertedAmount = new BN(voucherTokenAmount).toWei().toString()
+
+      const updateTx = await _instance_rw.value?.updateVoucherParams(
+        voucherTokenAddress,
+        convertedAmount,
+      )
+
+      await updateTx?.wait()
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   return {
     init,
     updateTokenContractParams,
+    updateVoucherParams,
   }
 }

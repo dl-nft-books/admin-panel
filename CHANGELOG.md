@@ -8,6 +8,8 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+#### Added
+- Vouchers fields to NFT-Create and NFT-Update forms
 
 ## [1.2.0] - 2022-12-26
 #### Added

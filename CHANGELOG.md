@@ -11,6 +11,9 @@ for further information about branching and tagging conventions.
 #### Added
 - Vouchers fields to NFT-Create and NFT-Update forms
 
+#### Changed
+- Contracts updated
+
 ## [1.2.0] - 2022-12-26
 #### Added
 - Promocodes page

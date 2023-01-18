@@ -12,6 +12,7 @@ import {
   ProviderWrapper,
   TransactionResponse,
   TxRequestBody,
+  NativeCurrency,
 } from '@/types'
 import { errors } from '@/errors'
 import { ethers } from 'ethers'
@@ -33,6 +34,8 @@ export interface UseProvider {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => Promise<void>
   signAndSendTx: (txRequestBody: TxRequestBody) => Promise<TransactionResponse>
   getHashFromTxResponse: (txResponse: TransactionResponse) => string
@@ -109,11 +112,19 @@ export const useProvider = (): UseProvider => {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => {
     if (!providerWrp.value || !providerWrp.value?.addChain)
       throw new errors.ProviderWrapperMethodNotFoundError()
 
-    await providerWrp.value.addChain(chainId, chainName, chainRpcUrl)
+    await providerWrp.value.addChain(
+      chainId,
+      chainName,
+      chainRpcUrl,
+      nativeCurrency,
+      blockExplorerUrl,
+    )
   }
 
   const signAndSendTx = async (

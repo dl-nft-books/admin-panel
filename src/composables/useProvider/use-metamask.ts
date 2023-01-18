@@ -16,6 +16,7 @@ import {
   ProviderWrapper,
   TransactionResponse,
   TxRequestBody,
+  NativeCurrency,
 } from '@/types'
 import { Deferrable } from '@ethersproject/properties'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
@@ -90,6 +91,8 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => {
     try {
       await requestAddEthChain(
@@ -97,6 +100,8 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
         Number(chainId),
         chainName,
         chainRpcUrl,
+        nativeCurrency,
+        blockExplorerUrl,
       )
     } catch (error) {
       handleEthError(error as EthProviderRpcError)

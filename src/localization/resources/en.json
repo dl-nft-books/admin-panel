@@ -44,7 +44,14 @@
     "default-message-default": "Just a message"
   },
   "account-dropdown": {
-    "logout-btn": "Logout"
+    "logout-btn": "Logout",
+    "copy-address": "Copy address"
+  },
+  "networks": {
+    "polygon": "Polygon Mainnet",
+    "ethereum": "Ethereum Mainnet",
+    "q": "Q Mainnet",
+    "unsupported": "Unknown network"
   },
   "app-sidebar": {
     "logo-subtitle": "Admin panel",

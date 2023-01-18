@@ -76,6 +76,12 @@
   --promocode-available: #{$promocode-available};
   --promocode-available-text: #{$promocode-available-text};
   --promocode-unavailable: #{$promocode-unavailable};
+  --polygon-network: #{$polygon-network};
+  --ethereum-network: #{$ethereum-network};
+  --q-network: #{$q-network};
+  --q-network-stroke: #{$q-network-stroke};
+  --drop-down-shadow: #{$drop-down-shadow};
+  --drop-down-shadow-rgb: #{$drop-down-shadow-rgb};
 
   /* App variables */
   --app-txt: #{$text-primary-main};
@@ -128,4 +134,7 @@
     var(--field-padding-left);
 
   --field-error: var(--error-main);
+
+  /* z-indexes */
+  --drop-down-index: 1;
 }

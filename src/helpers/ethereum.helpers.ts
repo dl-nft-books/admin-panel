@@ -1,4 +1,4 @@
-import { EthProviderRpcError } from '@/types'
+import { EthProviderRpcError, NativeCurrency } from '@/types'
 import { errors } from '@/errors'
 import { ethers } from 'ethers'
 import { EIP1193, EIP1474, EIP1193String } from '@/enums'
@@ -23,12 +23,16 @@ export async function requestAddEthChain(
   chainId: number,
   chainName: string,
   chainRpcUrl: string,
+  nativeCurrency: NativeCurrency,
+  blockExplorerUrl: string,
 ) {
   await provider.send('wallet_addEthereumChain', [
     {
       chainId: ethers.utils.hexValue(chainId),
       chainName,
       rpcUrls: [chainRpcUrl],
+      nativeCurrency,
+      blockExplorerUrls: [blockExplorerUrl],
     },
   ])
 }

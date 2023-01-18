@@ -118,7 +118,7 @@
             class="nft-form__button"
             size="small"
             :text="$t('nft-form.switch-chain-button')"
-            @click="provider.switchChain(config.CHAIN_ID)"
+            @click="provider.switchChain(networkList[0].chain_id)"
           />
         </template>
       </div>
@@ -134,7 +134,7 @@ import {
   FileField,
   CheckboxField,
 } from '@/fields'
-import { computed, reactive } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { AppButton, Collapse } from '@/common'
 import { FIELD_LENGTH, ROUTE_NAMES } from '@/enums'
 import { useRouter } from 'vue-router'
@@ -147,7 +147,7 @@ import {
 } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { Document, createBook, updateBook } from '@/api'
+import { Document, createBook, updateBook, getNetworks } from '@/api'
 import {
   required,
   minValue,
@@ -161,6 +161,7 @@ import { BN } from '@/utils/math.util'
 import { config } from '@/config'
 import { BookRecord } from '@/records'
 import { NULL_ADDRESS } from '@/consts'
+import { Network } from '@/types'
 
 const MIN_PRICE_VALUE = '0.01'
 const MIN_VOUCHER_AMOUNT = 1
@@ -175,14 +176,29 @@ const { $t } = useContext()
 const router = useRouter()
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
+const networkList = ref<Network[]>([])
+
+const loadNetworks = async () => {
+  try {
+    const { data: networks } = await getNetworks()
+
+    networkList.value = networks
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+}
+loadNetworks()
+
 const tokenFactory = useTokenFactory(
   provider.value,
   config.TOKEN_FACTORY_CONTRACT_ADDRESS,
 )
 const bookNft = useNftBookToken(provider.value)
 
-const isValidChain = computed(
-  () => Number(provider.value.chainId) === Number(config.CHAIN_ID),
+const isValidChain = computed(() =>
+  networkList.value.find(
+    network => network.chain_id === Number(provider.value.chainId),
+  ),
 )
 const isUpdateNft = computed(() => Boolean(props.book))
 
@@ -354,6 +370,7 @@ const createNftBook = async (book: Document, banner: Document) => {
     banner,
     voucherToken: form.isVoucherAllowed ? form.voucherTokenAddress : undefined,
     voucherTokenAmount: form.isVoucherAllowed ? weiTokenAmount : undefined,
+    chainID: Number(provider.value.chainId),
   })
 
   await tokenFactory.deployTokenContract(

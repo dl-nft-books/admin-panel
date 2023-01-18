@@ -57,7 +57,7 @@ export const useTokenFactory = (
     try {
       const contractTransaction = await _instance_rw.value?.deployTokenContract(
         {
-          tokenContractId: +tokenId,
+          tokenContractId: Number(tokenId),
           tokenName: name,
           tokenSymbol: symbol,
           pricePerOneToken: amount,

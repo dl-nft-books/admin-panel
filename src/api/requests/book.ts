@@ -39,6 +39,8 @@ export function createBook(opts: {
   tokenSymbol: string
   description: string
   price: string
+  voucherToken?: string
+  voucherTokenAmount?: string
   banner: Document
   book: Document
 }) {
@@ -51,6 +53,8 @@ export function createBook(opts: {
         token_name: opts.tokenName,
         token_symbol: opts.tokenSymbol,
         price: opts.price,
+        voucher_token: opts.voucherToken,
+        voucher_token_amount: opts.voucherTokenAmount,
         banner: {
           type: 'banners',
           attributes: opts.banner,

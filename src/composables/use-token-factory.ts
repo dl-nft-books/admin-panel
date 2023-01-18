@@ -48,16 +48,22 @@ export const useTokenFactory = (
     name: string,
     symbol: string,
     amount: string,
+    voucherTokenContract: string,
+    voucherTokensAmount: string,
     r: string,
     s: string,
     v: number,
   ) => {
     try {
       const contractTransaction = await _instance_rw.value?.deployTokenContract(
-        +tokenId,
-        name,
-        symbol,
-        amount,
+        {
+          tokenContractId: Number(tokenId),
+          tokenName: name,
+          tokenSymbol: symbol,
+          pricePerOneToken: amount,
+          voucherTokenContract,
+          voucherTokensAmount,
+        },
         r,
         s,
         v,

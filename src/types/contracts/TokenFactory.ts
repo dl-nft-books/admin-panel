@@ -29,6 +29,31 @@ import type {
 } from "./common";
 
 export declare namespace ITokenFactory {
+  export type DeployTokenContractParamsStruct = {
+    tokenContractId: PromiseOrValue<BigNumberish>;
+    tokenName: PromiseOrValue<string>;
+    tokenSymbol: PromiseOrValue<string>;
+    pricePerOneToken: PromiseOrValue<BigNumberish>;
+    voucherTokenContract: PromiseOrValue<string>;
+    voucherTokensAmount: PromiseOrValue<BigNumberish>;
+  };
+
+  export type DeployTokenContractParamsStructOutput = [
+    BigNumber,
+    string,
+    string,
+    BigNumber,
+    string,
+    BigNumber
+  ] & {
+    tokenContractId: BigNumber;
+    tokenName: string;
+    tokenSymbol: string;
+    pricePerOneToken: BigNumber;
+    voucherTokenContract: string;
+    voucherTokensAmount: BigNumber;
+  };
+
   export type BaseTokenContractInfoStruct = {
     tokenContractAddr: PromiseOrValue<string>;
     pricePerOneToken: PromiseOrValue<BigNumberish>;
@@ -54,7 +79,7 @@ export interface TokenFactoryInterface extends utils.Interface {
   functions: {
     "__TokenFactory_init(address[],string,uint8)": FunctionFragment;
     "baseTokenContractsURI()": FunctionFragment;
-    "deployTokenContract(uint256,string,string,uint256,bytes32,bytes32,uint8)": FunctionFragment;
+    "deployTokenContract((uint256,string,string,uint256,address,uint256),bytes32,bytes32,uint8)": FunctionFragment;
     "getAdmins()": FunctionFragment;
     "getBaseTokenContractsInfo(address[])": FunctionFragment;
     "getTokenContractsCount()": FunctionFragment;
@@ -63,13 +88,13 @@ export interface TokenFactoryInterface extends utils.Interface {
     "getUserNFTsInfo(address)": FunctionFragment;
     "isAdmin(address)": FunctionFragment;
     "owner()": FunctionFragment;
-    "poolsBeacon()": FunctionFragment;
     "priceDecimals()": FunctionFragment;
     "proxiableUUID()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setBaseTokenContractsURI(string)": FunctionFragment;
     "setNewImplementation(address)": FunctionFragment;
     "tokenContractByIndex(uint256)": FunctionFragment;
+    "tokenContractsBeacon()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "updateAdmins(address[],bool)": FunctionFragment;
     "upgradeTo(address)": FunctionFragment;
@@ -89,13 +114,13 @@ export interface TokenFactoryInterface extends utils.Interface {
       | "getUserNFTsInfo"
       | "isAdmin"
       | "owner"
-      | "poolsBeacon"
       | "priceDecimals"
       | "proxiableUUID"
       | "renounceOwnership"
       | "setBaseTokenContractsURI"
       | "setNewImplementation"
       | "tokenContractByIndex"
+      | "tokenContractsBeacon"
       | "transferOwnership"
       | "updateAdmins"
       | "upgradeTo"
@@ -117,10 +142,7 @@ export interface TokenFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "deployTokenContract",
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
+      ITokenFactory.DeployTokenContractParamsStruct,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BigNumberish>
@@ -153,10 +175,6 @@ export interface TokenFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "poolsBeacon",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "priceDecimals",
     values?: undefined
   ): string;
@@ -179,6 +197,10 @@ export interface TokenFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "tokenContractByIndex",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenContractsBeacon",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -233,10 +255,6 @@ export interface TokenFactoryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "poolsBeacon",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "priceDecimals",
     data: BytesLike
   ): Result;
@@ -261,6 +279,10 @@ export interface TokenFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "tokenContractsBeacon",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
@@ -280,7 +302,7 @@ export interface TokenFactoryInterface extends utils.Interface {
     "BaseTokenContractsURIUpdated(string)": EventFragment;
     "BeaconUpgraded(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "TokenContractDeployed(uint256,address,uint256,string,string)": EventFragment;
+    "TokenContractDeployed(address,tuple)": EventFragment;
     "Upgraded(address)": EventFragment;
   };
 
@@ -351,14 +373,11 @@ export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface TokenContractDeployedEventObject {
-  tokenContractId: BigNumber;
   newTokenContractAddr: string;
-  pricePerOneToken: BigNumber;
-  tokenName: string;
-  tokenSymbol: string;
+  tokenContractParams: ITokenFactory.DeployTokenContractParamsStructOutput;
 }
 export type TokenContractDeployedEvent = TypedEvent<
-  [BigNumber, string, BigNumber, string, string],
+  [string, ITokenFactory.DeployTokenContractParamsStructOutput],
   TokenContractDeployedEventObject
 >;
 
@@ -409,10 +428,7 @@ export interface TokenFactory extends BaseContract {
     baseTokenContractsURI(overrides?: CallOverrides): Promise<[string]>;
 
     deployTokenContract(
-      tokenContractId_: PromiseOrValue<BigNumberish>,
-      tokenName_: PromiseOrValue<string>,
-      tokenSymbol_: PromiseOrValue<string>,
-      pricePerOneToken_: PromiseOrValue<BigNumberish>,
+      params_: ITokenFactory.DeployTokenContractParamsStruct,
       r_: PromiseOrValue<BytesLike>,
       s_: PromiseOrValue<BytesLike>,
       v_: PromiseOrValue<BigNumberish>,
@@ -456,8 +472,6 @@ export interface TokenFactory extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    poolsBeacon(overrides?: CallOverrides): Promise<[string]>;
-
     priceDecimals(overrides?: CallOverrides): Promise<[number]>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<[string]>;
@@ -480,6 +494,8 @@ export interface TokenFactory extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    tokenContractsBeacon(overrides?: CallOverrides): Promise<[string]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -514,10 +530,7 @@ export interface TokenFactory extends BaseContract {
   baseTokenContractsURI(overrides?: CallOverrides): Promise<string>;
 
   deployTokenContract(
-    tokenContractId_: PromiseOrValue<BigNumberish>,
-    tokenName_: PromiseOrValue<string>,
-    tokenSymbol_: PromiseOrValue<string>,
-    pricePerOneToken_: PromiseOrValue<BigNumberish>,
+    params_: ITokenFactory.DeployTokenContractParamsStruct,
     r_: PromiseOrValue<BytesLike>,
     s_: PromiseOrValue<BytesLike>,
     v_: PromiseOrValue<BigNumberish>,
@@ -553,8 +566,6 @@ export interface TokenFactory extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  poolsBeacon(overrides?: CallOverrides): Promise<string>;
-
   priceDecimals(overrides?: CallOverrides): Promise<number>;
 
   proxiableUUID(overrides?: CallOverrides): Promise<string>;
@@ -577,6 +588,8 @@ export interface TokenFactory extends BaseContract {
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  tokenContractsBeacon(overrides?: CallOverrides): Promise<string>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -611,10 +624,7 @@ export interface TokenFactory extends BaseContract {
     baseTokenContractsURI(overrides?: CallOverrides): Promise<string>;
 
     deployTokenContract(
-      tokenContractId_: PromiseOrValue<BigNumberish>,
-      tokenName_: PromiseOrValue<string>,
-      tokenSymbol_: PromiseOrValue<string>,
-      pricePerOneToken_: PromiseOrValue<BigNumberish>,
+      params_: ITokenFactory.DeployTokenContractParamsStruct,
       r_: PromiseOrValue<BytesLike>,
       s_: PromiseOrValue<BytesLike>,
       v_: PromiseOrValue<BigNumberish>,
@@ -650,8 +660,6 @@ export interface TokenFactory extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    poolsBeacon(overrides?: CallOverrides): Promise<string>;
-
     priceDecimals(overrides?: CallOverrides): Promise<number>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<string>;
@@ -672,6 +680,8 @@ export interface TokenFactory extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    tokenContractsBeacon(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -738,19 +748,13 @@ export interface TokenFactory extends BaseContract {
       newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
 
-    "TokenContractDeployed(uint256,address,uint256,string,string)"(
-      tokenContractId?: null,
+    "TokenContractDeployed(address,tuple)"(
       newTokenContractAddr?: null,
-      pricePerOneToken?: null,
-      tokenName?: null,
-      tokenSymbol?: null
+      tokenContractParams?: null
     ): TokenContractDeployedEventFilter;
     TokenContractDeployed(
-      tokenContractId?: null,
       newTokenContractAddr?: null,
-      pricePerOneToken?: null,
-      tokenName?: null,
-      tokenSymbol?: null
+      tokenContractParams?: null
     ): TokenContractDeployedEventFilter;
 
     "Upgraded(address)"(
@@ -772,10 +776,7 @@ export interface TokenFactory extends BaseContract {
     baseTokenContractsURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     deployTokenContract(
-      tokenContractId_: PromiseOrValue<BigNumberish>,
-      tokenName_: PromiseOrValue<string>,
-      tokenSymbol_: PromiseOrValue<string>,
-      pricePerOneToken_: PromiseOrValue<BigNumberish>,
+      params_: ITokenFactory.DeployTokenContractParamsStruct,
       r_: PromiseOrValue<BytesLike>,
       s_: PromiseOrValue<BytesLike>,
       v_: PromiseOrValue<BigNumberish>,
@@ -811,8 +812,6 @@ export interface TokenFactory extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    poolsBeacon(overrides?: CallOverrides): Promise<BigNumber>;
-
     priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<BigNumber>;
@@ -835,6 +834,8 @@ export interface TokenFactory extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    tokenContractsBeacon(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -872,10 +873,7 @@ export interface TokenFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     deployTokenContract(
-      tokenContractId_: PromiseOrValue<BigNumberish>,
-      tokenName_: PromiseOrValue<string>,
-      tokenSymbol_: PromiseOrValue<string>,
-      pricePerOneToken_: PromiseOrValue<BigNumberish>,
+      params_: ITokenFactory.DeployTokenContractParamsStruct,
       r_: PromiseOrValue<BytesLike>,
       s_: PromiseOrValue<BytesLike>,
       v_: PromiseOrValue<BigNumberish>,
@@ -915,8 +913,6 @@ export interface TokenFactory extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    poolsBeacon(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     priceDecimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -937,6 +933,10 @@ export interface TokenFactory extends BaseContract {
 
     tokenContractByIndex(
       arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenContractsBeacon(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

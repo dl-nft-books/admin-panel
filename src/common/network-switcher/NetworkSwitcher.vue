@@ -7,20 +7,25 @@
   >
     <template #head="{ menu }">
       <section
-        v-if="isLoaded"
+        v-if="networksStore.isLoaded"
         class="header-network-switcher"
         @click="menu.open"
       >
-        <network-item modification="non-active" :scheme="pickedNetwork" />
+        <network-item
+          modification="non-active"
+          :name="pickedNetwork?.name"
+          :scheme="getNetworkScheme(pickedNetwork?.chain_id)"
+        />
       </section>
       <loader v-else />
     </template>
     <template #default="{ menu }">
       <div class="header-network-switcher__body">
         <network-item
-          v-for="network in networkList"
+          v-for="network in networksStore.list"
           :key="network.id"
-          :scheme="getNetworkName(network.chain_id.toString())"
+          :scheme="getNetworkScheme(network.chain_id.toString())"
+          :name="network.name"
           @network-change="
             changeNetwork(network.chain_id.toString(), menu.close)
           "
@@ -31,119 +36,33 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
-import { getNetworks } from '@/api'
+import { ref, computed } from 'vue'
 import { DropDown, NetworkItem, Loader } from '@/common'
-import {
-  NETWORKS,
-  POLYGON_CHAINS,
-  ETHEREUM_CHAINS,
-  Q_CHAINS,
-  EIP1193,
-} from '@/enums'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { ErrorHandler } from '@/helpers'
-import { Network, EthProviderRpcError, ChainID } from '@/types'
-import { POLYGON_MUMBAI_CHAIN, Q_TESTNET_CHAIN } from '@/consts'
+import { ChainId } from '@/types'
+import { getNetworkScheme } from '@/helpers'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
 
-const isLoaded = ref(false)
-const isSwitchingChain = ref(false)
-const networkList = ref<Network[]>([])
+const networksStore = useNetworksStore()
+networksStore.loadNetworks()
 
-const pickedNetwork = ref<NETWORKS>(
-  getNetworkName(provider.value.chainId?.toString()),
+const isSwitchingChain = ref(false)
+
+const pickedNetwork = computed(() =>
+  networksStore.list.find(
+    network => network.chain_id === Number(provider.value.chainId),
+  ),
 )
 
-function getNetworkName(chaindID: ChainID) {
-  switch (chaindID) {
-    case ETHEREUM_CHAINS.ethereum:
-    case ETHEREUM_CHAINS.goerli:
-      return NETWORKS.ETHEREUM
-    case POLYGON_CHAINS.mainnet:
-    case POLYGON_CHAINS.mumbai:
-      return NETWORKS.POLYGON
-    case Q_CHAINS.mainet:
-    case Q_CHAINS.testnet:
-      return NETWORKS.Q
-    default:
-      return NETWORKS.UNSUPPORTED
-  }
-}
-
-// For non-default chains
-function getNetworkInfo(chainID: ChainID) {
-  switch (chainID) {
-    case POLYGON_CHAINS.mumbai:
-      return POLYGON_MUMBAI_CHAIN
-    case Q_CHAINS.testnet:
-      return Q_TESTNET_CHAIN
-    default:
-      return null
-  }
-}
-
-const changeNetwork = async (chainID: ChainID, closeDropDown: () => void) => {
+const changeNetwork = async (chainID: ChainId, closeDropDown: () => void) => {
   isSwitchingChain.value = true
-  try {
-    await provider.value.switchChain(chainID)
-  } catch (error) {
-    const ethError = error as EthProviderRpcError
-
-    // if wallet has no chain added we need to add it and switch to it
-    if (ethError?.code === EIP1193.walletMissingChain) {
-      await addNetwork(chainID)
-    }
-
-    ErrorHandler.processWithoutFeedback(error)
-  }
+  networksStore.switchNetwork(provider.value, chainID)
   isSwitchingChain.value = false
 
   closeDropDown()
 }
-
-const addNetwork = async (chainID: ChainID) => {
-  try {
-    const networkToAdd = getNetworkInfo(chainID)
-
-    if (!networkToAdd) return
-
-    await provider.value.addChain(
-      chainID,
-      networkToAdd.name,
-      networkToAdd.rpcUrl,
-      {
-        name: networkToAdd.nativeCurrency.name,
-        symbol: networkToAdd.nativeCurrency.symbol,
-        decimals: networkToAdd.nativeCurrency.decimals,
-      },
-      networkToAdd.blockExplorerUrl,
-    )
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-  }
-}
-
-const init = async () => {
-  try {
-    const { data: networks } = await getNetworks()
-
-    networkList.value = networks
-  } catch (error) {
-    ErrorHandler.process(error)
-  }
-  isLoaded.value = true
-}
-init()
-
-watch(
-  () => provider.value.chainId,
-  () => {
-    pickedNetwork.value = getNetworkName(provider.value.chainId?.toString())
-  },
-)
 </script>
 
 <style lang="scss" scoped>

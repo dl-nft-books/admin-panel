@@ -1,46 +1,36 @@
 <template>
   <div :class="classes" @click="emit('networkChange')">
     <div :class="wrapperClasses">
-      <icon class="network-item__icon" :name="getIconName(scheme)" />
+      <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </div>
     <p class="network-item__title">
-      {{ title }}
+      {{
+        scheme != 'unsupported'
+          ? $t('networks.title', { network: name })
+          : $t('networks.unsupported')
+      }}
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Icon } from '@/common'
-import { useContext } from '@/composables'
 import { computed } from 'vue'
-
-const { $t, $icons } = useContext()
-
-type SCHEMES = 'polygon' | 'ethereum' | 'q' | 'unsupported'
-
-const getIconName = (scheme: SCHEMES) => {
-  switch (scheme) {
-    case 'polygon':
-      return $icons.polygon
-    case 'ethereum':
-      return $icons.ethereum
-    case 'q':
-      return $icons.q
-    case 'unsupported':
-      return $icons.ban
-  }
-}
+import { NETWORKS } from '@/enums'
+import { getIconByScheme } from '@/helpers'
 
 type MODIFICATIONS = 'non-active' | 'default'
 
 const props = withDefaults(
   defineProps<{
-    scheme?: SCHEMES
+    scheme?: NETWORKS
     modification?: MODIFICATIONS
+    name?: string
   }>(),
   {
-    scheme: 'polygon',
+    scheme: NETWORKS.POLYGON,
     modification: 'default',
+    name: '',
   },
 )
 
@@ -57,23 +47,6 @@ const wrapperClasses = computed(() => [
   'network-item__wrapper',
   `network-item__wrapper--${props.scheme}`,
 ])
-
-const getTitle = () => {
-  switch (props.scheme) {
-    case 'polygon':
-      return $t('networks.polygon')
-    case 'ethereum':
-      return $t('networks.ethereum')
-    case 'q':
-      return $t('networks.q')
-    case 'unsupported':
-      return $t('networks.unsupported')
-    default:
-      return ''
-  }
-}
-
-const title = computed(getTitle)
 </script>
 
 <style lang="scss" scoped>

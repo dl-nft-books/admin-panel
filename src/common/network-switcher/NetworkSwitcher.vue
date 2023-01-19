@@ -2,7 +2,7 @@
   <!-- TODO: mobile version -->
   <drop-down
     v-if="provider.selectedAddress"
-    :right="81"
+    :right="dropDownShift"
     :disabled="isSwitchingChain"
   >
     <template #head="{ menu }">
@@ -42,8 +42,16 @@ import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { ChainId } from '@/types'
 import { getNetworkScheme } from '@/helpers'
+import { useWindowSize } from '@vueuse/core'
+import { WINDOW_BREAKPOINTS } from '@/enums'
 
 const { provider } = storeToRefs(useWeb3ProvidersStore())
+
+const { width } = useWindowSize()
+
+const dropDownShift = computed(() =>
+  width.value >= WINDOW_BREAKPOINTS.small ? 81 : 0,
+)
 
 const networksStore = useNetworksStore()
 networksStore.loadNetworks()
@@ -77,7 +85,11 @@ const changeNetwork = async (chainID: ChainId, closeDropDown: () => void) => {
   border: toRem(1) solid var(--text-secondary-main);
   transition: 0.2s ease-in-out;
   transition-property: background-color;
-  width: toRem(210);
+  min-width: toRem(210);
+
+  @include respond-to(small) {
+    min-width: unset;
+  }
 
   &:hover {
     cursor: pointer;

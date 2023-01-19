@@ -125,6 +125,10 @@ const wrapperClasses = computed(() => [
 
   .network-item--non-active & {
     font-weight: 500;
+
+    @include respond-to(small) {
+      display: none;
+    }
   }
 }
 </style>

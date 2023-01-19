@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { Icon } from '@/common'
-import { formatFiatAssetFromWei } from '@/helpers'
+import { formatAssetFromWei, formatFiatAssetFromWei } from '@/helpers'
 import { formatMDY } from '@/helpers'
 import { BookRecord } from '@/records'
+import { ethers } from 'ethers'
 
 defineProps<{ book: BookRecord }>()
 </script>
@@ -26,6 +27,24 @@ defineProps<{ book: BookRecord }>()
         {{ formatFiatAssetFromWei(book.price, 'USD') }}
       </p>
     </div>
+    <template v-if="book.voucherToken !== ethers.constants.AddressZero">
+      <div class="nft-details__row">
+        <p class="nft-details__row-label">
+          {{ $t('nft-details.voucher-lbl') }}
+        </p>
+        <p class="nft-details__row-value">
+          {{ book.voucherToken }}
+        </p>
+      </div>
+      <div class="nft-details__row">
+        <p class="nft-details__row-label">
+          {{ $t('nft-details.voucher-amount-lbl') }}
+        </p>
+        <p class="nft-details__row-value">
+          {{ formatAssetFromWei(book.voucherTokenAmount, 2) }}
+        </p>
+      </div>
+    </template>
     <div class="nft-details__row">
       <p class="nft-details__row-label">
         {{ $t('nft-details.document-lbl') }}
@@ -64,9 +83,8 @@ $icon-size: toRem(20);
 
 .nft-details__row {
   display: grid;
-  grid-template-columns: toRem(185) 1fr;
+  grid-template-columns: toRem(200) 1fr;
   grid-gap: toRem(20);
-  position: relative;
 
   @include respond-to(xmedium) {
     grid-template-columns: toRem(100) 1fr;

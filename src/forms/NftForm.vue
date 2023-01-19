@@ -67,8 +67,8 @@
       <collapse class="nft-form__collapse" :is-close-by-click-outside="false">
         <template #head="{ collapse }">
           <checkbox-field
-            class="nft-form__collapse-trigger"
             v-model="form.isVoucherAllowed"
+            class="nft-form__collapse-trigger"
             :label="$t('nft-form.voucher-checkbox-lbl')"
             @click="collapse.toggle"
           />
@@ -164,12 +164,13 @@ import {
 import { ErrorHandler, Bus, formatAssetFromWei } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { BookRecord } from '@/records'
-import { NULL_ADDRESS } from '@/consts'
-
-const MIN_PRICE_VALUE = '0.01'
-const MIN_VOUCHER_AMOUNT = 1
-const MAX_PRICE_VALUE = 0xffffffff // UINT32 MAX VALUE
-const MAX_BOOK_SIZE = 500 // mb
+import { ethers } from 'ethers'
+import {
+  MIN_PRICE_VALUE,
+  MIN_VOUCHER_AMOUNT,
+  MAX_PRICE_VALUE,
+  MAX_BOOK_SIZE,
+} from '@/consts'
 
 const props = defineProps<{
   book?: BookRecord
@@ -212,46 +213,40 @@ const formatedVoucherTokenAmount = props.book?.voucherTokenAmount
   ? formatAssetFromWei(props.book?.voucherTokenAmount, 0)
   : '1'
 
-const isContractValuesUpdated = computed(() => {
-  return (
+const isContractValuesUpdated = computed(
+  () =>
     form.symbol !== props.book?.contractSymbol ||
     form.price !== nftPrice ||
-    form.name !== props.book?.contractName
-  )
-})
+    form.name !== props.book?.contractName,
+)
 
-const isVoucherParamsUpdated = computed(() => {
-  return (
+const isVoucherParamsUpdated = computed(
+  () =>
     form.voucherTokenAddress !== props.book?.voucherToken ||
-    form.voucherTokenAmount !== formatedVoucherTokenAmount
-  )
-})
+    form.voucherTokenAmount !== formatedVoucherTokenAmount,
+)
 
-const isApiValuesUpdated = computed(() => {
-  return (
+const isApiValuesUpdated = computed(
+  () =>
     isDescriptionUpdated.value ||
     isTitleUpdated.value ||
     form.book.key !== props.book?.fileKey ||
-    form.photo.key !== props.book?.bannerKey
-  )
-})
+    form.photo.key !== props.book?.bannerKey,
+)
 
-const isDescriptionUpdated = computed(() => {
-  return form.description !== props.book?.description
-})
+const isDescriptionUpdated = computed(
+  () => form.description !== props.book?.description,
+)
 
-const isTitleUpdated = computed(() => {
-  return form.name !== props.book?.title
-})
+const isTitleUpdated = computed(() => form.name !== props.book?.title)
 
-const isSubmitBtnDisabled = computed(() => {
-  return (
+const isSubmitBtnDisabled = computed(
+  () =>
     (!isApiValuesUpdated.value &&
       !isContractValuesUpdated.value &&
       !isVoucherParamsUpdated.value) ||
-    isFormDisabled.value
-  )
-})
+    isFormDisabled.value,
+)
 
 const form = reactive<{
   name: string
@@ -272,7 +267,7 @@ const form = reactive<{
   book: props.book?.file || new Document(),
   isVoucherAllowed: false,
   voucherTokenAddress: props.book?.voucherToken || '',
-  voucherTokenAmount: formatedVoucherTokenAmount || '1',
+  voucherTokenAmount: formatedVoucherTokenAmount,
 })
 
 /* 
@@ -384,7 +379,9 @@ const createNftBook = async (book: Document, banner: Document) => {
     form.name,
     form.symbol,
     weiPrice,
-    form.isVoucherAllowed ? form.voucherTokenAddress : NULL_ADDRESS,
+    form.isVoucherAllowed
+      ? form.voucherTokenAddress
+      : ethers.constants.AddressZero,
     form.isVoucherAllowed ? weiTokenAmount : '0',
     bookSignature.signature.r,
     bookSignature.signature.s,

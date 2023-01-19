@@ -179,7 +179,9 @@
     "price-lbl": "Price",
     "creation-date-lbl": "Creation Date",
     "document-lbl": "Document",
-    "description-lbl": "Description"
+    "description-lbl": "Description",
+    "voucher-lbl": "Voucher token address",
+    "voucher-amount-lbl": "Voucher token amount"
   },
   "sale-history": {
     "header": "Sale History",

@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: mobile version -->
   <drop-down
     v-if="provider.selectedAddress"
     :right="dropDownShift"

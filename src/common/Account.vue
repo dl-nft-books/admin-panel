@@ -42,11 +42,12 @@ import { Icon, DropDown, NetworkSwitcher } from '@/common'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
 
-interface Props {
-  modification?: MODIFICATIONS
-}
-
-const props = withDefaults(defineProps<Props>(), { modification: 'default' })
+const props = withDefaults(
+  defineProps<{
+    modification?: MODIFICATIONS
+  }>(),
+  { modification: 'default' },
+)
 
 const accountClasses = computed(() => [
   'account',

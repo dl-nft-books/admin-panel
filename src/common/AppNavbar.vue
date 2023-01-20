@@ -44,10 +44,6 @@ const openSidebar = () => {
   }
 }
 
-.app-navbar__account-dropdown {
-  margin-left: auto;
-}
-
 .app-navbar__open-sidebar-button {
   display: none;
 

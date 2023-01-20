@@ -23,11 +23,9 @@
         <network-item
           v-for="network in networksStore.list"
           :key="network.id"
-          :scheme="getNetworkScheme(network.chain_id.toString())"
+          :scheme="getNetworkScheme(network.chain_id)"
           :name="network.name"
-          @network-change="
-            changeNetwork(network.chain_id.toString(), menu.close)
-          "
+          @click="changeNetwork(network.chain_id), menu.close()"
         />
       </div>
     </template>
@@ -38,13 +36,12 @@
 import { ref, computed } from 'vue'
 import { DropDown, NetworkItem, Loader } from '@/common'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { storeToRefs } from 'pinia'
 import { ChainId } from '@/types'
 import { getNetworkScheme } from '@/helpers'
 import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
 
 const { width } = useWindowSize()
 
@@ -59,16 +56,14 @@ const isSwitchingChain = ref(false)
 
 const pickedNetwork = computed(() =>
   networksStore.list.find(
-    network => network.chain_id === Number(provider.value.chainId),
+    network => network.chain_id === Number(provider.chainId),
   ),
 )
 
-const changeNetwork = async (chainID: ChainId, closeDropDown: () => void) => {
+const changeNetwork = async (chainID: ChainId) => {
   isSwitchingChain.value = true
-  networksStore.switchNetwork(provider.value, chainID)
+  networksStore.switchNetwork(provider, chainID)
   isSwitchingChain.value = false
-
-  closeDropDown()
 }
 </script>
 

@@ -29,13 +29,10 @@ const props = withDefaults(
   },
 )
 
-const cssVars = computed(() => ({
-  '--dropdown-top': `${props.top}px`,
-  '--dropdown-right': `${props.right}px`,
-}))
+const attrs = useAttrs()
 
 const rootEl = ref<HTMLElement | null>(null)
-const isOpen = ref<boolean>(false)
+const isOpen = ref(false)
 
 const exposedMenuObject = {
   isOpen,
@@ -50,22 +47,10 @@ const exposedMenuObject = {
   },
 }
 
-onMounted(() => {
-  if (rootEl.value) {
-    onClickOutside(rootEl, () => {
-      isOpen.value = false
-    })
-  }
-})
-
-const setHeightCSSVar = (element: HTMLElement) => {
-  element.style.setProperty(
-    '--dropdown-body-height',
-    `${element.scrollHeight}px`,
-  )
-}
-
-const attrs = useAttrs()
+const cssVars = computed(() => ({
+  '--dropdown-top': `${props.top}px`,
+  '--dropdown-right': `${props.right}px`,
+}))
 
 const isDisabled = computed(() =>
   ['', 'disabled', true].includes(attrs.disabled as string | boolean),
@@ -77,6 +62,21 @@ const classes = computed(() => {
   if (isDisabled.value) defaultClasses.push('drop-down--disabled')
 
   return defaultClasses
+})
+
+const setHeightCSSVar = (element: HTMLElement) => {
+  element.style.setProperty(
+    '--dropdown-body-height',
+    `${element.scrollHeight}px`,
+  )
+}
+
+onMounted(() => {
+  if (rootEl.value) {
+    onClickOutside(rootEl, () => {
+      isOpen.value = false
+    })
+  }
 })
 </script>
 

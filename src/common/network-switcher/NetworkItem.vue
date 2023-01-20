@@ -1,16 +1,12 @@
 <template>
-  <div :class="classes" @click="emit('networkChange')">
+  <button :class="classes">
     <div :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </div>
     <p class="network-item__title">
-      {{
-        scheme != 'unsupported'
-          ? $t('networks.title', { network: name })
-          : $t('networks.unsupported')
-      }}
+      {{ networkTitle }}
     </p>
-  </div>
+  </button>
 </template>
 
 <script setup lang="ts">
@@ -18,6 +14,9 @@ import { Icon } from '@/common'
 import { computed } from 'vue'
 import { NETWORKS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
+import { useContext } from '@/composables'
+
+const { $t } = useContext()
 
 type MODIFICATIONS = 'non-active' | 'default'
 
@@ -34,9 +33,11 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{
-  (event: 'networkChange'): void
-}>()
+const networkTitle = computed(() =>
+  props.scheme !== NETWORKS.UNSUPPORTED
+    ? $t('networks.title', { network: props.name })
+    : $t('networks.unsupported'),
+)
 
 const classes = computed(() => [
   'network-item',

@@ -3,30 +3,30 @@
     <network-switcher />
     <drop-down :top="60" :right="0">
       <template #head="{ menu }">
-        <section class="account__avatar" @click="menu.open">
+        <button class="account__avatar" @click="menu.open">
           <icon class="account__avatar-icon" :name="$icons.account" />
-        </section>
+        </button>
       </template>
       <template #default="{ menu }">
         <div class="account__body">
           <div class="account__info">
             <icon class="account__avatar-icon" :name="$icons.account" />
             <p class="account__address">
-              {{ address }}
+              {{ cropAddress(provider.selectedAddress) }}
             </p>
           </div>
-          <div class="account__action" @click="copyAddress(menu.close)">
+          <button class="account__action" @click="copyAddress(), menu.close()">
             <icon class="account__action-icon" :name="$icons.copy" />
             <p class="account__action-info">
               {{ $t('account-dropdown.copy-address') }}
             </p>
-          </div>
-          <div class="account__action" @click="logout">
+          </button>
+          <button class="account__action" @click="logout">
             <icon class="account__action-icon" :name="$icons.logout" />
             <p class="account__action-info">
               {{ $t('account-dropdown.logout-btn') }}
             </p>
-          </div>
+          </button>
         </div>
       </template>
     </drop-down>
@@ -37,7 +37,6 @@
 import { computed } from 'vue'
 import { cropAddress, copyToClipboard, ErrorHandler, logout } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
-import { storeToRefs } from 'pinia'
 import { Icon, DropDown, NetworkSwitcher } from '@/common'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
@@ -54,20 +53,16 @@ const accountClasses = computed(() => [
   `account--${props.modification}`,
 ])
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const { provider } = useWeb3ProvidersStore()
 
-const address = computed(() => cropAddress(provider.value.selectedAddress))
-
-const copyAddress = async (closeDropDown: () => void) => {
-  if (!provider.value.selectedAddress) return
+const copyAddress = async () => {
+  if (!provider.selectedAddress) return
 
   try {
-    await copyToClipboard(provider.value.selectedAddress)
+    await copyToClipboard(provider.selectedAddress)
   } catch (error) {
     ErrorHandler.process(error)
   }
-
-  closeDropDown()
 }
 </script>
 
@@ -163,6 +158,7 @@ const copyAddress = async (closeDropDown: () => void) => {
   align-items: center;
   padding: toRem(10) toRem(20);
   gap: toRem(15);
+  width: 100%;
   user-select: none;
   transition: 0.2s ease-in-out;
   transition-property: background-color;

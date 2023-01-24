@@ -26,13 +26,13 @@ export function getNetworkScheme(chainID: ChainId) {
 
 export function getIconByScheme(scheme: NETWORKS) {
   switch (scheme) {
-    case 'polygon':
+    case NETWORKS.POLYGON:
       return ICON_NAMES.polygon
-    case 'ethereum':
+    case NETWORKS.ETHEREUM:
       return ICON_NAMES.ethereum
-    case 'q':
+    case NETWORKS.Q:
       return ICON_NAMES.q
-    case 'unsupported':
+    case NETWORKS.UNSUPPORTED:
     default:
       return ICON_NAMES.ban
   }

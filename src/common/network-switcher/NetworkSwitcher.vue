@@ -50,7 +50,6 @@ const dropDownShift = computed(() =>
 )
 
 const networksStore = useNetworksStore()
-networksStore.loadNetworks()
 
 const isSwitchingChain = ref(false)
 
@@ -65,6 +64,8 @@ const changeNetwork = async (chainID: ChainId) => {
   networksStore.switchNetwork(provider, chainID)
   isSwitchingChain.value = false
 }
+
+networksStore.loadNetworks()
 </script>
 
 <style lang="scss" scoped>

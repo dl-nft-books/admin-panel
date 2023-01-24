@@ -3,9 +3,13 @@
     <network-switcher />
     <drop-down :top="60" :right="0">
       <template #head="{ menu }">
-        <button class="account__avatar" @click="menu.open">
-          <icon class="account__avatar-icon" :name="$icons.account" />
-        </button>
+        <app-button
+          :icon-left="$icons.account"
+          class="account__avatar"
+          scheme="flat"
+          icon-size="x-medium"
+          @click="menu.open"
+        />
       </template>
       <template #default="{ menu }">
         <div class="account__body">
@@ -15,18 +19,22 @@
               {{ cropAddress(provider.selectedAddress) }}
             </p>
           </div>
-          <button class="account__action" @click="copyAddress(), menu.close()">
-            <icon class="account__action-icon" :name="$icons.copy" />
-            <p class="account__action-info">
-              {{ $t('account-dropdown.copy-address') }}
-            </p>
-          </button>
-          <button class="account__action" @click="logout">
-            <icon class="account__action-icon" :name="$icons.logout" />
-            <p class="account__action-info">
-              {{ $t('account-dropdown.logout-btn') }}
-            </p>
-          </button>
+          <app-button
+            :icon-left="$icons.copy"
+            :text="$t('account-dropdown.copy-address')"
+            class="account__action"
+            scheme="default"
+            modification="default"
+            @click="copyAddress(), menu.close()"
+          />
+          <app-button
+            :icon-left="$icons.logout"
+            :text="$t('account-dropdown.logout-btn')"
+            class="account__action"
+            scheme="default"
+            modification="default"
+            @click="logout"
+          />
         </div>
       </template>
     </drop-down>
@@ -37,7 +45,7 @@
 import { computed } from 'vue'
 import { cropAddress, copyToClipboard, ErrorHandler, logout } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
-import { Icon, DropDown, NetworkSwitcher } from '@/common'
+import { AppButton, Icon, DropDown, NetworkSwitcher } from '@/common'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
 
@@ -122,10 +130,9 @@ const copyAddress = async () => {
 }
 
 .account__avatar {
+  display: grid;
+  place-content: center;
   background-color: var(--background-primary);
-  display: flex;
-  align-items: center;
-  padding: toRem(12) toRem(16);
   border-radius: toRem(8);
   border: toRem(1) solid var(--text-secondary-main);
   height: toRem(52);
@@ -153,20 +160,15 @@ const copyAddress = async () => {
 
 .account__action {
   --background-hover-color: rgba(var(--drop-down-shadow-rgb), 0.2);
+  --app-button-bg-hover: rgba(var(--drop-down-shadow-rgb), 0.2);
 
   display: flex;
   align-items: center;
-  padding: toRem(10) toRem(20);
+  justify-content: flex-start;
+  padding: toRem(10) toRem(30);
   gap: toRem(15);
   width: 100%;
   user-select: none;
-  transition: 0.2s ease-in-out;
-  transition-property: background-color;
-
-  &:hover {
-    cursor: pointer;
-    background-color: var(--background-hover-color);
-  }
 }
 
 .account__action-icon {

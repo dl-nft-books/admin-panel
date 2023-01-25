@@ -1,12 +1,10 @@
 <template>
-  <button :class="classes">
+  <span :class="classes">
     <div :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </div>
-    <p class="network-item__title">
-      {{ networkTitle }}
-    </p>
-  </button>
+    {{ networkTitle }}
+  </span>
 </template>
 
 <script setup lang="ts">
@@ -59,6 +57,9 @@ const wrapperClasses = computed(() => [
   gap: toRem(12);
   padding: toRem(15);
   width: 100%;
+  line-height: toRem(19);
+  color: var(--text-secondary-main);
+  user-select: none;
   transition: 0.2s ease-in-out;
   transition-property: background-color;
 
@@ -71,6 +72,11 @@ const wrapperClasses = computed(() => [
 
   &--non-active {
     padding: 0;
+    font-weight: 500;
+
+    @include respond-to(small) {
+      display: none;
+    }
   }
 }
 
@@ -85,15 +91,15 @@ const wrapperClasses = computed(() => [
   aspect-ratio: 1 / 1;
 
   &--polygon {
-    background-color: var(--polygon-network);
+    background-color: var(--network-purple-dark);
   }
 
   &--ethereum {
-    background-color: var(--ethereum-network);
+    background-color: var(--network-purple-light);
   }
 
   &--q {
-    background-color: var(--q-network);
+    background-color: var(--network-black);
   }
 
   &--unsupported {
@@ -109,27 +115,7 @@ const wrapperClasses = computed(() => [
   .network-item__wrapper--q & {
     max-width: toRem(14);
     max-height: toRem(13);
-    color: var(--q-network-stroke);
-  }
-}
-
-.network-item__title {
-  font-weight: 400;
-  font-size: toRem(16);
-  line-height: toRem(19);
-  color: var(--text-secondary-main);
-  user-select: none;
-
-  .account--dark-mode & {
-    color: var(--text-secondary-invert-main);
-  }
-
-  .network-item--non-active & {
-    font-weight: 500;
-
-    @include respond-to(small) {
-      display: none;
-    }
+    color: var(--network-green);
   }
 }
 </style>

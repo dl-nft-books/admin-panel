@@ -7,7 +7,7 @@
     <template #head="{ menu }">
       <section
         v-if="networksStore.isLoaded"
-        class="header-network-switcher"
+        class="network-switcher"
         @click="menu.open"
       >
         <network-item
@@ -19,7 +19,7 @@
       <loader v-else />
     </template>
     <template #default="{ menu }">
-      <div class="header-network-switcher__body">
+      <div class="network-switcher__body">
         <network-item
           v-for="network in networksStore.list"
           :key="network.id"
@@ -37,7 +37,7 @@ import { ref, computed } from 'vue'
 import { DropDown, NetworkItem, Loader } from '@/common'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { ChainId } from '@/types'
-import { getNetworkScheme } from '@/helpers'
+import { getNetworkScheme, switchNetwork } from '@/helpers'
 import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 
@@ -54,14 +54,12 @@ const networksStore = useNetworksStore()
 const isSwitchingChain = ref(false)
 
 const pickedNetwork = computed(() =>
-  networksStore.list.find(
-    network => network.chain_id === Number(provider.chainId),
-  ),
+  networksStore.getNetworkByID(Number(provider.chainId)),
 )
 
 const changeNetwork = async (chainID: ChainId) => {
   isSwitchingChain.value = true
-  networksStore.switchNetwork(provider, chainID)
+  await switchNetwork(provider, chainID)
   isSwitchingChain.value = false
 }
 
@@ -69,7 +67,7 @@ networksStore.loadNetworks()
 </script>
 
 <style lang="scss" scoped>
-.header-network-switcher {
+.network-switcher {
   display: flex;
   align-items: center;
   height: toRem(52);
@@ -97,7 +95,7 @@ networksStore.loadNetworks()
   }
 }
 
-.header-network-switcher__body {
+.network-switcher__body {
   width: toRem(206);
   background-color: var(--background-primary);
 

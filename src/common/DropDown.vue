@@ -1,5 +1,10 @@
 <template>
-  <div ref="rootEl" :class="classes" :style="cssVars">
+  <div
+    ref="rootEl"
+    class="'drop-down"
+    :classes="{ 'drop-down--disabled': isDisabled }"
+    :style="cssVars"
+  >
     <slot name="head" :menu="exposedMenuObject" />
     <transition
       name="drop-down_transition"
@@ -56,14 +61,6 @@ const isDisabled = computed(() =>
   ['', 'disabled', true].includes(attrs.disabled as string | boolean),
 )
 
-const classes = computed(() => {
-  const defaultClasses = ['drop-down']
-
-  if (isDisabled.value) defaultClasses.push('drop-down--disabled')
-
-  return defaultClasses
-})
-
 const setHeightCSSVar = (element: HTMLElement) => {
   element.style.setProperty(
     '--dropdown-body-height',
@@ -82,8 +79,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .drop-down {
-  z-index: var(--drop-down-index);
-
   &--disabled {
     opacity: 0.7;
     pointer-events: none;
@@ -92,6 +87,7 @@ onMounted(() => {
 
 .drop-down__body {
   position: absolute;
+  z-index: var(--drop-down-index);
   top: var(--dropdown-top);
   right: var(--dropdown-right);
   border-radius: toRem(8);

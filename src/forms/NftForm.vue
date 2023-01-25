@@ -119,7 +119,7 @@
             size="small"
             :text="$t('nft-form.switch-chain-button')"
             @click="
-              networkStore.switchNetwork(
+              switchNetwork(
                 provider,
                 isUpdateNft ? book?.chainID : networkStore.list[0].chain_id,
               )
@@ -161,7 +161,7 @@ import {
   alphaNum,
   requiredIf,
 } from '@/validators'
-import { ErrorHandler, Bus, formatAssetFromWei } from '@/helpers'
+import { ErrorHandler, Bus, formatAssetFromWei, switchNetwork } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { BookRecord } from '@/records'
 import { ethers } from 'ethers'

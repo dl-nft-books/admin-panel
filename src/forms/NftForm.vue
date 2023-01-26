@@ -168,6 +168,7 @@ import { ethers } from 'ethers'
 import {
   MIN_PRICE_VALUE,
   MIN_VOUCHER_AMOUNT,
+  MAX_VOUCHER_AMOUNT,
   MAX_PRICE_VALUE,
   MAX_BOOK_SIZE,
 } from '@/consts'
@@ -299,6 +300,7 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     voucherTokenAmount: {
       requiredIf: requiredIf(isVoucherAllowed),
       minValue: minValue(minVoucherAmount),
+      maxValue: maxValue(MAX_VOUCHER_AMOUNT),
     },
   },
 )

@@ -164,7 +164,11 @@
     "error-title": "Error",
     "no-data-message": "No NFT Books available",
     "create-button": "CREATE NFT",
-    "load-more-btn": "Load More"
+    "load-more-btn": "Load More",
+    "all-networks-filter": "All networks",
+    "ethereum-filter": "Ethereum Mainnet",
+    "q-filter": "Q Mainnet",
+    "polygon-filter": "Polygon Mainnet"
   },
   "nft-card": {
     "name-description": "Name",

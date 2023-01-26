@@ -11,13 +11,20 @@ import {
 
 import { ErrorHandler } from '@/helpers'
 import { BookRecord } from '@/records'
-import { BOOK_DEPLOY_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
+import {
+  BOOK_DEPLOY_STATUSES,
+  ETHEREUM_CHAINS,
+  POLYGON_CHAINS,
+  Q_CHAINS,
+  WINDOW_BREAKPOINTS,
+} from '@/enums'
 import { useWindowSize } from '@vueuse/core'
-import { InputField } from '@/fields'
+import { InputField, SelectField } from '@/fields'
 import { getBooks } from '@/api'
 import { usePaginate, useContext } from '@/composables'
 import { Book } from '@/types'
 import { debounce } from 'lodash'
+import { config } from '@/config'
 
 const searchByString = ref('')
 const searchModel = ref('')
@@ -34,11 +41,42 @@ watch(
   }, 400),
 )
 
+const currentChainId = ref('0')
+
+const filterOptions = computed(() => [
+  {
+    label: $t('overview-nfts.all-networks-filter'),
+    value: '0',
+  },
+  {
+    label: $t('overview-nfts.ethereum-filter'),
+    value:
+      config.DEPLOY_ENVIRONMENT !== 'production'
+        ? ETHEREUM_CHAINS.goerli
+        : ETHEREUM_CHAINS.ethereum,
+  },
+  {
+    label: $t('overview-nfts.polygon-filter'),
+    value:
+      config.DEPLOY_ENVIRONMENT !== 'production'
+        ? POLYGON_CHAINS.mumbai
+        : POLYGON_CHAINS.mainnet,
+  },
+  {
+    label: $t('overview-nfts.q-filter'),
+    value:
+      config.DEPLOY_ENVIRONMENT !== 'production'
+        ? Q_CHAINS.testnet
+        : Q_CHAINS.mainet,
+  },
+])
+
 const loadList = computed(
   () => () =>
     getBooks({
       deployStatus: [BOOK_DEPLOY_STATUSES.successful],
       title: searchByString.value,
+      chainId: Number(currentChainId.value),
     }),
 )
 
@@ -77,18 +115,24 @@ const buttonLinkText = computed(() =>
       <h2 class="overview-nfts__title">
         {{ $t('overview-nfts.title') }}
       </h2>
-
-      <div class="overview-nfts__search-wrapper">
-        <input-field
-          v-model="searchModel"
-          :placeholder="$t('overview-nfts.search-placeholder')"
-          iconned
-        >
-          <template #nodeLeft>
-            <icon class="overview-nfts__search-icon" :name="$icons.search" />
-          </template>
-        </input-field>
-      </div>
+      <section class="overview-nfts__filter-wrapper">
+        <select-field
+          v-model="currentChainId"
+          class="overview-nfts__filter"
+          :value-options="filterOptions"
+        />
+        <div class="overview-nfts__search-wrapper">
+          <input-field
+            v-model="searchModel"
+            :placeholder="$t('overview-nfts.search-placeholder')"
+            iconned
+          >
+            <template #nodeLeft>
+              <icon class="overview-nfts__search-icon" :name="$icons.search" />
+            </template>
+          </input-field>
+        </div>
+      </section>
     </div>
 
     <template v-if="isLoadFailed">
@@ -144,6 +188,18 @@ const buttonLinkText = computed(() =>
   }
 }
 
+.overview-nfts__filter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: toRem(20);
+  width: 40%;
+  min-width: toRem(350);
+}
+
+.overview-nfts__filter {
+  max-width: toRem(350);
+}
+
 .overview-nfts__title {
   font-weight: 600;
   font-size: toRem(40);
@@ -158,7 +214,7 @@ const buttonLinkText = computed(() =>
   width: toRem(180);
 
   @include respond-to(small) {
-    width: 100%;
+    width: 50%;
   }
 }
 

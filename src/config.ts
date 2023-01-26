@@ -7,10 +7,8 @@ export const config = {
   APP_NAME: import.meta.env.VITE_APP_NAME,
   LOG_LEVEL: 'trace' as LogLevelDesc,
   BUILD_VERSION: packageJson.version || import.meta.env.VITE_APP_BUILD_VERSION,
-  TOKEN_FACTORY_CONTRACT_ADDRESS: import.meta.env
-    .VITE_TOKEN_FACTORY_CONTRACT_ADDRESS,
   DEFAULT_PAGE_LIMIT: 15,
-  CHAIN_ID: import.meta.env.VITE_CHAIN_ID,
+  DEPLOY_ENVIRONMENT: import.meta.env.VITE_APP_DEPLOY_ENVIRONMENT,
 } as const
 
 Object.assign(config, _mapEnvCfg(import.meta.env))

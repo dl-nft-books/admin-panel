@@ -3,16 +3,17 @@
     <div :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
     </div>
-    {{ networkTitle }}
+    {{ title }}
   </span>
 </template>
 
 <script setup lang="ts">
 import { Icon } from '@/common'
 import { computed } from 'vue'
-import { NETWORKS } from '@/enums'
+import { NETWORKS, WINDOW_BREAKPOINTS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
 import { useContext } from '@/composables'
+import { useWindowSize } from '@vueuse/core'
 
 const { $t } = useContext()
 
@@ -31,10 +32,16 @@ const props = withDefaults(
   },
 )
 
+const { width } = useWindowSize()
+
 const networkTitle = computed(() =>
   props.scheme !== NETWORKS.UNSUPPORTED
     ? $t('networks.title', { network: props.name })
     : $t('networks.unsupported'),
+)
+
+const title = computed(() =>
+  width.value <= WINDOW_BREAKPOINTS.small ? '' : networkTitle.value,
 )
 
 const classes = computed(() => [
@@ -73,10 +80,6 @@ const wrapperClasses = computed(() => [
   &--non-active {
     padding: 0;
     font-weight: 500;
-
-    @include respond-to(small) {
-      display: none;
-    }
   }
 }
 

@@ -2,6 +2,7 @@ import { EthProviderRpcError, NativeCurrency } from '@/types'
 import { errors } from '@/errors'
 import { ethers } from 'ethers'
 import { EIP1193, EIP1474, EIP1193String } from '@/enums'
+import { isMobile } from '@/helpers'
 
 export const connectEthAccounts = async (
   provider: ethers.providers.Web3Provider,
@@ -50,6 +51,8 @@ export function handleEthError(error: EthProviderRpcError) {
       throw new errors.ProviderDisconnected(error.message)
     case EIP1193.chainDisconnected:
       throw new errors.ProviderChainDisconnected(error.message)
+    case EIP1193.walletMissingChain:
+      throw new errors.ProviderChainNotFoundError(error.message)
     case EIP1474.parseError:
       throw new errors.ProviderParseError(error.message)
     case EIP1474.invalidRequest:
@@ -59,7 +62,13 @@ export function handleEthError(error: EthProviderRpcError) {
     case EIP1474.invalidParams:
       throw new errors.ProviderInvalidParams(error.message)
     case EIP1474.internalError:
+      /* 
+        in mobile version of metamask this error throws internal error 
+        instead of 4902 for some reason thats why this line appears
+      */
+      if (isMobile()) throw new errors.ProviderChainNotFoundError(error.message)
       throw new errors.ProviderInternalError(error.message)
+
     case EIP1474.invalidInput:
       throw new errors.ProviderInvalidInput(error.message)
     case EIP1474.resourceNotFound:

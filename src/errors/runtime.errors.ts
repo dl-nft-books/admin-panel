@@ -1,11 +1,23 @@
+import { EIP1193, EIP1474 } from '@/enums'
+
 /**
  * General runtime error
  */
-export class RuntimeError extends Error {}
+export class RuntimeError extends Error {
+  code: number
+  constructor(message?: string, code?: number) {
+    super(message ?? '')
+    this.code = code ?? EIP1474.internalError
+  }
+}
 
 export class ProviderWrapperMethodNotFoundError extends RuntimeError {}
 
-export class ProviderChainNotFoundError extends RuntimeError {}
+export class ProviderChainNotFoundError extends RuntimeError {
+  constructor(message?: string) {
+    super(message, EIP1193.walletMissingChain)
+  }
+}
 
 export class ProviderNotSupportedError extends RuntimeError {}
 

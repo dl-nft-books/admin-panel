@@ -43,33 +43,46 @@ watch(
 
 const currentChainId = ref('0')
 
-const filterOptions = computed(() => [
+const prodOptions = [
   {
     label: $t('overview-nfts.all-networks-filter'),
     value: '0',
   },
   {
     label: $t('overview-nfts.ethereum-filter'),
-    value:
-      config.DEPLOY_ENVIRONMENT !== 'production'
-        ? ETHEREUM_CHAINS.goerli
-        : ETHEREUM_CHAINS.ethereum,
+    value: ETHEREUM_CHAINS.ethereum,
   },
   {
     label: $t('overview-nfts.polygon-filter'),
-    value:
-      config.DEPLOY_ENVIRONMENT !== 'production'
-        ? POLYGON_CHAINS.mumbai
-        : POLYGON_CHAINS.mainnet,
+    value: POLYGON_CHAINS.mainnet,
   },
   {
     label: $t('overview-nfts.q-filter'),
-    value:
-      config.DEPLOY_ENVIRONMENT !== 'production'
-        ? Q_CHAINS.testnet
-        : Q_CHAINS.mainet,
+    value: Q_CHAINS.mainet,
   },
-])
+]
+
+const devOptions = [
+  {
+    label: $t('overview-nfts.all-networks-filter'),
+    value: '0',
+  },
+  {
+    label: $t('overview-nfts.ethereum-filter'),
+    value: ETHEREUM_CHAINS.goerli,
+  },
+  {
+    label: $t('overview-nfts.polygon-filter'),
+    value: POLYGON_CHAINS.mumbai,
+  },
+  {
+    label: $t('overview-nfts.q-filter'),
+    value: Q_CHAINS.testnet,
+  },
+]
+
+const filterOptions =
+  config.DEPLOY_ENVIRONMENT === 'production' ? prodOptions : devOptions
 
 const loadList = computed(
   () => () =>

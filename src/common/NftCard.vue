@@ -138,6 +138,7 @@ defineProps<{
   @include respond-to(medium) {
     text-align: center;
     font-size: toRem(14);
+    max-width: 100%;
   }
 }
 </style>

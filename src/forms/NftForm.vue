@@ -64,7 +64,11 @@
         @blur="touchField('description')"
       />
 
-      <collapse class="nft-form__collapse" :is-close-by-click-outside="false">
+      <collapse
+        class="nft-form__collapse"
+        :is-close-by-click-outside="false"
+        :is-opened-by-default="form.isVoucherAllowed"
+      >
         <template #head="{ collapse }">
           <checkbox-field
             v-model="form.isVoucherAllowed"
@@ -158,8 +162,8 @@ import {
   minValue,
   maxValue,
   nonEmptyDocument,
-  alphaNum,
   requiredIf,
+  alphaNumWithSpecialChars,
 } from '@/validators'
 import { ErrorHandler, Bus, formatAssetFromWei, switchNetwork } from '@/helpers'
 import { BN } from '@/utils/math.util'
@@ -266,7 +270,9 @@ const form = reactive<{
   symbol: props.book?.contractSymbol || '',
   photo: props.book?.banner || new Document(),
   book: props.book?.file || new Document(),
-  isVoucherAllowed: false,
+  isVoucherAllowed:
+    Boolean(props.book?.voucherToken) &&
+    props.book?.voucherToken !== ethers.constants.AddressZero,
   voucherTokenAddress: props.book?.voucherToken || '',
   voucherTokenAmount: formatedVoucherTokenAmount,
 })
@@ -284,14 +290,14 @@ const { disableForm, enableForm, isFormDisabled } = useForm()
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
-    name: { required, alphaNum },
+    name: { required, alphaNumWithSpecialChars },
     price: {
       required,
       minValue: minValue(MIN_PRICE_VALUE),
       maxValue: maxValue(MAX_PRICE_VALUE),
     },
     description: { required },
-    symbol: { required, alphaNum },
+    symbol: { required, alphaNumWithSpecialChars },
     photo: { nonEmptyDocument },
     book: { nonEmptyDocument },
     voucherTokenAddress: {

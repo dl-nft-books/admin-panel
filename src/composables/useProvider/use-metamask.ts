@@ -1,8 +1,10 @@
 import { ethers } from 'ethers'
 import {
   connectEthAccounts,
+  ErrorHandler,
   getEthExplorerAddressUrl,
   getEthExplorerTxUrl,
+  getNetworkInfo,
   handleEthError,
   requestAddEthChain,
   requestSwitchEthChain,
@@ -20,6 +22,7 @@ import {
 } from '@/types'
 import { Deferrable } from '@ethersproject/properties'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
+import { useNetworksStore } from '@/store'
 
 export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
   const chainId = ref<ChainId>('')
@@ -108,6 +111,30 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     }
   }
 
+  const addNetwork = async (chainID: ChainId) => {
+    try {
+      const networkURLs = getNetworkInfo(chainID)
+      const networkStore = useNetworksStore()
+      const networkInfo = networkStore.getNetworkByID(Number(chainID))
+
+      if (!networkInfo || !networkURLs) throw new Error('Unsupported network')
+
+      await addChain(
+        chainID,
+        networkInfo.name,
+        networkURLs.rpcUrl,
+        {
+          name: networkInfo.token_name,
+          symbol: networkInfo.token_symbol,
+          decimals: networkInfo.decimals,
+        },
+        networkURLs.blockExplorerUrl,
+      )
+    } catch (error) {
+      ErrorHandler.processWithoutFeedback(error)
+    }
+  }
+
   const signAndSendTransaction = async (txRequestBody: TxRequestBody) => {
     try {
       const transactionResponse = await currentSigner.value.sendTransaction(
@@ -162,5 +189,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     getTxUrl,
     getAddressUrl,
     signMessage,
+    addNetwork,
   }
 }

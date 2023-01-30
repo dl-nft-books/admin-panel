@@ -54,15 +54,15 @@ export function getNetworkInfo(chainID: ChainId) {
 }
 
 export async function switchNetwork(chainID: ChainId) {
-  const providerStore = useWeb3ProvidersStore()
+  const { provider } = useWeb3ProvidersStore()
   try {
-    await providerStore.provider.switchChain(chainID)
+    await provider.switchChain(chainID)
   } catch (error) {
     const ethError = error as EthProviderRpcError
 
     // if wallet has no chain added we need to add it and switch to it
     if (ethError?.code === EIP1193.walletMissingChain) {
-      await providerStore.addNetwork(chainID)
+      await provider.addNetwork(chainID)
     }
 
     ErrorHandler.processWithoutFeedback(error)

@@ -10,6 +10,7 @@ for further information about branching and tagging conventions.
 ## [Unreleased]
 #### Added
 - Vouchers fields to NFT-Create and NFT-Update forms
+- Networks switching
 
 #### Changed
 - Contracts updated

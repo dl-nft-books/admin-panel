@@ -22,6 +22,7 @@ export type Book = JsonApiRecordBase<'books'> & {
   title: string
   voucher_token: string
   voucher_token_amount: string
+  chain_id: number
 }
 
 export type CreateBookResponse = JsonApiRecordBase<'create_signatures'> & {

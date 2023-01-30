@@ -99,7 +99,10 @@ const form = reactive({
 const minDate = computed(() =>
   isUpdate.value
     ? DateUtil.format(props.promocode?.expiration_date, 'YYYY-MM-DD')
-    : DateUtil.format(Date.now(), 'YYYY-MM-DD'),
+    : DateUtil.format(
+        DateUtil._instance(Date.now()).add(1, 'day'),
+        'YYYY-MM-DD',
+      ),
 )
 
 const { disableForm, enableForm, isFormDisabled } = useForm()

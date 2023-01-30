@@ -43,6 +43,7 @@ export function createBook(opts: {
   voucherTokenAmount?: string
   banner: Document
   book: Document
+  chainID: number
 }) {
   return api.post<CreateBookResponse>('/integrations/books', {
     data: {
@@ -63,6 +64,7 @@ export function createBook(opts: {
           type: 'files',
           attributes: opts.book,
         },
+        chain_id: opts.chainID,
       },
     },
   })

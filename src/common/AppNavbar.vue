@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Icon, AppButton, AccountDropdown } from '@/common'
+import { Icon, AppButton, Account } from '@/common'
 import { Bus } from '@/helpers'
 
 const openSidebar = () => {
@@ -19,7 +19,7 @@ const openSidebar = () => {
       <icon class="app-navbar__open-sidebar-icon" :name="$icons.menu" />
     </app-button>
     <div id="app-navbar__right-buttons" class="app-navbar__right-buttons">
-      <account-dropdown class="app-navbar__account-dropdown" />
+      <account />
     </div>
   </div>
 </template>
@@ -42,10 +42,6 @@ const openSidebar = () => {
     width: 100%;
     margin-bottom: toRem(24);
   }
-}
-
-.app-navbar__account-dropdown {
-  margin-left: auto;
 }
 
 .app-navbar__open-sidebar-button {

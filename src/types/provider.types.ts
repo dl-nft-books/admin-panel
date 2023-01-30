@@ -8,8 +8,7 @@ import {
 import { ethers } from 'ethers'
 
 import { PROVIDERS } from '@/enums'
-import { EthereumProvider } from '@/types/ethereum.types'
-import { PhantomProvider } from '@/types/solana.types'
+import { EthereumProvider, NativeCurrency, PhantomProvider } from '@/types'
 
 /**
  * Non defined provider from browser
@@ -66,6 +65,8 @@ export interface ProviderWrapper {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => Promise<void>
   signAndSendTransaction: (
     txRequestBody: TxRequestBody,
@@ -74,6 +75,7 @@ export interface ProviderWrapper {
   getTxUrl: (explorerUrl: string, txHash: string) => string
   getAddressUrl: (explorerUrl: string, address: string) => string
   signMessage?: (message: string) => Promise<string | undefined>
+  addNetwork?: (chainID: ChainId) => Promise<void>
 }
 
 export interface UseUnrefProvider {
@@ -93,6 +95,8 @@ export interface UseUnrefProvider {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => Promise<void>
   signAndSendTx: (txRequestBody: TxRequestBody) => Promise<TransactionResponse>
   getHashFromTxResponse: (txResponse: TransactionResponse) => string

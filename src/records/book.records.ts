@@ -21,6 +21,7 @@ export class BookRecord {
   banner: Document
   voucherToken: string
   voucherTokenAmount: string
+  chainID: number
 
   constructor(record: Book) {
     this.contractAddress = record.contract_address
@@ -43,5 +44,6 @@ export class BookRecord {
     this.bannerUrl = record.banner.attributes.url
     this.voucherToken = record.voucher_token
     this.voucherTokenAmount = record.voucher_token_amount
+    this.chainID = record.chain_id
   }
 }

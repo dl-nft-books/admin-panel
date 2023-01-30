@@ -44,7 +44,15 @@
     "default-message-default": "Just a message"
   },
   "account-dropdown": {
-    "logout-btn": "Logout"
+    "logout-btn": "Logout",
+    "copy-address": "Copy address"
+  },
+  "networks": {
+    "polygon": "Polygon Mainnet",
+    "ethereum": "Ethereum Mainnet",
+    "q": "Q Mainnet",
+    "unsupported": "Unknown network",
+    "title": "{network} Mainnet"
   },
   "app-sidebar": {
     "logo-subtitle": "Admin panel",
@@ -156,7 +164,11 @@
     "error-title": "Error",
     "no-data-message": "No NFT Books available",
     "create-button": "CREATE NFT",
-    "load-more-btn": "Load More"
+    "load-more-btn": "Load More",
+    "all-networks-filter": "All networks",
+    "ethereum-filter": "Ethereum Mainnet",
+    "q-filter": "Q Mainnet",
+    "polygon-filter": "Polygon Mainnet"
   },
   "nft-card": {
     "name-description": "Name",
@@ -171,7 +183,9 @@
     "price-lbl": "Price",
     "creation-date-lbl": "Creation Date",
     "document-lbl": "Document",
-    "description-lbl": "Description"
+    "description-lbl": "Description",
+    "voucher-lbl": "Voucher token address",
+    "voucher-amount-lbl": "Voucher token amount"
   },
   "sale-history": {
     "header": "Sale History",

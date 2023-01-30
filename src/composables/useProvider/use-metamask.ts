@@ -1,8 +1,10 @@
 import { ethers } from 'ethers'
 import {
   connectEthAccounts,
+  ErrorHandler,
   getEthExplorerAddressUrl,
   getEthExplorerTxUrl,
+  getNetworkInfo,
   handleEthError,
   requestAddEthChain,
   requestSwitchEthChain,
@@ -16,9 +18,11 @@ import {
   ProviderWrapper,
   TransactionResponse,
   TxRequestBody,
+  NativeCurrency,
 } from '@/types'
 import { Deferrable } from '@ethersproject/properties'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
+import { useNetworksStore } from '@/store'
 
 export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
   const chainId = ref<ChainId>('')
@@ -90,6 +94,8 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     chainId: ChainId,
     chainName: string,
     chainRpcUrl: string,
+    nativeCurrency: NativeCurrency,
+    blockExplorerUrl: string,
   ) => {
     try {
       await requestAddEthChain(
@@ -97,9 +103,35 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
         Number(chainId),
         chainName,
         chainRpcUrl,
+        nativeCurrency,
+        blockExplorerUrl,
       )
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const addNetwork = async (chainID: ChainId) => {
+    try {
+      const networkURLs = getNetworkInfo(chainID)
+      const networkStore = useNetworksStore()
+      const networkInfo = networkStore.getNetworkByID(Number(chainID))
+
+      if (!networkInfo || !networkURLs) throw new Error('Unsupported network')
+
+      await addChain(
+        chainID,
+        networkInfo.name,
+        networkURLs.rpcUrl,
+        {
+          name: networkInfo.token_name,
+          symbol: networkInfo.token_symbol,
+          decimals: networkInfo.decimals,
+        },
+        networkURLs.blockExplorerUrl,
+      )
+    } catch (error) {
+      ErrorHandler.processWithoutFeedback(error)
     }
   }
 
@@ -157,5 +189,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     getTxUrl,
     getAddressUrl,
     signMessage,
+    addNetwork,
   }
 }

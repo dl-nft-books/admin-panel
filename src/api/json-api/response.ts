@@ -152,7 +152,7 @@ export class JsonApiResponse<T> {
 
     const link = this._createLink(this.links[page] as string)
     /* eslint-disable-next-line */
-    console.log(link)
+    console.log({link, links: this.links, page, baseUrl: this._apiClient.baseUrl})
     const requestOpts = {
       endpoint: link,
       method: this._raw.config.method?.toUpperCase() as HTTP_METHODS,

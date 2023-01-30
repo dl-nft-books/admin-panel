@@ -124,7 +124,6 @@
             :text="$t('nft-form.switch-chain-button')"
             @click="
               switchNetwork(
-                provider,
                 isUpdateNft ? book?.chainID : networkStore.list[0].chain_id,
               )
             "

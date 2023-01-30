@@ -75,6 +75,7 @@ export interface ProviderWrapper {
   getTxUrl: (explorerUrl: string, txHash: string) => string
   getAddressUrl: (explorerUrl: string, address: string) => string
   signMessage?: (message: string) => Promise<string | undefined>
+  addNetwork?: (chainID: ChainId) => Promise<void>
 }
 
 export interface UseUnrefProvider {

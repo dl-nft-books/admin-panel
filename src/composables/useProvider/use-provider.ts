@@ -42,6 +42,7 @@ export interface UseProvider {
   getTxUrl: (explorerUrl: string, txHash: string) => string
   getAddressUrl: (explorerUrl: string, address: string) => string
   signMessage: (message: string) => Promise<string | undefined>
+  addNetwork: (chainID: ChainId) => Promise<void>
 }
 
 export const useProvider = (): UseProvider => {
@@ -127,6 +128,12 @@ export const useProvider = (): UseProvider => {
     )
   }
 
+  const addNetwork = async (chainID: ChainId) => {
+    if (!providerWrp.value?.addNetwork) return
+
+    providerWrp.value?.addNetwork(chainID)
+  }
+
   const signAndSendTx = async (
     txRequestBody: TxRequestBody,
   ): Promise<TransactionResponse> => {
@@ -183,5 +190,6 @@ export const useProvider = (): UseProvider => {
     getTxUrl,
     getAddressUrl,
     signMessage,
+    addNetwork,
   }
 }

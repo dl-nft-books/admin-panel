@@ -36,7 +36,7 @@ const { width } = useWindowSize()
 
 const networkTitle = computed(() =>
   props.scheme !== NETWORKS.UNSUPPORTED
-    ? $t('networks.title', { network: props.name })
+    ? props.name
     : $t('networks.unsupported'),
 )
 

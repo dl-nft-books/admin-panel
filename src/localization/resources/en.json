@@ -52,8 +52,7 @@
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
     "q": "Q Mainnet",
-    "unsupported": "Unknown network",
-    "title": "{network} Mainnet"
+    "unsupported": "Unknown network"
   },
   "app-sidebar": {
     "logo-subtitle": "Admin panel",

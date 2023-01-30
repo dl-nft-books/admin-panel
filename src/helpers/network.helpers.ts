@@ -1,4 +1,9 @@
-import { POLYGON_MUMBAI_CHAIN, Q_TESTNET_CHAIN } from '@/consts'
+import {
+  POLYGON_MAINNET_CHAIN,
+  POLYGON_MUMBAI_CHAIN,
+  Q_MAINNET_CHAIN,
+  Q_TESTNET_CHAIN,
+} from '@/consts'
 import {
   ETHEREUM_CHAINS,
   NETWORKS,
@@ -7,7 +12,7 @@ import {
   ICON_NAMES,
   EIP1193,
 } from '@/enums'
-import { ChainId, EthProviderRpcError, UseProvider } from '@/types'
+import { ChainId, ChainInfo, EthProviderRpcError, UseProvider } from '@/types'
 import { ErrorHandler } from '@/helpers'
 import { useNetworksStore } from '@/store'
 
@@ -42,12 +47,16 @@ export function getIconByScheme(scheme: NETWORKS) {
 }
 
 // For non-default chains
-export function getNetworkInfo(chainID: ChainId) {
+export function getNetworkInfo(chainID: ChainId): ChainInfo | null {
   switch (chainID.toString()) {
     case POLYGON_CHAINS.mumbai:
       return POLYGON_MUMBAI_CHAIN
+    case POLYGON_CHAINS.mainnet:
+      return POLYGON_MAINNET_CHAIN
     case Q_CHAINS.testnet:
       return Q_TESTNET_CHAIN
+    case Q_CHAINS.mainet:
+      return Q_MAINNET_CHAIN
     default:
       return null
   }

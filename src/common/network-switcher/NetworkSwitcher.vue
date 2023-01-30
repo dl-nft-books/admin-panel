@@ -59,7 +59,7 @@ const pickedNetwork = computed(() =>
 
 const changeNetwork = async (chainID: ChainId) => {
   isSwitchingChain.value = true
-  await switchNetwork(provider, chainID)
+  await switchNetwork(chainID)
   isSwitchingChain.value = false
 }
 

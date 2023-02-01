@@ -36,12 +36,14 @@ const { width } = useWindowSize()
 
 const networkTitle = computed(() =>
   props.scheme !== NETWORKS.UNSUPPORTED
-    ? $t('networks.title', { network: props.name })
+    ? props.name
     : $t('networks.unsupported'),
 )
 
 const title = computed(() =>
-  width.value <= WINDOW_BREAKPOINTS.small ? '' : networkTitle.value,
+  width.value <= WINDOW_BREAKPOINTS.small && props.modification === 'non-active'
+    ? ''
+    : networkTitle.value,
 )
 
 const classes = computed(() => [

@@ -46,7 +46,7 @@ const { provider } = useWeb3ProvidersStore()
 const { width } = useWindowSize()
 
 const dropDownShift = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small ? 81 : 0,
+  width.value >= WINDOW_BREAKPOINTS.small ? 81 : -60,
 )
 
 const networksStore = useNetworksStore()

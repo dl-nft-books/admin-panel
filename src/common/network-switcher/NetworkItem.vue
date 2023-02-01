@@ -41,7 +41,9 @@ const networkTitle = computed(() =>
 )
 
 const title = computed(() =>
-  width.value <= WINDOW_BREAKPOINTS.small ? '' : networkTitle.value,
+  width.value <= WINDOW_BREAKPOINTS.small && props.modification === 'non-active'
+    ? ''
+    : networkTitle.value,
 )
 
 const classes = computed(() => [

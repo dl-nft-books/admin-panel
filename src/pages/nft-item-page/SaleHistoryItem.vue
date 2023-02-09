@@ -1,13 +1,3 @@
-<script lang="ts" setup>
-import { Payment } from '@/types'
-import { Collapse, AppButton } from '@/common'
-import { cropAddress } from '@/helpers'
-import { formatDMY } from '@/helpers'
-import { formatFiatAssetFromWei, formatAssetFromWei } from '@/helpers'
-
-defineProps<{ historyItem: Payment }>()
-</script>
-
 <template>
   <collapse class="sale-history-item" :is-close-by-click-outside="false">
     <template #head="{ collapse }">
@@ -92,6 +82,16 @@ defineProps<{ historyItem: Payment }>()
     </div>
   </collapse>
 </template>
+
+<script lang="ts" setup>
+import { Payment } from '@/types'
+import { Collapse, AppButton } from '@/common'
+import { cropAddress } from '@/helpers'
+import { formatDMY } from '@/helpers'
+import { formatFiatAssetFromWei, formatAssetFromWei } from '@/helpers'
+
+defineProps<{ historyItem: Payment }>()
+</script>
 
 <style lang="scss" scoped>
 $padding-left: toRem(24);

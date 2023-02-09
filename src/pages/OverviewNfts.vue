@@ -1,3 +1,70 @@
+<template>
+  <div class="overview-nfts">
+    <div class="overview-nfts__header">
+      <h2 class="overview-nfts__title">
+        {{ $t('overview-nfts.title') }}
+      </h2>
+      <section class="overview-nfts__filter-wrapper">
+        <select-field
+          v-model="currentChainId"
+          class="overview-nfts__filter"
+          :value-options="filterOptions"
+        />
+        <div class="overview-nfts__search-wrapper">
+          <input-field
+            v-model="searchModel"
+            :placeholder="$t('overview-nfts.search-placeholder')"
+            iconned
+          >
+            <template #nodeLeft>
+              <icon class="overview-nfts__search-icon" :name="$icons.search" />
+            </template>
+          </input-field>
+        </div>
+      </section>
+    </div>
+
+    <template v-if="isLoadFailed">
+      <error-message
+        :message="$t('overview-nfts.error-message')"
+        :title="$t('overview-nfts.error-title')"
+      />
+    </template>
+    <template v-else-if="booksList.length || isLoading">
+      <template v-if="booksList.length">
+        <div class="overview-nfts__content">
+          <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
+        </div>
+      </template>
+      <template v-if="isLoading">
+        <loader />
+      </template>
+
+      <app-button
+        v-if="isLoadMoreBtnShown"
+        class="overview-nfts__load-more-btn"
+        size="small"
+        scheme="flat"
+        :text="$t('overview-nfts.load-more-btn')"
+        @click="loadNextPage"
+      />
+    </template>
+    <template v-else>
+      <no-data-message :message="$t('overview-nfts.no-data-message')" />
+    </template>
+
+    <mounted-teleport to="#app-navbar__right-buttons">
+      <app-button
+        class="overview-nfts__link-button"
+        size="small"
+        :icon-left="$icons.plus"
+        :text="buttonLinkText"
+        :route="{ name: $routes.nftsCreate }"
+      />
+    </mounted-teleport>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import {
@@ -121,74 +188,6 @@ const buttonLinkText = computed(() =>
     : '',
 )
 </script>
-
-<template>
-  <div class="overview-nfts">
-    <div class="overview-nfts__header">
-      <h2 class="overview-nfts__title">
-        {{ $t('overview-nfts.title') }}
-      </h2>
-      <section class="overview-nfts__filter-wrapper">
-        <select-field
-          v-model="currentChainId"
-          class="overview-nfts__filter"
-          :value-options="filterOptions"
-        />
-        <div class="overview-nfts__search-wrapper">
-          <input-field
-            v-model="searchModel"
-            :placeholder="$t('overview-nfts.search-placeholder')"
-            iconned
-          >
-            <template #nodeLeft>
-              <icon class="overview-nfts__search-icon" :name="$icons.search" />
-            </template>
-          </input-field>
-        </div>
-      </section>
-    </div>
-
-    <template v-if="isLoadFailed">
-      <error-message
-        :message="$t('overview-nfts.error-message')"
-        :title="$t('overview-nfts.error-title')"
-      />
-    </template>
-    <template v-else-if="booksList.length || isLoading">
-      <template v-if="booksList.length">
-        <div class="overview-nfts__content">
-          <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
-        </div>
-      </template>
-      <template v-if="isLoading">
-        <loader />
-      </template>
-
-      <app-button
-        v-if="isLoadMoreBtnShown"
-        class="overview-nfts__load-more-btn"
-        size="small"
-        scheme="flat"
-        :text="$t('overview-nfts.load-more-btn')"
-        @click="loadNextPage"
-      />
-    </template>
-    <template v-else>
-      <no-data-message :message="$t('overview-nfts.no-data-message')" />
-    </template>
-
-    <mounted-teleport to="#app-navbar__right-buttons">
-      <app-button
-        class="overview-nfts__link-button"
-        size="small"
-        :icon-left="$icons.plus"
-        :text="buttonLinkText"
-        :route="{ name: $routes.nftsCreate }"
-      />
-    </mounted-teleport>
-  </div>
-</template>
-
 <style lang="scss" scoped>
 .overview-nfts__header {
   display: flex;

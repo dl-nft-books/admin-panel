@@ -1,13 +1,3 @@
-<script lang="ts" setup>
-import { formatDMY } from '@/helpers'
-import { formatFiatAssetFromWei } from '@/helpers'
-import { BookRecord } from '@/records'
-
-defineProps<{
-  nft: BookRecord
-}>()
-</script>
-
 <template>
   <router-link
     class="nft-card"
@@ -43,6 +33,16 @@ defineProps<{
     </div>
   </router-link>
 </template>
+
+<script lang="ts" setup>
+import { formatDMY } from '@/helpers'
+import { formatFiatAssetFromWei } from '@/helpers'
+import { BookRecord } from '@/records'
+
+defineProps<{
+  nft: BookRecord
+}>()
+</script>
 
 <style lang="scss" scoped>
 .nft-card {

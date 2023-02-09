@@ -1,3 +1,51 @@
+<template>
+  <div :class="classes">
+    <div class="file-field__container">
+      <template v-if="modelValue?.name">
+        <div class="file-field__file-info">
+          <p class="file-field__file-name">
+            {{ modelValue?.name }}
+          </p>
+          <p v-if="modelValue.file?.size" class="file-field__file-size">
+            {{ formatBytes(modelValue.file?.size) }}
+          </p>
+          <app-button
+            class="file-field__reset-btn"
+            scheme="default"
+            size="default"
+            color="secondary"
+            :icon-right="$icons.x"
+            @click="onReset"
+          />
+        </div>
+      </template>
+      <template v-else>
+        <button type="button" class="file-field__open-btn" @click="handleOpen">
+          <span ref="dropZoneRef" class="file-field__drop-zone" />
+
+          <icon class="file-field__upload-icon" :name="$icons.upload" />
+          <p class="file-field__label">
+            {{ label }}
+          </p>
+          <p class="file-field__note">
+            {{ note }}
+          </p>
+        </button>
+      </template>
+    </div>
+
+    <transition
+      name="file-field__err-msg-transition"
+      @enter="setHeightCSSVar"
+      @before-leave="setHeightCSSVar"
+    >
+      <span v-if="errorMessage" class="file-field__err-msg">
+        {{ errorMessage }}
+      </span>
+    </transition>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { useDropZone } from '@vueuse/core'
 import { computed, ref } from 'vue'
@@ -150,54 +198,6 @@ const setHeightCSSVar = (element: HTMLElement) => {
   )
 }
 </script>
-
-<template>
-  <div :class="classes">
-    <div class="file-field__container">
-      <template v-if="modelValue?.name">
-        <div class="file-field__file-info">
-          <p class="file-field__file-name">
-            {{ modelValue?.name }}
-          </p>
-          <p v-if="modelValue.file?.size" class="file-field__file-size">
-            {{ formatBytes(modelValue.file?.size) }}
-          </p>
-          <app-button
-            class="file-field__reset-btn"
-            scheme="default"
-            size="default"
-            color="secondary"
-            :icon-right="$icons.x"
-            @click="onReset"
-          />
-        </div>
-      </template>
-      <template v-else>
-        <button type="button" class="file-field__open-btn" @click="handleOpen">
-          <span ref="dropZoneRef" class="file-field__drop-zone" />
-
-          <icon class="file-field__upload-icon" :name="$icons.upload" />
-          <p class="file-field__label">
-            {{ label }}
-          </p>
-          <p class="file-field__note">
-            {{ note }}
-          </p>
-        </button>
-      </template>
-    </div>
-
-    <transition
-      name="file-field__err-msg-transition"
-      @enter="setHeightCSSVar"
-      @before-leave="setHeightCSSVar"
-    >
-      <span v-if="errorMessage" class="file-field__err-msg">
-        {{ errorMessage }}
-      </span>
-    </transition>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .file-field {

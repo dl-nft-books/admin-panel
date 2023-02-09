@@ -36,37 +36,33 @@
   </label>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { Icon } from '@/common'
 
-import { defineComponent } from 'vue'
+const emit = defineEmits<{
+  (event: 'update:model-value', payload: boolean): void
+}>()
 
-enum EVENTS {
-  updateModelValue = 'update:model-value',
+withDefaults(
+  defineProps<{
+    modelValue?: boolean
+    value?: string | number
+    label?: string
+    disabled?: boolean
+  }>(),
+  {
+    modelValue: false,
+    value: '',
+    label: '',
+    disabled: false,
+  },
+)
+
+const onChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+
+  emit('update:model-value', target.checked)
 }
-
-export default defineComponent({
-  name: 'checkbox-field',
-  components: { Icon },
-  props: {
-    modelValue: { type: Boolean, default: false },
-    value: { type: [String, Number], default: '' },
-    label: { type: String, default: '' },
-    disabled: { type: Boolean, default: false },
-  },
-  emits: Object.values(EVENTS),
-  setup(props, { emit }) {
-    const onChange = (event: Event) => {
-      const target = event.target as HTMLInputElement
-
-      emit(EVENTS.updateModelValue, target.checked)
-    }
-
-    return {
-      onChange,
-    }
-  },
-})
 </script>
 
 <style lang="scss" scoped>

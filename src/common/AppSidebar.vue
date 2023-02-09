@@ -75,8 +75,6 @@ import {
   useWindowSize,
 } from '@vueuse/core'
 
-const hideWidth = WINDOW_BREAKPOINTS.tablet
-
 const asideElement = ref<HTMLElement | null>(null)
 
 const { width: windowWidth } = useWindowSize()
@@ -84,7 +82,9 @@ const swipe = useSwipe(document.querySelector('#app'))
 
 const isShowSidebar = ref(true)
 
-const isNeedToHideSidebar = computed(() => windowWidth.value <= hideWidth)
+const isNeedToHideSidebar = computed(
+  () => windowWidth.value <= WINDOW_BREAKPOINTS.tablet,
+)
 
 const isSidebarShown = computed(
   () => !isNeedToHideSidebar.value || isShowSidebar.value,
@@ -115,11 +115,10 @@ const hideSidebar = () => {
 Bus.on(Bus.eventList.toggleSidebar, toggleSidebar)
 
 watch(asideElement, () => {
-  if (asideElement.value) {
-    if (windowWidth.value < hideWidth) {
-      onClickOutside(asideElement, hideSidebar)
-    }
-  }
+  if (!asideElement.value || windowWidth.value > WINDOW_BREAKPOINTS.tablet)
+    return
+
+  onClickOutside(asideElement, hideSidebar)
 })
 </script>
 

@@ -30,69 +30,56 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { useRouter } from '@/router'
 
-export default defineComponent({
-  name: 'collapse',
-  props: {
-    isOpenedByDefault: {
-      type: Boolean,
-      default: false,
-    },
-    isCloseByClickOutside: {
-      type: Boolean,
-      default: true,
-    },
+const props = withDefaults(
+  defineProps<{
+    isOpenedByDefault?: boolean
+    isCloseByClickOutside?: boolean
+  }>(),
+  {
+    isOpenedByDefault: false,
+    isCloseByClickOutside: true,
   },
-  setup(props) {
-    const rootEl = ref<HTMLElement | null>(null)
-    const isCollapseOpen = ref(props.isOpenedByDefault)
-    const router = useRouter()
+)
 
-    router.afterEach(() => {
-      closeCollapse()
-    })
+const rootEl = ref<HTMLElement | null>(null)
+const isCollapseOpen = ref(props.isOpenedByDefault)
+const router = useRouter()
 
-    onMounted(() => {
-      if (rootEl.value) {
-        if (props.isCloseByClickOutside) {
-          onClickOutside(rootEl, () => {
-            closeCollapse()
-          })
-        }
-      }
-    })
-
-    const toggleCollapse = () => {
-      isCollapseOpen.value ? closeCollapse() : openCollapse()
-    }
-    const closeCollapse = () => {
-      isCollapseOpen.value = false
-    }
-    const openCollapse = () => {
-      isCollapseOpen.value = true
-    }
-
-    const setHeightCSSVar = (element: HTMLElement) => {
-      element.style.setProperty(
-        '--collapse-body-height',
-        `${element.scrollHeight}px`,
-      )
-    }
-
-    return {
-      rootEl,
-      isCollapseOpen,
-      toggleCollapse,
-      openCollapse,
-      closeCollapse,
-      setHeightCSSVar,
-    }
-  },
+router.afterEach(() => {
+  closeCollapse()
 })
+
+onMounted(() => {
+  if (!rootEl.value || !props.isCloseByClickOutside) return
+
+  onClickOutside(rootEl, () => {
+    closeCollapse()
+  })
+})
+
+const toggleCollapse = () => {
+  isCollapseOpen.value ? closeCollapse() : openCollapse()
+}
+
+const closeCollapse = () => {
+  isCollapseOpen.value = false
+}
+
+const openCollapse = () => {
+  isCollapseOpen.value = true
+}
+
+const setHeightCSSVar = (element: HTMLElement) => {
+  element.style.setProperty(
+    '--collapse-body-height',
+    `${element.scrollHeight}px`,
+  )
+}
 </script>
 
 <style lang="scss" scoped>

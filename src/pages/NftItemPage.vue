@@ -1,47 +1,3 @@
-<script lang="ts" setup>
-import { Loader, ErrorMessage, AppButton } from '@/common'
-import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
-
-import { ErrorHandler } from '@/helpers'
-import { ref, computed } from 'vue'
-import { BookRecord } from '@/records'
-import { WINDOW_BREAKPOINTS } from '@/enums'
-import { useWindowSize } from '@vueuse/core'
-import { useContext } from '@/composables'
-import { getBookById } from '@/api'
-
-const props = defineProps<{
-  id: string
-}>()
-
-const isLoaded = ref(false)
-const isLoadFailed = ref(false)
-
-const book = ref<BookRecord | undefined>()
-
-const { width } = useWindowSize()
-const { $t } = useContext()
-
-const init = async () => {
-  try {
-    const { data } = await getBookById(props.id)
-    book.value = new BookRecord(data)
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
-  }
-  isLoaded.value = true
-}
-
-const buttonLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small
-    ? $t('nft-item-page.edit-button')
-    : '',
-)
-
-init()
-</script>
-
 <template>
   <div class="nft-item-page">
     <template v-if="isLoaded">
@@ -85,6 +41,50 @@ init()
     </mounted-teleport>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { Loader, ErrorMessage, AppButton } from '@/common'
+import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
+
+import { ErrorHandler } from '@/helpers'
+import { ref, computed } from 'vue'
+import { BookRecord } from '@/records'
+import { WINDOW_BREAKPOINTS } from '@/enums'
+import { useWindowSize } from '@vueuse/core'
+import { useContext } from '@/composables'
+import { getBookById } from '@/api'
+
+const props = defineProps<{
+  id: string
+}>()
+
+const isLoaded = ref(false)
+const isLoadFailed = ref(false)
+
+const book = ref<BookRecord | undefined>()
+
+const { width } = useWindowSize()
+const { $t } = useContext()
+
+const init = async () => {
+  try {
+    const { data } = await getBookById(props.id)
+    book.value = new BookRecord(data)
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
+    isLoadFailed.value = true
+  }
+  isLoaded.value = true
+}
+
+const buttonLinkText = computed(() =>
+  width.value >= WINDOW_BREAKPOINTS.small
+    ? $t('nft-item-page.edit-button')
+    : '',
+)
+
+init()
+</script>
 
 <style lang="scss" scoped>
 .nft-item-page {

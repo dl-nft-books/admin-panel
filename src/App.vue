@@ -1,3 +1,13 @@
+<template>
+  <div v-if="isAppInitialized" class="app__container">
+    <router-view v-slot="{ Component, route }">
+      <transition :name="route.meta.transition || 'fade'" mode="out-in">
+        <component class="app__main" :is="Component" />
+      </transition>
+    </router-view>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { ErrorHandler } from '@/helpers/error-handler'
 import { ref } from 'vue'
@@ -16,7 +26,6 @@ const init = async () => {
     document.title = config.APP_NAME
     await Promise.all([web3Store.detectProviders()])
 
-    // temporary
     const metamaskProvider = web3Store.providers.find(
       provider => provider.name === PROVIDERS.metamask,
     )
@@ -32,16 +41,6 @@ const init = async () => {
 
 init()
 </script>
-
-<template>
-  <div v-if="isAppInitialized" class="app__container">
-    <router-view v-slot="{ Component, route }">
-      <transition :name="route.meta.transition || 'fade'" mode="out-in">
-        <component class="app__main" :is="Component" />
-      </transition>
-    </router-view>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .app__container {

@@ -1,12 +1,3 @@
-<script lang="ts" setup>
-import { Icon, AppButton, Account } from '@/common'
-import { Bus } from '@/helpers'
-
-const openSidebar = () => {
-  Bus.emit(Bus.eventList.toggleSidebar)
-}
-</script>
-
 <template>
   <div class="app-navbar">
     <app-button
@@ -23,6 +14,15 @@ const openSidebar = () => {
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { Icon, AppButton, Account } from '@/common'
+import { Bus } from '@/helpers'
+
+const openSidebar = () => {
+  Bus.emit(Bus.eventList.toggleSidebar)
+}
+</script>
 
 <style lang="scss" scoped>
 .app-navbar {

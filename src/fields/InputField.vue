@@ -1,3 +1,54 @@
+<template>
+  <div class="input-field" :class="inputClasses">
+    <label v-if="label" :for="`input-field--${uid}`" class="input-field__label">
+      {{ label }}
+    </label>
+    <div class="input-field__input-wrp">
+      <div v-if="$slots.nodeLeft" class="input-field__node-left-wrp">
+        <slot name="nodeLeft" />
+      </div>
+      <input
+        class="input-field__input"
+        :id="`input-field--${uid}`"
+        v-bind="$attrs"
+        v-on="listeners"
+        :value="modelValue"
+        :placeholder="placeholder"
+        :tabindex="isDisabled || isReadonly ? -1 : $attrs.tabindex"
+        :type="isPasswordType && isPasswordShown ? 'text' : type"
+        :min="min"
+        :max="max"
+        :disabled="isDisabled || isReadonly"
+      />
+      <div
+        v-if="$slots.nodeRight || isPasswordType"
+        class="input-field__node-right-wrp"
+      >
+        <button
+          v-if="isPasswordType"
+          type="button"
+          @click="isPasswordShown = !isPasswordShown"
+        >
+          <icon
+            class="input-field__password-icon"
+            :name="isPasswordShown ? $icons.eye : $icons.eyeOff"
+          />
+        </button>
+        <slot v-else name="nodeRight" />
+      </div>
+    </div>
+    <transition
+      name="input-field__err-msg-transition"
+      @enter="setHeightCSSVar"
+      @before-leave="setHeightCSSVar"
+    >
+      <span v-if="errorMessage" class="input-field__err-msg">
+        {{ errorMessage }}
+      </span>
+    </transition>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { Icon } from '@/common'
 
@@ -104,57 +155,6 @@ const setHeightCSSVar = (element: HTMLElement) => {
   )
 }
 </script>
-
-<template>
-  <div class="input-field" :class="inputClasses">
-    <label v-if="label" :for="`input-field--${uid}`" class="input-field__label">
-      {{ label }}
-    </label>
-    <div class="input-field__input-wrp">
-      <div v-if="$slots.nodeLeft" class="input-field__node-left-wrp">
-        <slot name="nodeLeft" />
-      </div>
-      <input
-        class="input-field__input"
-        :id="`input-field--${uid}`"
-        v-bind="$attrs"
-        v-on="listeners"
-        :value="modelValue"
-        :placeholder="placeholder"
-        :tabindex="isDisabled || isReadonly ? -1 : $attrs.tabindex"
-        :type="isPasswordType && isPasswordShown ? 'text' : type"
-        :min="min"
-        :max="max"
-        :disabled="isDisabled || isReadonly"
-      />
-      <div
-        v-if="$slots.nodeRight || isPasswordType"
-        class="input-field__node-right-wrp"
-      >
-        <button
-          v-if="isPasswordType"
-          type="button"
-          @click="isPasswordShown = !isPasswordShown"
-        >
-          <icon
-            class="input-field__password-icon"
-            :name="isPasswordShown ? $icons.eye : $icons.eyeOff"
-          />
-        </button>
-        <slot v-else name="nodeRight" />
-      </div>
-    </div>
-    <transition
-      name="input-field__err-msg-transition"
-      @enter="setHeightCSSVar"
-      @before-leave="setHeightCSSVar"
-    >
-      <span v-if="errorMessage" class="input-field__err-msg">
-        {{ errorMessage }}
-      </span>
-    </transition>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .input-field {

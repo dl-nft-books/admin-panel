@@ -131,3 +131,12 @@ a {
     text-decoration: none;
   }
 }
+
+::-webkit-scrollbar {
+  background-color: var(--primary-dark);
+  width: toRem(4);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-main);
+}

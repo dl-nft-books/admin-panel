@@ -1,3 +1,14 @@
+<template>
+  <input-field
+    v-model="price"
+    v-bind="$attrs"
+    :placeholder="placeholder"
+    :label="label"
+    :error-message="errorMessage"
+    @input="input"
+  />
+</template>
+
 <script lang="ts" setup>
 import { InputField } from '@/fields'
 import { ref } from 'vue'
@@ -39,14 +50,3 @@ function normalizePrice(value: string): string {
   return normalizedValue === '.' ? '0.' : normalizedValue || ''
 }
 </script>
-
-<template>
-  <input-field
-    v-model="price"
-    v-bind="$attrs"
-    :placeholder="placeholder"
-    :label="label"
-    :error-message="errorMessage"
-    @input="input"
-  />
-</template>

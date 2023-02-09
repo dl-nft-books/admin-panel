@@ -1,13 +1,3 @@
-<script lang="ts" setup>
-import { Icon } from '@/common'
-import { formatAssetFromWei, formatFiatAssetFromWei } from '@/helpers'
-import { formatMDY } from '@/helpers'
-import { BookRecord } from '@/records'
-import { ethers } from 'ethers'
-
-defineProps<{ book: BookRecord }>()
-</script>
-
 <template>
   <div class="nft-details">
     <div class="nft-details__row">
@@ -72,6 +62,16 @@ defineProps<{ book: BookRecord }>()
   </div>
 </template>
 
+<script lang="ts" setup>
+import { Icon } from '@/common'
+import { formatAssetFromWei, formatFiatAssetFromWei } from '@/helpers'
+import { formatMDY } from '@/helpers'
+import { BookRecord } from '@/records'
+import { ethers } from 'ethers'
+
+defineProps<{ book: BookRecord }>()
+</script>
+
 <style lang="scss" scoped>
 $icon-size: toRem(20);
 
@@ -111,6 +111,7 @@ $icon-size: toRem(20);
   line-height: 1.2;
   max-width: 25vw;
   word-wrap: break-word;
+  white-space: pre-wrap;
 
   @include respond-to(medium) {
     font-size: toRem(16);

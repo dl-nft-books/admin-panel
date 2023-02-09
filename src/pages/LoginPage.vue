@@ -1,8 +1,3 @@
-<script lang="ts" setup>
-import LoginForm from '@/forms/LoginForm.vue'
-import { AppLogo } from '@/common'
-</script>
-
 <template>
   <div class="login-page">
     <div class="login-page__header">
@@ -23,6 +18,11 @@ import { AppLogo } from '@/common'
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { LoginForm } from '@/forms'
+import { AppLogo } from '@/common'
+</script>
 
 <style lang="scss" scoped>
 .login-page {

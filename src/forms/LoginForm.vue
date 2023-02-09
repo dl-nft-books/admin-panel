@@ -1,3 +1,16 @@
+<template>
+  <form class="login-form" @submit.prevent="submit">
+    <div class="login-form__actions">
+      <app-button
+        class="login-form__submit-btn"
+        type="submit"
+        :icon-left="$icons.metamask"
+        :text="$t('login-form.submit-btn')"
+      />
+    </div>
+  </form>
+</template>
+
 <script lang="ts" setup>
 import { AppButton } from '@/common'
 
@@ -32,20 +45,6 @@ const submit = async () => {
   }
 }
 </script>
-
-<template>
-  <form class="login-form" @submit.prevent="submit">
-    <div class="login-form__actions">
-      <app-button
-        class="login-form__submit-btn"
-        type="submit"
-        :icon-left="$icons.metamask"
-        :text="$t('login-form.submit-btn')"
-      />
-    </div>
-  </form>
-</template>
-
 <style lang="scss" scoped>
 .login-form__submit-btn {
   margin: 0 auto;

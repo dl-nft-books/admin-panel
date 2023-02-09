@@ -7,26 +7,19 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { Icon } from '@/common'
-
-import { defineComponent, PropType } from 'vue'
 import { ICON_NAMES } from '@/enums'
 
-export default defineComponent({
-  name: 'no-data-message',
-  components: { Icon },
-  props: {
-    iconName: {
-      type: String as PropType<ICON_NAMES>,
-      default: ICON_NAMES.archive,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
+withDefaults(
+  defineProps<{
+    iconName?: ICON_NAMES
+    message: string
+  }>(),
+  {
+    iconName: ICON_NAMES.archive,
   },
-})
+)
 </script>
 
 <style lang="scss" scoped>

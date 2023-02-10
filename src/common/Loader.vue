@@ -7,21 +7,20 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Spinner } from '@/common/loader'
-
-type SCHEMES = 'spinner'
+import { LOADERS_SCHEMES } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
-    scheme?: SCHEMES
+    scheme?: LOADERS_SCHEMES
   }>(),
   {
-    scheme: 'spinner',
+    scheme: LOADERS_SCHEMES.spinner,
   },
 )
 
 const loader = computed(() => {
   switch (props.scheme) {
-    case 'spinner':
+    case LOADERS_SCHEMES.spinner:
     default:
       return Spinner
   }

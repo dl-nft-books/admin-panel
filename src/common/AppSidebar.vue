@@ -5,9 +5,14 @@
         <div class="app-sidebar__logo-wrp">
           <div class="app-sidebar__logo-container">
             <app-logo class="app-sidebar__logo" @click="hideSidebar" />
-            <span class="app-sidebar__logo-subtitle">
+            <p
+              :class="[
+                'app-sidebar__logo-subtitle',
+                'app-sidebar__logo-subtitle--size-small',
+              ]"
+            >
               {{ $t('app-sidebar.logo-subtitle') }}
-            </span>
+            </p>
           </div>
           <app-button
             scheme="default"
@@ -49,7 +54,9 @@
           @click="logout"
         />
 
-        <div class="app-sidebar__copyright">
+        <div
+          class="app-sidebar__copyright app-sidebar__copyright--size-x-small"
+        >
           {{
             $t('app-sidebar.copyright', {
               value: new Date().getFullYear(),
@@ -219,9 +226,10 @@ $z-local: 5;
 .app-sidebar__logo-subtitle {
   text-transform: uppercase;
   text-align: center;
-  font-size: toRem(14);
-  line-height: 1.14;
-  color: var(--text-secondary-invert-main);
+
+  @include p-body-2;
+
+  @include text-secondary-color-invert;
 
   @include respond-to(tablet) {
     font-size: toRem(10);
@@ -238,12 +246,15 @@ $z-local: 5;
 }
 
 .app-sidebar__link {
+  @include text-secondary-color-invert;
+
+  @include link-bold;
+
   position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: toRem(10);
-  color: var(--text-secondary-invert-main);
   padding: toRem(6) toRem(30);
   border-radius: 0;
   width: 100%;
@@ -286,9 +297,10 @@ $z-local: 5;
 
 .app-sidebar__copyright {
   align-self: center;
-  font-size: toRem(12);
-  line-height: 1.3;
-  color: var(--text-primary-invert-main);
+
+  @include p-body-2;
+
+  @include text-color-invert;
 }
 
 .app-sidebar__close-button {

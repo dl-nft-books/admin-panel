@@ -1,6 +1,6 @@
 <template>
   <div :class="classes">
-    <p class="promocode-state__title">
+    <p class="promocode-state__title promocode-state__title--size-x-medium">
       {{ title }}
     </p>
   </div>
@@ -11,14 +11,15 @@ import { computed } from 'vue'
 
 type SCHEMES = 'available' | 'unavailable'
 
-interface Props {
-  scheme?: SCHEMES
-  title: string
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  scheme: 'available',
-})
+const props = withDefaults(
+  defineProps<{
+    scheme?: SCHEMES
+    title: string
+  }>(),
+  {
+    scheme: 'available',
+  },
+)
 
 const classes = computed(() => [
   'promocode-state',
@@ -44,8 +45,8 @@ const classes = computed(() => [
 }
 
 .promocode-state__title {
-  font-size: toRem(16);
-  line-height: toRem(19);
+  @include p-body-2;
+
   user-select: none;
 
   .promocode-state--available & {

@@ -5,43 +5,54 @@
   >
     <img class="nft-card__img" :src="nft.bannerUrl" alt="Book image" />
     <div class="nft-card__content-wrapper">
-      <div class="nft-card__content">
-        <span class="nft-card__desc">
-          {{ $t('nft-card.name-description') }}
+      <div
+        v-for="(item, index) in cardHeader"
+        :key="index"
+        class="nft-card__content"
+      >
+        <span class="nft-card__desc nft-card__desc--size-x-medium">
+          {{ item.label }}
         </span>
-        <span class="nft-card__value">
-          {{ nft.title }}
-        </span>
-      </div>
-      <div class="nft-card__content">
-        <span class="nft-card__desc">
-          {{ $t('nft-card.date-description') }}
-        </span>
-        <span class="nft-card__value">
-          {{ formatDMY(nft.createdAt) }}
-        </span>
-      </div>
-      <div class="nft-card__content">
-        <span class="nft-card__desc">
-          {{ $t('nft-card.price-description') }}
-        </span>
-        <span class="nft-card__value">
-          <!-- FIXME: fix `assetCode` after bekend -->
-          {{ formatFiatAssetFromWei(nft.price, 'USD') }}
-        </span>
+        <p
+          :class="[
+            'nft-card__value',
+            'nft-card__value--size-x-large',
+            'nft-card__value--bold',
+          ]"
+        >
+          {{ item.value }}
+        </p>
       </div>
     </div>
   </router-link>
 </template>
 
 <script lang="ts" setup>
-import { formatDMY } from '@/helpers'
-import { formatFiatAssetFromWei } from '@/helpers'
+import { formatFiatAssetFromWei, formatDMY } from '@/helpers'
 import { BookRecord } from '@/records'
+import { useContext } from '@/composables'
+import { CURRENCY } from '@/enums'
 
-defineProps<{
+const props = defineProps<{
   nft: BookRecord
 }>()
+
+const { $t } = useContext()
+
+const cardHeader = [
+  {
+    label: $t('nft-card.name-description'),
+    value: props.nft.title,
+  },
+  {
+    label: $t('nft-card.date-description'),
+    value: formatDMY(props.nft.createdAt),
+  },
+  {
+    label: $t('nft-card.price-description'),
+    value: formatFiatAssetFromWei(props.nft.price, CURRENCY.USD),
+  },
+]
 </script>
 
 <style lang="scss" scoped>
@@ -90,8 +101,8 @@ defineProps<{
 }
 
 .nft-card__content {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   justify-content: center;
   row-gap: toRem(10);
   width: 20%;
@@ -118,7 +129,8 @@ defineProps<{
 
 .nft-card__desc {
   color: var(--text-secondary-main);
-  font-weight: 400;
+
+  @include p-body-2;
 
   @include respond-to(medium) {
     font-size: toRem(14);
@@ -127,9 +139,8 @@ defineProps<{
 }
 
 .nft-card__value {
-  color: var(--text-primary-main);
-  font-weight: 500;
-  font-size: toRem(20);
+  @include p-body-2;
+
   width: 100%;
   max-width: 40vw;
 

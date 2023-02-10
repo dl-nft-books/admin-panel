@@ -1,9 +1,9 @@
 <template>
   <div class="overview-nfts">
     <div class="overview-nfts__header">
-      <h2 class="overview-nfts__title">
+      <h3>
         {{ $t('overview-nfts.title') }}
-      </h2>
+      </h3>
       <section class="overview-nfts__filter-wrapper">
         <select-field
           v-model="currentChainId"
@@ -24,21 +24,18 @@
       </section>
     </div>
 
-    <template v-if="isLoadFailed">
-      <error-message
-        :message="$t('overview-nfts.error-message')"
-        :title="$t('overview-nfts.error-title')"
-      />
-    </template>
+    <error-message
+      v-if="isLoadFailed"
+      :message="$t('overview-nfts.error-message')"
+      :title="$t('overview-nfts.error-title')"
+    />
+
     <template v-else-if="booksList.length || isLoading">
-      <template v-if="booksList.length">
-        <div class="overview-nfts__content">
-          <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
-        </div>
-      </template>
-      <template v-if="isLoading">
-        <loader />
-      </template>
+      <div v-if="booksList.length" class="overview-nfts__content">
+        <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
+      </div>
+
+      <loader v-if="isLoading" />
 
       <app-button
         v-if="isLoadMoreBtnShown"
@@ -49,9 +46,8 @@
         @click="loadNextPage"
       />
     </template>
-    <template v-else>
-      <no-data-message :message="$t('overview-nfts.no-data-message')" />
-    </template>
+
+    <no-data-message v-else :message="$t('overview-nfts.no-data-message')" />
 
     <mounted-teleport to="#app-navbar__right-buttons">
       <app-button
@@ -188,6 +184,7 @@ const buttonLinkText = computed(() =>
     : '',
 )
 </script>
+
 <style lang="scss" scoped>
 .overview-nfts__header {
   display: flex;
@@ -212,15 +209,6 @@ const buttonLinkText = computed(() =>
   max-width: toRem(350);
 }
 
-.overview-nfts__title {
-  font-weight: 600;
-  font-size: toRem(40);
-
-  @include respond-to(small) {
-    font-size: toRem(30);
-  }
-}
-
 .overview-nfts__search-wrapper {
   position: relative;
   width: toRem(180);
@@ -238,9 +226,9 @@ const buttonLinkText = computed(() =>
 }
 
 .overview-nfts__content {
+  @include flex-container;
+
   margin-top: toRem(20);
-  display: flex;
-  flex-direction: column;
   row-gap: toRem(15);
 
   @include respond-to(medium) {
@@ -254,6 +242,8 @@ const buttonLinkText = computed(() =>
 .overview-nfts__link-button {
   width: toRem(180);
   order: -1;
+
+  @include link-bold;
 
   @include respond-to(small) {
     width: toRem(54);

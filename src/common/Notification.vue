@@ -2,9 +2,9 @@
   <div class="notification">
     <icon class="notification__icon" :name="iconName" />
     <div class="notification__details">
-      <h4 class="notification__title">
+      <h5 class="notification__title">
         {{ title }}
-      </h4>
+      </h5>
       <p class="notification__message">
         {{ message }}
       </p>
@@ -64,15 +64,14 @@ withDefaults(
 
 .notification__details {
   display: grid;
-  grid-gap: toRem(4);
   width: 100%;
 }
 
 .notification__title {
-  color: var(--text-primary-invert-main);
+  @include text-color-invert;
 }
 
 .notification__message {
-  color: var(--text-primary-invert-main);
+  @include text-color-invert;
 }
 </style>

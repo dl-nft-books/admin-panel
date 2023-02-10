@@ -8,9 +8,9 @@
         <h1 class="login-page__title">
           {{ $t('login-page.title') }}
         </h1>
-        <h2 class="login-page__subtitle">
+        <p class="login-page__subtitle">
           {{ $t('login-page.subtitle') }}
-        </h2>
+        </p>
       </div>
       <div class="login-page__form-wrp">
         <login-form class="login-page__form" />
@@ -26,21 +26,22 @@ import { AppLogo } from '@/common'
 
 <style lang="scss" scoped>
 .login-page {
+  @include flex-container;
+
   flex: 1;
-  display: flex;
-  flex-direction: column;
   background: url('/images/login-page-bg.png') no-repeat bottom / cover;
 }
 
 .login-page__header {
-  position: absolute;
+  position: fixed;
+  top: 0;
   padding: toRem(40) toRem(30);
 }
 
 .login-page__content {
+  @include flex-container;
+
   flex: 1;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
 }
 
@@ -49,10 +50,7 @@ import { AppLogo } from '@/common'
 }
 
 .login-page__title {
-  font-weight: 1000;
-  font-size: toRem(58);
   text-align: center;
-  text-transform: uppercase;
   color: var(--text-tertiary-main);
 
   @include respond-to(medium) {
@@ -61,15 +59,10 @@ import { AppLogo } from '@/common'
 }
 
 .login-page__subtitle {
+  @include info-headline;
+
   white-space: pre-line;
-  font-weight: 400;
-  font-size: toRem(30);
-  line-height: toRem(40);
   text-align: center;
   margin: toRem(50) 0;
-
-  @include respond-to(medium) {
-    font-size: toRem(24);
-  }
 }
 </style>

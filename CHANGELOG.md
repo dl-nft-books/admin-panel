@@ -8,6 +8,10 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+#### Changed
+- Typography refactored
+- All components refactored to script setup style
+- All components refactored to 'template -> script -> style' pattern
 
 ## [1.3.0] - 2023-02-01
 #### Added

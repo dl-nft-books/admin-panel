@@ -1,8 +1,8 @@
 <template>
   <form class="nft-form" @submit.prevent="submit">
-    <h3 class="nft-form__subtitle">
+    <h4 class="nft-form__subtitle">
       {{ $t('nft-form.uploading-subtitle') }}
-    </h3>
+    </h4>
     <div class="nft-form__uploadings">
       <file-field
         class="nft-form__upload-field"
@@ -24,9 +24,9 @@
         :max-size="MAX_BOOK_SIZE"
       />
     </div>
-    <h3 class="nft-form__subtitle">
+    <h4 class="nft-form__subtitle">
       {{ secondSubtitleText }}
-    </h3>
+    </h4>
     <div class="nft-form__details">
       <input-field
         v-model="form.name"
@@ -107,28 +107,27 @@
           :disabled="isFormDisabled"
         />
 
-        <template v-if="isValidChain">
-          <app-button
-            type="submit"
-            size="small"
-            class="nft-form__button"
-            :text="submitButtonText"
-            :disabled="isSubmitBtnDisabled"
-          />
-        </template>
-        <template v-else>
-          <app-button
-            type="button"
-            class="nft-form__button"
-            size="small"
-            :text="$t('nft-form.switch-chain-button')"
-            @click="
-              switchNetwork(
-                isUpdateNft ? book?.chainID : networkStore.list[0].chain_id,
-              )
-            "
-          />
-        </template>
+        <app-button
+          v-if="isValidChain"
+          type="submit"
+          size="small"
+          class="nft-form__button"
+          :text="submitButtonText"
+          :disabled="isSubmitBtnDisabled"
+        />
+
+        <app-button
+          v-else
+          type="button"
+          class="nft-form__button"
+          size="small"
+          :text="$t('nft-form.switch-chain-button')"
+          @click="
+            switchNetwork(
+              isUpdateNft ? book?.chainID : networkStore.list[0].chain_id,
+            )
+          "
+        />
       </div>
     </div>
   </form>
@@ -407,18 +406,12 @@ const createNftBook = async (book: Document, banner: Document) => {
 }
 
 .nft-form__subtitle {
-  font-size: toRem(24);
-  font-weight: 600;
   margin-bottom: toRem(20);
-
-  @include respond-to(small) {
-    font-size: toRem(20);
-  }
 }
 
 .nft-form__uploadings {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   gap: toRem(20);
   margin-bottom: toRem(35);
 }
@@ -432,15 +425,15 @@ const createNftBook = async (book: Document, banner: Document) => {
 }
 
 .nft-form__details {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   align-items: center;
   gap: toRem(20);
 }
 
 .nft-form__additional-inputs {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   gap: toRem(20);
   padding: toRem(20);
 }

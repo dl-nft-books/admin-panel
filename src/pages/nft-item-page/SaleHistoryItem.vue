@@ -2,29 +2,26 @@
   <collapse class="sale-history-item" :is-close-by-click-outside="false">
     <template #head="{ collapse }">
       <div class="sale-history-item__head">
-        <div class="sale-history-item__head-col">
-          <p class="sale-history-item__label">
-            {{ $t('sale-history-item.buyer-address-lbl') }}
+        <div
+          v-for="(item, index) in saleHeader"
+          :key="index"
+          class="sale-history-item__head-col"
+        >
+          <p
+            :class="[
+              'sale-history-item__label',
+              'sale-history-item__label--size-x-medium',
+            ]"
+          >
+            {{ item.label }}
           </p>
-          <p class="sale-history-item__value">
-            {{ cropAddress(historyItem.payer_address, 10) }}
-          </p>
-        </div>
-        <div class="sale-history-item__head-col">
-          <p class="sale-history-item__label">
-            {{ $t('sale-history-item.purchase-date-lbl') }}
-          </p>
-          <p class="sale-history-item__value">
-            {{ formatDMY(historyItem.purchase_timestamp) }}
-          </p>
-        </div>
-
-        <div class="sale-history-item__head-col">
-          <p class="sale-history-item__label">
-            {{ $t('sale-history-item.price-lbl') }}
-          </p>
-          <p class="sale-history-item__value">
-            {{ formatFiatAssetFromWei(historyItem.minted_token_price, 'USD') }}
+          <p
+            :class="[
+              'sale-history-item__value',
+              'sale-history-item__value--size-x-large',
+            ]"
+          >
+            {{ item.value }}
           </p>
         </div>
         <div class="sale-history-item__header-action">
@@ -43,62 +40,105 @@
       </div>
     </template>
     <div class="sale-history-item__dropdown">
-      <p class="sale-history-item__label">
-        {{ $t('sale-history-item.buyer-address-lbl') }}
-      </p>
-      <p class="sale-history-item__value sale-history-item__value--overflow">
-        {{ historyItem.payer_address }}
-      </p>
-
-      <p class="sale-history-item__label">
-        {{ $t('sale-history-item.token-lbl') }}
-      </p>
-      <p class="sale-history-item__value">
-        {{ historyItem.erc20_data.symbol }}
-      </p>
-
-      <p class="sale-history-item__label">
-        {{ $t('sale-history-item.token-amount-lbl') }}
-      </p>
-      <p class="sale-history-item__value">
-        {{
-          formatAssetFromWei(
-            historyItem.amount,
-            historyItem.erc20_data.decimals,
-          )
-        }}
-      </p>
-      <p class="sale-history-item__label">
-        {{ $t('sale-history-item.book-link-lbl') }}
-      </p>
-      <a
-        class="sale-history-item__value sale-history-item__value--overflow"
-        :href="historyItem.book_url"
-        target="_blank"
-        rel="noopener"
-      >
-        {{ historyItem.book_url }}
-      </a>
+      <template v-for="(item, index) in saleBody" :key="index">
+        <p
+          :class="[
+            'sale-history-item__label',
+            'sale-history-item__label--size-x-medium',
+          ]"
+        >
+          {{ item.label }}
+        </p>
+        <p
+          v-if="!item.isUrl"
+          :class="[
+            'sale-history-item__value',
+            'sale-history-item__value--overflow',
+            'sale-history-item__value--size-x-large',
+          ]"
+        >
+          {{ item.value }}
+        </p>
+        <a
+          v-else
+          :class="[
+            'sale-history-item__value',
+            'sale-history-item__value--overflow',
+            'sale-history-item__value--size-x-large',
+          ]"
+          :href="item.value"
+          target="_blank"
+          rel="noopener"
+        >
+          {{ item.value }}
+        </a>
+      </template>
     </div>
   </collapse>
 </template>
 
 <script lang="ts" setup>
-import { Payment } from '@/types'
+import { NftDetails, Payment } from '@/types'
 import { Collapse, AppButton } from '@/common'
-import { cropAddress } from '@/helpers'
-import { formatDMY } from '@/helpers'
-import { formatFiatAssetFromWei, formatAssetFromWei } from '@/helpers'
+import {
+  formatFiatAssetFromWei,
+  formatAssetFromWei,
+  cropAddress,
+  formatDMY,
+} from '@/helpers'
+import { useContext } from '@/composables'
+import { CURRENCY } from '@/enums'
 
-defineProps<{ historyItem: Payment }>()
+const props = defineProps<{ historyItem: Payment }>()
+
+const { $t } = useContext()
+
+const saleHeader: NftDetails[] = [
+  {
+    label: $t('sale-history-item.buyer-address-lbl'),
+    value: cropAddress(props.historyItem.payer_address, 10),
+  },
+  {
+    label: $t('sale-history-item.purchase-date-lbl'),
+    value: formatDMY(props.historyItem.purchase_timestamp),
+  },
+  {
+    label: $t('sale-history-item.price-lbl'),
+    value: formatFiatAssetFromWei(
+      props.historyItem.minted_token_price,
+      CURRENCY.USD,
+    ),
+  },
+]
+
+const saleBody: NftDetails[] = [
+  {
+    label: $t('sale-history-item.buyer-address-lbl'),
+    value: props.historyItem.payer_address,
+  },
+  {
+    label: $t('sale-history-item.token-lbl'),
+    value: props.historyItem.erc20_data.symbol,
+  },
+  {
+    label: $t('sale-history-item.token-amount-lbl'),
+    value: formatAssetFromWei(
+      props.historyItem.amount,
+      props.historyItem.erc20_data.decimals,
+    ),
+  },
+  {
+    label: $t('sale-history-item.book-link-lbl'),
+    value: props.historyItem.book_url,
+    isUrl: true,
+  },
+]
 </script>
 
 <style lang="scss" scoped>
 $padding-left: toRem(24);
 $padding-right: toRem(36);
 $padding-bottom: toRem(26);
-/* stylelint-disable-next-line */
-$custom-breakpoint: 655px;
 
 .sale-history-item {
   border: toRem(1) solid var(--border-primary-dark);
@@ -111,7 +151,7 @@ $custom-breakpoint: 655px;
   gap: toRem(20);
   padding: 0 $padding-right $padding-bottom $padding-left;
 
-  @include respond-to($custom-breakpoint) {
+  @include respond-to(small) {
     display: block;
   }
 }
@@ -150,35 +190,31 @@ $custom-breakpoint: 655px;
 }
 
 .sale-history-item__label {
-  font-size: toRem(16);
-  line-height: 1.1;
+  @include p-body-2;
+
   color: var(--text-secondary-main);
 
   @include respond-to(xmedium) {
     font-size: toRem(14);
   }
 
-  @include respond-to($custom-breakpoint) {
+  @include respond-to(small) {
     text-align: center;
   }
 }
 
 .sale-history-item__value {
-  font-size: toRem(20);
-  line-height: 1.1;
-  font-weight: 400;
+  @include p-body-2;
 
   &--overflow {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    @include text-ellipsis;
   }
 
   @include respond-to(xmedium) {
     font-size: toRem(16);
   }
 
-  @include respond-to($custom-breakpoint) {
+  @include respond-to(small) {
     display: block;
     text-align: center;
 

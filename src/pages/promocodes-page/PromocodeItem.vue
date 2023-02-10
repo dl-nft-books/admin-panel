@@ -3,48 +3,36 @@
     <collapse class="promocode-item" :is-close-by-click-outside="false">
       <template #head="{ collapse }">
         <div class="promocode-item__wrapper">
-          <div class="promocode-item__info">
-            <p class="promocode-item__head">
-              {{ $t('promocodes-page.promocode-lbl') }}
+          <div
+            v-for="(item, index) in headerInfo"
+            :key="index"
+            class="promocode-item__info"
+          >
+            <p class="promocode-item__head promocode-item__head--size-x-medium">
+              {{ item.label }}
             </p>
             <app-button
+              v-if="item.isCopyable"
               class="promocode-item__copy-promocode"
               scheme="default"
               size="default"
               icon-size="large"
-              :text="promocode.promocode"
+              :text="item.value"
               :icon-right="$icons.duplicate"
-              @click="copyPromocode(promocode.promocode)"
+              @click="copyPromocode(item.value)"
             />
-          </div>
-          <div class="promocode-item__info">
-            <p class="promocode-item__head">
-              {{ $t('promocodes-page.discount-lbl') }}
-            </p>
-            <p class="promocode-item__value">
-              {{
-                $t('promocodes-page.discount-value', {
-                  amount: (promocode.discount * 100).toFixed(),
-                })
-              }}
+            <p
+              v-else
+              :class="[
+                'promocode-item__value',
+                'promocode-item__value--size-x-large',
+                'promocode-item__value--bold',
+              ]"
+            >
+              {{ item.value }}
             </p>
           </div>
-          <div class="promocode-item__info">
-            <p class="promocode-item__head">
-              {{ $t('promocodes-page.uses-lbl') }}
-            </p>
-            <p class="promocode-item__value">
-              {{ promocode.initial_usages }}
-            </p>
-          </div>
-          <div class="promocode-item__info">
-            <p class="promocode-item__head">
-              {{ $t('promocodes-page.used-lbl') }}
-            </p>
-            <p class="promocode-item__value">
-              {{ promocode.usages }}
-            </p>
-          </div>
+
           <promocode-state
             :title="promocodeStatusText"
             :scheme="promocodeStatusScheme"
@@ -63,12 +51,19 @@
           />
         </div>
       </template>
+
       <div class="promocode-item__collapse-body">
         <div class="promocode-item__collapse-wrapper">
-          <p class="promocode-item__head">
+          <p class="promocode-item__head promocode-item__head--size-x-medium">
             {{ $t('promocodes-page.expire-date') }}
           </p>
-          <p class="promocode-item__value">
+          <p
+            :class="[
+              'promocode-item__value',
+              'promocode-item__value--size-x-large',
+              'promocode-item__value--bold',
+            ]"
+          >
             {{ $d(promocode.expiration_date, 'short') }}
           </p>
         </div>
@@ -86,11 +81,13 @@
         </div>
       </div>
     </collapse>
+
     <modal v-model:is-shown="isUpdateModalShown">
       <template #default="{ modal }">
         <promocode-form :promocode="promocode" @close="modal.close" />
       </template>
     </modal>
+
     <confirmation-modal
       v-model:is-shown="isDeleteModalShown"
       :entity="$t('promocodes-page.promocode-lbl')"
@@ -102,7 +99,7 @@
 <script setup lang="ts">
 import { deletePromocode as _deletePromocode } from '@/api'
 import { Collapse, AppButton, Modal, ConfirmationModal } from '@/common'
-import { Promocode } from '@/types'
+import { Promocode, PromocodeInfo } from '@/types'
 import { PromocodeState } from '@/pages/promocodes-page'
 import { computed, ref } from 'vue'
 import { PROMOCODE_STATUSES } from '@/enums'
@@ -115,6 +112,28 @@ const { $t } = useContext()
 const props = defineProps<{
   promocode: Promocode
 }>()
+
+const headerInfo: PromocodeInfo[] = [
+  {
+    label: $t('promocodes-page.promocode-lbl'),
+    value: props.promocode.promocode,
+    isCopyable: true,
+  },
+  {
+    label: $t('promocodes-page.discount-lbl'),
+    value: $t('promocodes-page.discount-value', {
+      amount: (props.promocode.discount * 100).toFixed(),
+    }),
+  },
+  {
+    label: $t('promocodes-page.uses-lbl'),
+    value: props.promocode.initial_usages,
+  },
+  {
+    label: $t('promocodes-page.used-lbl'),
+    value: props.promocode.usages,
+  },
+]
 
 const promocodeStatusText = computed(() =>
   props.promocode.state !== PROMOCODE_STATUSES.ACTIVE
@@ -189,25 +208,23 @@ const copyPromocode = async (promocode: string) => {
 }
 
 .promocode-item__info {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   gap: toRem(10);
 }
 
 .promocode-item__value {
   @include text-ellipsis;
 
-  font-weight: 500;
-  font-size: toRem(20);
-  line-height: toRem(24);
+  @include p-body-2;
 }
 
 .promocode-item__head {
   @include text-ellipsis;
 
-  font-size: toRem(16);
-  line-height: toRem(19);
-  color: var(--text-primary-light);
+  @include p-body-2;
+
+  color: var(--text-secondary-main);
 }
 
 /* stylelint-disable selector-pseudo-class-no-unknown */

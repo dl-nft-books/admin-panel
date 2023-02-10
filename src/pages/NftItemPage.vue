@@ -1,9 +1,11 @@
 <template>
   <div class="nft-item-page">
     <template v-if="isLoaded">
-      <template v-if="isLoadFailed">
-        <error-message :message="$t('nft-item-page.loading-error-msg')" />
-      </template>
+      <error-message
+        v-if="isLoadFailed"
+        :message="$t('nft-item-page.loading-error-msg')"
+      />
+
       <template v-else-if="book">
         <div class="nft-item-page__book">
           <div class="nft-item-page__cover-wrp">
@@ -14,18 +16,17 @@
             />
           </div>
           <div class="nft-item-page__details">
-            <h1 class="nft-item-page__title">
+            <p class="nft-item-page__title">
               {{ book.title }}
-            </h1>
+            </p>
             <nft-details :book="book" />
           </div>
         </div>
         <sale-history :book-id="book.id" />
       </template>
     </template>
-    <template v-else>
-      <loader />
-    </template>
+
+    <loader v-else />
 
     <mounted-teleport to="#app-navbar__right-buttons">
       <app-button
@@ -126,16 +127,14 @@ init()
 }
 
 .nft-item-page__title {
-  text-transform: uppercase;
-  font-size: toRem(30);
-  line-height: 1.2;
   margin-bottom: toRem(30);
   max-width: 45vw;
+  font-weight: 600;
+  word-wrap: break-word;
 
-  @include text-ellipsis;
+  @include info-headline;
 
   @include respond-to(xmedium) {
-    font-size: toRem(20);
     max-width: 30vw;
     margin-top: toRem(20);
     text-align: center;
@@ -146,13 +145,11 @@ init()
   }
 }
 
-.nft-item-page__tabs {
-  margin-bottom: toRem(40);
-}
-
 .nft-item-page__link-button {
   width: toRem(180);
   order: -1;
+
+  @include link-bold;
 
   @include respond-to(small) {
     width: toRem(54);

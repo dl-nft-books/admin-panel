@@ -9,9 +9,9 @@
       />
       <template v-else>
         <section class="promocodes-page__header">
-          <h1 class="promocodes-page__title">
+          <h3 class="promocodes-page__title">
             {{ $t('promocodes-page.title') }}
-          </h1>
+          </h3>
           <div class="promocodes-page__filter">
             <select-field v-model="filter" :value-options="filterOptions" />
           </div>
@@ -146,8 +146,8 @@ Bus.on(Bus.eventList.reloadPromocodesList, loadFirstPage)
 
 <style lang="scss" scoped>
 .promocodes-page {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   gap: toRem(15);
 }
 
@@ -163,8 +163,6 @@ Bus.on(Bus.eventList.reloadPromocodesList, loadFirstPage)
 }
 
 .promocodes-page__title {
-  font-size: toRem(40);
-  line-height: toRem(49);
   user-select: none;
 }
 

@@ -87,7 +87,7 @@ onMounted(() => {
 
 .drop-down__body {
   position: absolute;
-  z-index: var(--drop-down-index);
+  z-index: var(--z-index-layer-1);
   top: var(--dropdown-top);
   right: var(--dropdown-right);
   border-radius: toRem(8);

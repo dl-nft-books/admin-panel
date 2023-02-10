@@ -1,10 +1,13 @@
 <template>
   <form class="promocode-form" @submit.prevent="submit">
     <div class="promocode-form__header">
-      <h1>
+      <h4>
         {{ formTitle }}
-      </h1>
-      <p v-if="isUpdate" class="promocode-form__subtitle">
+      </h4>
+      <p
+        v-if="isUpdate"
+        class="promocode-form__subtitle promocode-form__subtitle--size-medium"
+      >
         {{ $t('promocode-form.update-subtitle') }}
       </p>
     </div>
@@ -159,8 +162,8 @@ const submit = async () => {
 
 <style lang="scss" scoped>
 .promocode-form {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   gap: toRem(30);
   width: toRem(350);
 
@@ -170,14 +173,14 @@ const submit = async () => {
 }
 
 .promocode-form__header {
-  display: flex;
-  flex-direction: column;
+  @include flex-container;
+
   gap: toRem(10);
 }
 
 .promocode-form__subtitle {
-  font-size: toRem(18);
-  line-height: 160%;
+  @include p-body-2;
+
   opacity: 0.7;
 }
 

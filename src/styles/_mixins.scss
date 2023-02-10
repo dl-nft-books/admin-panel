@@ -74,3 +74,119 @@ $media-breakpoints: (
   transition-property: opacity, color, font-size, transform;
   margin-top: toRem(4);
 }
+
+@mixin flex-container {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-container-row-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin text-color-invert {
+  color: var(--text-primary-invert-main);
+}
+
+@mixin text-secondary-color-invert {
+  color: var(--text-secondary-invert-main);
+}
+
+@mixin text-color-dark {
+  color: var(--text-secondary-dark);
+}
+
+@mixin text-shadow {
+  --shadow-color: #{var(--text-primary-main)};
+
+  text-shadow: toRem(-1) toRem(1) 0 var(--shadow-color),
+    toRem(1) toRem(1) 0 var(--shadow-color),
+    toRem(1) toRem(-1) 0 var(--shadow-color),
+    toRem(-1) toRem(-1) 0 var(--shadow-color);
+
+  &--shadow-color-invert {
+    --shadow-color: #{var(--text-primary-invert-main)};
+  }
+}
+
+@mixin link-light {
+  font-weight: 500;
+}
+
+@mixin link-bold {
+  font-weight: 700;
+}
+
+@mixin p-body-1 {
+  font-family: var(--app-font-secondary-family);
+  font-size: toRem(24);
+  line-height: 120%;
+
+  &--italic {
+    font-style: italic;
+  }
+}
+
+@mixin p-body-2 {
+  font-size: toRem(22);
+  line-height: 120%;
+
+  &--size-large {
+    font-size: toRem(24);
+  }
+
+  &--size-x-large {
+    font-size: toRem(20);
+  }
+
+  &--size-medium {
+    font-size: toRem(18);
+    line-height: 160%;
+  }
+
+  &--size-x-medium {
+    font-size: toRem(16);
+  }
+
+  &--size-small {
+    font-size: toRem(14);
+  }
+
+  &--size-x-small {
+    font-size: toRem(12);
+  }
+
+  &--bold {
+    font-weight: 500;
+  }
+
+  &--light {
+    font-weight: 400;
+  }
+}
+
+@mixin info-headline {
+  font-size: toRem(30);
+  line-height: toRem(40);
+  color: var(--text-secondary-dark);
+
+  @include respond-to(tablet) {
+    font-size: toRem(20);
+    line-height: 1.3;
+  }
+}
+
+@mixin text-underline {
+  &:after {
+    display: block;
+    content: '';
+    height: toRem(2);
+    margin-top: toRem(10);
+    background: var(--primary-main);
+    margin-left: auto;
+    margin-right: auto;
+    width: clamp(#{toRem(155)}, 20%, #{toRem(215)});
+  }
+}

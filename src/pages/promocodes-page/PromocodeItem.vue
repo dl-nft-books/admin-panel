@@ -1,8 +1,11 @@
 <template>
   <section>
-    <collapse class="promocode-item" :is-close-by-click-outside="false">
+    <collapse
+      class="promocode-item__wrapper"
+      :is-close-by-click-outside="false"
+    >
       <template #head="{ collapse }">
-        <div class="promocode-item__wrapper">
+        <div class="promocode-item">
           <div
             v-for="(item, index) in headerInfo"
             :key="index"
@@ -189,17 +192,17 @@ const copyPromocode = async (promocode: string) => {
 }
 
 .promocode-item {
-  border: toRem(1) solid var(--border-primary-main);
-  border-radius: toRem(6);
-}
-
-.promocode-item__wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(toRem(120), 1fr));
   gap: toRem(20);
   align-items: center;
   padding: 0 toRem(15) toRem(20) toRem(25);
   background-color: var(--background-tertiary);
+  border-radius: toRem(6);
+}
+
+.promocode-item__wrapper {
+  border: toRem(1) solid var(--border-primary-main);
   border-radius: toRem(6);
 }
 

@@ -40,7 +40,7 @@
 import { Icon } from '@/common'
 
 const emit = defineEmits<{
-  (event: 'update:model-value', payload: boolean): void
+  (event: 'update:modelValue', payload: boolean): void
 }>()
 
 withDefaults(
@@ -61,7 +61,7 @@ withDefaults(
 const onChange = (event: Event) => {
   const target = event.target as HTMLInputElement
 
-  emit('update:model-value', target.checked)
+  emit('update:modelValue', target.checked)
 }
 </script>
 

@@ -8,15 +8,15 @@
 
       <template v-else-if="book">
         <div class="nft-item-page__book">
-          <div class="nft-item-page__cover-wrp">
+          <div class="nft-item-page__book-cover-wrapper">
             <img
               :src="book.bannerUrl"
               :alt="book.title"
-              class="nft-item-page__cover"
+              class="nft-item-page__book-cover"
             />
           </div>
-          <div class="nft-item-page__details">
-            <p class="nft-item-page__title">
+          <div class="nft-item-page__book-details">
+            <p class="nft-item-page__book-title">
               {{ book.title }}
             </p>
             <nft-details :book="book" />
@@ -104,7 +104,7 @@ init()
   }
 }
 
-.nft-item-page__cover-wrp {
+.nft-item-page__book-cover-wrapper {
   width: 100%;
 
   @include respond-to(medium) {
@@ -113,20 +113,20 @@ init()
   }
 }
 
-.nft-item-page__cover {
+.nft-item-page__book-cover {
   width: 100%;
   height: auto;
   border-radius: toRem(8);
 }
 
-.nft-item-page__details {
+.nft-item-page__book-details {
   display: flex;
   flex-direction: column;
   border-bottom: toRem(1) solid var(--border-primary-dark);
   padding-bottom: toRem(30);
 }
 
-.nft-item-page__title {
+.nft-item-page__book-title {
   margin-bottom: toRem(30);
   max-width: 45vw;
   font-weight: 600;

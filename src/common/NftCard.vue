@@ -10,14 +10,16 @@
         :key="index"
         class="nft-card__content"
       >
-        <span class="nft-card__desc nft-card__desc--size-x-medium">
+        <span
+          class="nft-card__content-label nft-card__content-label--size-x-medium"
+        >
           {{ item.label }}
         </span>
         <p
           :class="[
-            'nft-card__value',
-            'nft-card__value--size-x-large',
-            'nft-card__value--bold',
+            'nft-card__content-value',
+            'nft-card__content-value--size-x-large',
+            'nft-card__content-value--bold',
           ]"
         >
           {{ item.value }}
@@ -127,7 +129,7 @@ const cardHeader = [
   }
 }
 
-.nft-card__desc {
+.nft-card__content-label {
   color: var(--text-secondary-main);
 
   @include p-body-2;
@@ -138,7 +140,7 @@ const cardHeader = [
   }
 }
 
-.nft-card__value {
+.nft-card__content-value {
   @include p-body-2;
 
   width: 100%;

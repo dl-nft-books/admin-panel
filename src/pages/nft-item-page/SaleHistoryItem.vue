@@ -1,24 +1,24 @@
 <template>
   <collapse class="sale-history-item" :is-close-by-click-outside="false">
     <template #head="{ collapse }">
-      <div class="sale-history-item__head">
+      <header class="sale-history-item__header">
         <div
           v-for="(item, index) in saleHeader"
           :key="index"
-          class="sale-history-item__head-col"
+          class="sale-history-item__header-col"
         >
           <p
             :class="[
-              'sale-history-item__label',
-              'sale-history-item__label--size-x-medium',
+              'sale-history-item__header-col-label',
+              'sale-history-item__header-col-label--size-x-medium',
             ]"
           >
             {{ item.label }}
           </p>
           <p
             :class="[
-              'sale-history-item__value',
-              'sale-history-item__value--size-x-large',
+              'sale-history-item__header-col-value',
+              'sale-history-item__header-col-value--size-x-large',
             ]"
           >
             {{ item.value }}
@@ -26,9 +26,9 @@
         </div>
         <div class="sale-history-item__header-action">
           <app-button
-            class="sale-history-item__header-button"
+            class="sale-history-item__header-action-btn"
             :class="{
-              'sale-history-item__header-button--open': collapse.isOpen,
+              'sale-history-item__header-action-btn--open': collapse.isOpen,
             }"
             scheme="flat"
             :icon-right="$icons.arrowDown"
@@ -37,14 +37,14 @@
             @click="collapse.toggle"
           />
         </div>
-      </div>
+      </header>
     </template>
-    <div class="sale-history-item__dropdown">
+    <div class="sale-history-item__body">
       <template v-for="(item, index) in saleBody" :key="index">
         <p
           :class="[
-            'sale-history-item__label',
-            'sale-history-item__label--size-x-medium',
+            'sale-history-item__header-col-label',
+            'sale-history-item__header-col-label--size-x-medium',
           ]"
         >
           {{ item.label }}
@@ -52,9 +52,9 @@
         <p
           v-if="!item.isUrl"
           :class="[
-            'sale-history-item__value',
-            'sale-history-item__value--overflow',
-            'sale-history-item__value--size-x-large',
+            'sale-history-item__header-col-value',
+            'sale-history-item__header-col-value--overflow',
+            'sale-history-item__header-col-value--size-x-large',
           ]"
         >
           {{ item.value }}
@@ -62,9 +62,9 @@
         <a
           v-else
           :class="[
-            'sale-history-item__value',
-            'sale-history-item__value--overflow',
-            'sale-history-item__value--size-x-large',
+            'sale-history-item__header-col-value',
+            'sale-history-item__header-col-value--overflow',
+            'sale-history-item__header-col-value--size-x-large',
           ]"
           :href="item.value"
           target="_blank"
@@ -145,7 +145,7 @@ $padding-bottom: toRem(26);
   border-radius: toRem(6);
 }
 
-.sale-history-item__head {
+.sale-history-item__header {
   display: grid;
   grid-template-columns: 0.5fr 0.25fr 0.25fr #{toRem(40)};
   gap: toRem(20);
@@ -156,7 +156,7 @@ $padding-bottom: toRem(26);
   }
 }
 
-.sale-history-item__head-col {
+.sale-history-item__header-col {
   display: grid;
   gap: toRem(10);
 }
@@ -168,12 +168,12 @@ $padding-bottom: toRem(26);
 }
 
 /* stylelint-disable selector-pseudo-class-no-unknown */
-:deep(.sale-history-item__header-button) {
+:deep(.sale-history-item__header-action-btn) {
   .app-button__icon-right {
     transition: all 0.2s;
   }
 
-  &.sale-history-item__header-button--open {
+  &.sale-history-item__header-action-btn--open {
     .app-button__icon-right {
       transform: rotate(180deg);
     }
@@ -181,7 +181,7 @@ $padding-bottom: toRem(26);
 }
 /* stylelint-enable selector-pseudo-class-no-unknown */
 
-.sale-history-item__dropdown {
+.sale-history-item__body {
   display: grid;
   grid-template-columns: 0.3fr 0.7fr;
   gap: toRem(20);
@@ -189,7 +189,7 @@ $padding-bottom: toRem(26);
   border-top: toRem(1) solid var(--border-primary-dark);
 }
 
-.sale-history-item__label {
+.sale-history-item__header-col-label {
   @include p-body-2;
 
   color: var(--text-secondary-main);
@@ -203,7 +203,7 @@ $padding-bottom: toRem(26);
   }
 }
 
-.sale-history-item__value {
+.sale-history-item__header-col-value {
   @include p-body-2;
 
   &--overflow {

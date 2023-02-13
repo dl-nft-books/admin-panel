@@ -64,6 +64,10 @@ const details: NftDetails[] = [
     value: formatFiatAssetFromWei(props.book.price, CURRENCY.USD),
   },
   {
+    label: $t('nft-details.floor-price-lbl'),
+    value: formatFiatAssetFromWei(props.book.floorPrice, CURRENCY.USD),
+  },
+  {
     label: $t('nft-details.voucher-lbl'),
     value:
       props.book.voucherToken !== ethers.constants.AddressZero
@@ -128,7 +132,7 @@ $icon-size: toRem(20);
   @include p-body-2;
 
   max-width: 100%;
-  word-wrap: break-word;
+  word-break: break-word;
   white-space: pre-wrap;
 
   &--document {

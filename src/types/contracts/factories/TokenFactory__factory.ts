@@ -131,6 +131,11 @@ const _abi = [
             name: "voucherTokensAmount",
             type: "uint256",
           },
+          {
+            internalType: "uint256",
+            name: "minNFTFloorPrice",
+            type: "uint256",
+          },
         ],
         indexed: false,
         internalType: "struct ITokenFactory.DeployTokenContractParams",
@@ -222,6 +227,11 @@ const _abi = [
           {
             internalType: "uint256",
             name: "voucherTokensAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "minNFTFloorPrice",
             type: "uint256",
           },
         ],

@@ -1,6 +1,6 @@
 <template>
   <div class="create-nft-page">
-    <h3>
+    <h3 class="create-nft-page__title">
       {{ $t('create-nft-page.title') }}
     </h3>
     <nft-form />

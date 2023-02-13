@@ -45,14 +45,17 @@ export const useNftBookToken = (
 
   const updateTokenContractParams = async (
     price: string,
+    minNFTFloorPrice: string,
     name: string,
     symbol: string,
   ) => {
     try {
       const convertedPrice = new BN(price).toWei().toString()
+      const convertedFloorPrice = new BN(minNFTFloorPrice).toWei().toString()
 
       const updateTx = await _instance_rw.value?.updateTokenContractParams(
         convertedPrice,
+        convertedFloorPrice,
         name,
         symbol,
       )

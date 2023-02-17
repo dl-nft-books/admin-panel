@@ -13,3 +13,13 @@ export type Payment = JsonApiRecordBase<'payment'> & {
     decimals: number
   }
 }
+
+export type NftPayment = JsonApiRecordBase<'payment'> & {
+  payer_address: string
+  minted_token_price: string
+  purchase_timestamp: string
+  book_url: string
+  floor_price: string
+  nft_address: string
+  nft_id: number
+}

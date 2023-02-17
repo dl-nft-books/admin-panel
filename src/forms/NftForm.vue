@@ -230,7 +230,8 @@ const isContractValuesUpdated = computed(
   () =>
     form.symbol !== props.book?.contractSymbol ||
     form.price !== nftPrice ||
-    form.name !== props.book?.contractName,
+    form.name !== props.book?.contractName ||
+    form.floorPrice !== nftFloorPrice,
 )
 
 const isVoucherParamsUpdated = computed(

@@ -1,81 +1,46 @@
 <template>
   <div class="sale-history">
-    <h4 class="sale-history__header">
-      {{ $t('sale-history.header') }}
-    </h4>
-
-    <error-message
-      v-if="isLoadFailed"
-      :message="$t('sale-history.loading-error-msg')"
-    />
-
-    <template v-else-if="history.length || isLoading">
-      <div v-if="history.length" class="sale-history__list">
-        <sale-history-item
-          v-for="item in history"
-          :key="item.id"
-          :history-item="item"
-        />
-      </div>
-
-      <loader v-if="isLoading" />
-
-      <app-button
-        v-if="isLoadMoreBtnShown"
-        class="sale-history__load-more-btn"
-        size="small"
-        scheme="flat"
-        :text="$t('sale-history.load-more-btn')"
-        @click="loadNextPage"
+    <div class="sale-history__header-wrapper">
+      <h4 class="sale-history__header">
+        {{ $t('sale-history.header') }}
+      </h4>
+      <tabs
+        v-model="currentTab"
+        :tabs="Object.values(TABS)"
+        class="sale-history__tabs"
       />
-    </template>
+    </div>
 
-    <no-data-message v-else :message="$t('sale-history.no-data-message')" />
+    <sale-history-tokens
+      v-if="currentTab === TABS.tokens.id"
+      :book-id="bookId"
+    />
+    <sale-history-nfts v-else :book-id="bookId" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Loader, ErrorMessage, NoDataMessage, AppButton } from '@/common'
-import { SaleHistoryItem } from '@/pages/nft-item-page'
-import { Payment } from '@/types'
+import { Tabs } from '@/common'
+import { SaleHistoryTokens, SaleHistoryNfts } from '@/pages/nft-item-page'
+import { ref } from 'vue'
+import { useContext } from '@/composables'
 
-import { ErrorHandler } from '@/helpers'
-import { getPayments } from '@/api'
-import { ref, computed } from 'vue'
-import { usePaginate } from '@/composables'
+defineProps<{ bookId: string | number }>()
 
-const props = defineProps<{ bookId: string | number }>()
+const { $t } = useContext()
 
-const isLoadFailed = ref(false)
-
-const history = ref<Payment[]>([])
-
-const loadList = computed(
-  () => () =>
-    getPayments({
-      bookIds: [props.bookId],
-    }),
-)
-
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
-
-function setList(chunk: Payment[]) {
-  history.value = chunk ?? []
+const TABS = {
+  tokens: {
+    translation: $t('sale-history.tokens-tab'),
+    id: 'tokens-tab',
+  },
+  nfts: {
+    translation: $t('sale-history.nfts-tab'),
+    id: 'nfts-tab',
+  },
 }
 
-function concatList(chunk: Payment[]) {
-  history.value = history.value.concat(chunk ?? [])
-}
-
-function onError(e: Error) {
-  ErrorHandler.processWithoutFeedback(e)
-  isLoadFailed.value = true
-}
+const currentTab = ref(TABS.tokens.id)
 </script>
 
 <style lang="scss" scoped>
@@ -83,12 +48,14 @@ function onError(e: Error) {
   margin-bottom: toRem(20);
 }
 
-.sale-history__list {
-  display: grid;
-  grid-gap: toRem(16);
+.sale-history__header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: toRem(20);
 }
 
-.sale-history__load-more-btn {
-  margin: toRem(20) auto 0;
+.sale-history__tabs {
+  margin-bottom: toRem(24);
 }
 </style>

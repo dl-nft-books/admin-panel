@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { NftDetails, Payment } from '@/types'
+import { NftDetails, NftPayment, Payment } from '@/types'
 import { Collapse, AppButton } from '@/common'
 import {
   formatFiatAssetFromWei,
@@ -89,9 +89,64 @@ import {
 import { useContext } from '@/composables'
 import { CURRENCY } from '@/enums'
 
-const props = defineProps<{ historyItem: Payment }>()
+const props = defineProps<{ historyItem: Payment | NftPayment }>()
 
 const { $t } = useContext()
+
+const getSaleBody = () => {
+  if (props.historyItem.erc20_data) {
+    const historyItem = props.historyItem as Payment
+
+    return [
+      {
+        label: $t('sale-history-item.buyer-address-lbl'),
+        value: historyItem.payer_address,
+      },
+      {
+        label: $t('sale-history-item.token-lbl'),
+        value: historyItem.erc20_data.symbol,
+      },
+      {
+        label: $t('sale-history-item.token-amount-lbl'),
+        value: formatAssetFromWei(
+          historyItem.amount,
+          historyItem.erc20_data.decimals,
+        ),
+      },
+      {
+        label: $t('sale-history-item.book-link-lbl'),
+        value: historyItem.book_url,
+        isUrl: true,
+      },
+    ] as NftDetails[]
+  } else {
+    const historyItem = props.historyItem as NftPayment
+
+    return [
+      {
+        label: $t('sale-history-item.buyer-address-lbl'),
+        value: historyItem.payer_address,
+      },
+      {
+        label: $t('sale-history-item.nft-address'),
+        value: historyItem.nft_address,
+      },
+      {
+        label: $t('sale-history-item.nft-id'),
+        value: historyItem.nft_id,
+      },
+      {
+        label: $t('sale-history-item.floor-price'),
+        value: formatFiatAssetFromWei(historyItem.floor_price, CURRENCY.USD),
+      },
+      {
+        label: $t('sale-history-item.book-link-lbl'),
+        value: historyItem.book_url,
+        isUrl: true,
+      },
+    ] as NftDetails[]
+  }
+}
 
 const saleHeader: NftDetails[] = [
   {
@@ -111,28 +166,7 @@ const saleHeader: NftDetails[] = [
   },
 ]
 
-const saleBody: NftDetails[] = [
-  {
-    label: $t('sale-history-item.buyer-address-lbl'),
-    value: props.historyItem.payer_address,
-  },
-  {
-    label: $t('sale-history-item.token-lbl'),
-    value: props.historyItem.erc20_data.symbol,
-  },
-  {
-    label: $t('sale-history-item.token-amount-lbl'),
-    value: formatAssetFromWei(
-      props.historyItem.amount,
-      props.historyItem.erc20_data.decimals,
-    ),
-  },
-  {
-    label: $t('sale-history-item.book-link-lbl'),
-    value: props.historyItem.book_url,
-    isUrl: true,
-  },
-]
+const saleBody: NftDetails[] = getSaleBody()
 </script>
 
 <style lang="scss" scoped>

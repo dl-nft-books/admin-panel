@@ -194,7 +194,9 @@
     "header": "Sale History",
     "no-data-message": "No history available",
     "loading-error-msg": "Error while loading.",
-    "load-more-btn": "Load More"
+    "load-more-btn": "Load More",
+    "tokens-tab": "Tokens",
+    "nfts-tab": "NFT"
   },
   "sale-history-item": {
     "buyer-address-lbl": "Buyer's Address",
@@ -202,7 +204,10 @@
     "price-lbl": "Price",
     "token-lbl": "Token",
     "token-amount-lbl": "Amount of Token",
-    "book-link-lbl": "Link to the book"
+    "book-link-lbl": "Link to the book",
+    "nft-address": "NFT Adress",
+    "nft-id": "NFT ID",
+    "floor-price": "Floor Price"
   },
   "api-errors": {
     "session-expired-title": "Session expired",

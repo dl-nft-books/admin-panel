@@ -8,6 +8,10 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+#### Added
+- Floor price for nft books
+- Tabs in sale history for erc-20 payments and NFT exchange payments
+
 #### Changed
 - Typography refactored
 - All components refactored to script setup style

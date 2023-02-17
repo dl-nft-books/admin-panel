@@ -195,7 +195,7 @@
     "no-data-message": "No history available",
     "loading-error-msg": "Error while loading.",
     "load-more-btn": "Load More",
-    "tokens-tab": "Tokens",
+    "tokens-tab": "ERC-20",
     "nfts-tab": "NFT"
   },
   "sale-history-item": {

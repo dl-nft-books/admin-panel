@@ -80,8 +80,8 @@ export interface NftBookTokenInterface extends utils.Interface {
     "getUserTokenIDs(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "minNFTFloorPrice()": FunctionFragment;
-    "minTokenByNFT(address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
     "mintToken(address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
+    "mintTokenByNFT(address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
     "name()": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -119,8 +119,8 @@ export interface NftBookTokenInterface extends utils.Interface {
       | "getUserTokenIDs"
       | "isApprovedForAll"
       | "minNFTFloorPrice"
-      | "minTokenByNFT"
       | "mintToken"
+      | "mintTokenByNFT"
       | "name"
       | "onERC721Received"
       | "owner"
@@ -181,7 +181,7 @@ export interface NftBookTokenInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "minTokenByNFT",
+    functionFragment: "mintToken",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -194,7 +194,7 @@ export interface NftBookTokenInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintToken",
+    functionFragment: "mintTokenByNFT",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -345,11 +345,11 @@ export interface NftBookTokenInterface extends utils.Interface {
     functionFragment: "minNFTFloorPrice",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "mintToken", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "minTokenByNFT",
+    functionFragment: "mintTokenByNFT",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "mintToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onERC721Received",
@@ -651,18 +651,6 @@ export interface NftBookToken extends BaseContract {
 
     minNFTFloorPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    minTokenByNFT(
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     mintToken(
       paymentTokenAddress_: PromiseOrValue<string>,
       paymentTokenPrice_: PromiseOrValue<BigNumberish>,
@@ -673,6 +661,18 @@ export interface NftBookToken extends BaseContract {
       s_: PromiseOrValue<BytesLike>,
       v_: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    mintTokenByNFT(
+      nftAddress_: PromiseOrValue<string>,
+      nftFloorPrice_: PromiseOrValue<BigNumberish>,
+      tokenId_: PromiseOrValue<BigNumberish>,
+      endTimestamp_: PromiseOrValue<BigNumberish>,
+      tokenURI_: PromiseOrValue<string>,
+      r_: PromiseOrValue<BytesLike>,
+      s_: PromiseOrValue<BytesLike>,
+      v_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
@@ -833,18 +833,6 @@ export interface NftBookToken extends BaseContract {
 
   minNFTFloorPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-  minTokenByNFT(
-    nftAddress_: PromiseOrValue<string>,
-    nftFloorPrice_: PromiseOrValue<BigNumberish>,
-    tokenId_: PromiseOrValue<BigNumberish>,
-    endTimestamp_: PromiseOrValue<BigNumberish>,
-    tokenURI_: PromiseOrValue<string>,
-    r_: PromiseOrValue<BytesLike>,
-    s_: PromiseOrValue<BytesLike>,
-    v_: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   mintToken(
     paymentTokenAddress_: PromiseOrValue<string>,
     paymentTokenPrice_: PromiseOrValue<BigNumberish>,
@@ -855,6 +843,18 @@ export interface NftBookToken extends BaseContract {
     s_: PromiseOrValue<BytesLike>,
     v_: PromiseOrValue<BigNumberish>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  mintTokenByNFT(
+    nftAddress_: PromiseOrValue<string>,
+    nftFloorPrice_: PromiseOrValue<BigNumberish>,
+    tokenId_: PromiseOrValue<BigNumberish>,
+    endTimestamp_: PromiseOrValue<BigNumberish>,
+    tokenURI_: PromiseOrValue<string>,
+    r_: PromiseOrValue<BytesLike>,
+    s_: PromiseOrValue<BytesLike>,
+    v_: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
@@ -1015,10 +1015,10 @@ export interface NftBookToken extends BaseContract {
 
     minNFTFloorPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    minTokenByNFT(
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
+    mintToken(
+      paymentTokenAddress_: PromiseOrValue<string>,
+      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
+      discount_: PromiseOrValue<BigNumberish>,
       endTimestamp_: PromiseOrValue<BigNumberish>,
       tokenURI_: PromiseOrValue<string>,
       r_: PromiseOrValue<BytesLike>,
@@ -1027,10 +1027,10 @@ export interface NftBookToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    mintToken(
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
+    mintTokenByNFT(
+      nftAddress_: PromiseOrValue<string>,
+      nftFloorPrice_: PromiseOrValue<BigNumberish>,
+      tokenId_: PromiseOrValue<BigNumberish>,
       endTimestamp_: PromiseOrValue<BigNumberish>,
       tokenURI_: PromiseOrValue<string>,
       r_: PromiseOrValue<BytesLike>,
@@ -1300,18 +1300,6 @@ export interface NftBookToken extends BaseContract {
 
     minNFTFloorPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    minTokenByNFT(
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     mintToken(
       paymentTokenAddress_: PromiseOrValue<string>,
       paymentTokenPrice_: PromiseOrValue<BigNumberish>,
@@ -1322,6 +1310,18 @@ export interface NftBookToken extends BaseContract {
       s_: PromiseOrValue<BytesLike>,
       v_: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    mintTokenByNFT(
+      nftAddress_: PromiseOrValue<string>,
+      nftFloorPrice_: PromiseOrValue<BigNumberish>,
+      tokenId_: PromiseOrValue<BigNumberish>,
+      endTimestamp_: PromiseOrValue<BigNumberish>,
+      tokenURI_: PromiseOrValue<string>,
+      r_: PromiseOrValue<BytesLike>,
+      s_: PromiseOrValue<BytesLike>,
+      v_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1483,18 +1483,6 @@ export interface NftBookToken extends BaseContract {
 
     minNFTFloorPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    minTokenByNFT(
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     mintToken(
       paymentTokenAddress_: PromiseOrValue<string>,
       paymentTokenPrice_: PromiseOrValue<BigNumberish>,
@@ -1505,6 +1493,18 @@ export interface NftBookToken extends BaseContract {
       s_: PromiseOrValue<BytesLike>,
       v_: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    mintTokenByNFT(
+      nftAddress_: PromiseOrValue<string>,
+      nftFloorPrice_: PromiseOrValue<BigNumberish>,
+      tokenId_: PromiseOrValue<BigNumberish>,
+      endTimestamp_: PromiseOrValue<BigNumberish>,
+      tokenURI_: PromiseOrValue<string>,
+      r_: PromiseOrValue<BytesLike>,
+      s_: PromiseOrValue<BytesLike>,
+      v_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;

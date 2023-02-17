@@ -482,54 +482,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "nftAddress_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "nftFloorPrice_",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId_",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "endTimestamp_",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "tokenURI_",
-        type: "string",
-      },
-      {
-        internalType: "bytes32",
-        name: "r_",
-        type: "bytes32",
-      },
-      {
-        internalType: "bytes32",
-        name: "s_",
-        type: "bytes32",
-      },
-      {
-        internalType: "uint8",
-        name: "v_",
-        type: "uint8",
-      },
-    ],
-    name: "minTokenByNFT",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "paymentTokenAddress_",
         type: "address",
       },
@@ -572,6 +524,54 @@ const _abi = [
     name: "mintToken",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "nftAddress_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "nftFloorPrice_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "endTimestamp_",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "tokenURI_",
+        type: "string",
+      },
+      {
+        internalType: "bytes32",
+        name: "r_",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "s_",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint8",
+        name: "v_",
+        type: "uint8",
+      },
+    ],
+    name: "mintTokenByNFT",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

@@ -32,7 +32,7 @@
 
     <template v-else-if="booksList.length || isLoading">
       <div v-if="booksList.length" class="overview-nfts__content">
-        <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
+        <nft-card v-for="nft in booksList" :key="nft.id" :nft="nft" />
       </div>
 
       <loader v-if="isLoading" />

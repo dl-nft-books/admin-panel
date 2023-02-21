@@ -179,7 +179,7 @@ function onError(e: Error) {
 }
 
 const buttonLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small
+  width.value >= WINDOW_BREAKPOINTS.tablet
     ? $t('overview-nfts.create-button')
     : '',
 )
@@ -226,8 +226,8 @@ const buttonLinkText = computed(() =>
 }
 
 .overview-nfts__content {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   margin-top: toRem(20);
   row-gap: toRem(15);
 
@@ -242,10 +242,9 @@ const buttonLinkText = computed(() =>
 .overview-nfts__link-button {
   width: toRem(180);
   order: -1;
+  font-weight: 700;
 
-  @include link-bold;
-
-  @include respond-to(small) {
+  @include respond-to(tablet) {
     width: toRem(54);
     height: toRem(54);
     order: 1;

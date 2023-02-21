@@ -5,13 +5,10 @@
       :key="index"
       class="nft-details__row"
     >
-      <p class="nft-details__row-label nft-details__row-label--size-medium">
+      <p class="nft-details__row-label">
         {{ item.label }}
       </p>
-      <p
-        v-if="!item.isUrl"
-        class="nft-details__row-value nft-details__row-value--size-x-large"
-      >
+      <p v-if="!item.isUrl" class="nft-details__row-value">
         {{ item.value }}
       </p>
       <a
@@ -24,7 +21,6 @@
         <span
           :class="[
             'nft-details__row-value',
-            'nft-details__row-value--size-x-large',
             'nft-details__row-value--shortened',
           ]"
         >
@@ -47,8 +43,13 @@ import {
 } from '@/helpers'
 import { BookRecord } from '@/records'
 import { useContext } from '@/composables'
-import { NftDetails } from '@/types'
 import { CURRENCY } from '@/enums'
+
+type NftDetails = {
+  label: string
+  value: string
+  isUrl?: boolean
+}
 
 const props = defineProps<{ book: BookRecord }>()
 
@@ -99,8 +100,8 @@ const nftDetails = computed(() => details.filter(item => Boolean(item.value)))
 $icon-size: toRem(20);
 
 .nft-details {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(10);
 }
 
@@ -119,8 +120,8 @@ $icon-size: toRem(20);
 }
 
 .nft-details__row-label {
-  @include p-body-2;
-
+  font-size: toRem(18);
+  line-height: 160%;
   color: var(--text-secondary-main);
 
   @include respond-to(xmedium) {
@@ -129,8 +130,8 @@ $icon-size: toRem(20);
 }
 
 .nft-details__row-value {
-  @include p-body-2;
-
+  font-size: toRem(20);
+  line-height: 120%;
   max-width: 100%;
   word-break: break-word;
   white-space: pre-wrap;

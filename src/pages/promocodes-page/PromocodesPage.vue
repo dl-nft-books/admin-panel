@@ -80,7 +80,7 @@ const { width } = useWindowSize()
 const { $t } = useContext()
 
 const buttonText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small
+  width.value >= WINDOW_BREAKPOINTS.tablet
     ? $t('promocodes-page.create-lbl')
     : '',
 )
@@ -146,8 +146,8 @@ Bus.on(Bus.eventList.reloadPromocodesList, loadFirstPage)
 
 <style lang="scss" scoped>
 .promocodes-page {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(15);
 }
 
@@ -175,7 +175,7 @@ Bus.on(Bus.eventList.reloadPromocodesList, loadFirstPage)
   order: -1;
   text-transform: uppercase;
 
-  @include respond-to(small) {
+  @include respond-to(tablet) {
     width: toRem(54);
     height: toRem(54);
     order: 1;

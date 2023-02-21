@@ -5,24 +5,24 @@
       <template #head="{ menu }">
         <app-button
           :icon-left="$icons.account"
-          class="account__avatar"
+          class="account-info__avatar"
           scheme="flat"
           icon-size="x-medium"
           @click="menu.open"
         />
       </template>
       <template #default="{ menu }">
-        <div class="account__body">
-          <div class="account__info">
-            <icon class="account__avatar-icon" :name="$icons.account" />
-            <h5 class="account__address account__address--size-x-medium">
+        <div class="account-info__body">
+          <div class="account-info__info">
+            <icon class="account-info__avatar-icon" :name="$icons.account" />
+            <h5 class="account-info__address">
               {{ cropAddress(provider.selectedAddress) }}
             </h5>
           </div>
           <app-button
             :icon-left="$icons.copy"
             :text="$t('account-dropdown.copy-address')"
-            class="account__action"
+            class="account-info__action"
             scheme="default"
             modification="default"
             @click="copyAddress(), menu.close()"
@@ -30,7 +30,7 @@
           <app-button
             :icon-left="$icons.logout"
             :text="$t('account-dropdown.logout-btn')"
-            class="account__action"
+            class="account-info__action"
             scheme="default"
             modification="default"
             @click="logout"
@@ -57,8 +57,8 @@ const props = withDefaults(
 )
 
 const accountClasses = computed(() => [
-  'account',
-  `account--${props.modification}`,
+  'account-info',
+  `account-info--${props.modification}`,
 ])
 
 const { provider } = useWeb3ProvidersStore()
@@ -75,22 +75,22 @@ const copyAddress = async () => {
 </script>
 
 <style lang="scss" scoped>
-.account {
+.account-info {
   display: flex;
   align-items: center;
   position: relative;
   gap: toRem(20);
 }
 
-.account__body {
+.account-info__body {
   background-color: var(--background-primary);
 
-  .account--dark-mode & {
+  .account-info--dark-mode & {
     background-color: var(--background-quaternary);
   }
 }
 
-.account__info {
+.account-info__info {
   display: flex;
   align-items: center;
   padding: toRem(15) toRem(20);
@@ -108,18 +108,18 @@ const copyAddress = async () => {
   }
 }
 
-.account__address {
-  @include p-body-2;
-
+.account-info__address {
+  font-size: toRem(18);
+  line-height: 160%;
   color: var(--text-secondary-main);
   user-select: none;
 
-  .account--dark-mode & {
-    @include text-secondary-color-invert;
+  .account-info--dark-mode & {
+    color: var(--text-secondary-invert-main);
   }
 }
 
-.account__avatar {
+.account-info__avatar {
   display: grid;
   place-content: center;
   background-color: var(--background-primary);
@@ -135,20 +135,20 @@ const copyAddress = async () => {
     background-color: var(--background-tertiary);
   }
 
-  .account--dark-mode & {
+  .account-info--dark-mode & {
     background-color: transparent;
     border: toRem(1) solid var(--white);
   }
 }
 
-.account__avatar-icon {
+.account-info__avatar-icon {
   --size: #{toRem(28)};
 
   max-width: var(--size);
   max-height: var(--size);
 }
 
-.account__action {
+.account-info__action {
   --background-hover-color: rgba(var(--drop-down-shadow-rgb), 0.2);
   --app-button-bg-hover: rgba(var(--drop-down-shadow-rgb), 0.2);
 

@@ -436,8 +436,8 @@ const createNftBook = async (book: Document, banner: Document) => {
 }
 
 .nft-form__uploadings {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(20);
   margin-bottom: toRem(35);
 }
@@ -451,15 +451,15 @@ const createNftBook = async (book: Document, banner: Document) => {
 }
 
 .nft-form__details {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: toRem(20);
 }
 
 .nft-form__additional-inputs {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(20);
   padding: toRem(20);
 }

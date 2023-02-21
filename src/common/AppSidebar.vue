@@ -5,12 +5,7 @@
         <div class="app-sidebar__logo-wrp">
           <div class="app-sidebar__logo-container">
             <app-logo class="app-sidebar__logo" @click="hideSidebar" />
-            <p
-              :class="[
-                'app-sidebar__logo-subtitle',
-                'app-sidebar__logo-subtitle--size-small',
-              ]"
-            >
+            <p class="app-sidebar__logo-subtitle">
               {{ $t('app-sidebar.logo-subtitle') }}
             </p>
           </div>
@@ -54,9 +49,7 @@
           @click="logout"
         />
 
-        <div
-          class="app-sidebar__copyright app-sidebar__copyright--size-x-small"
-        >
+        <div class="app-sidebar__copyright">
           {{
             $t('app-sidebar.copyright', {
               value: new Date().getFullYear(),
@@ -87,36 +80,39 @@ const asideElement = ref<HTMLElement | null>(null)
 const { width: windowWidth } = useWindowSize()
 const swipe = useSwipe(document.querySelector('#app'))
 
-const isShowSidebar = ref(true)
+const isVisible = ref(false)
 
-const isNeedToHideSidebar = computed(
+const isTabletScreen = computed(
   () => windowWidth.value <= WINDOW_BREAKPOINTS.tablet,
 )
 
-const isSidebarShown = computed(
-  () => !isNeedToHideSidebar.value || isShowSidebar.value,
-)
+const isSidebarShown = computed(() => !isTabletScreen.value || isVisible.value)
 
 watch(swipe.direction, () => {
-  if (isShowSidebar.value) {
-    if (swipe.direction.value === SwipeDirection.RIGHT) {
-      isShowSidebar.value = true
-    } else if (swipe.direction.value === SwipeDirection.LEFT) {
-      isShowSidebar.value = false
-    }
+  if (!isVisible.value) return
+
+  switch (swipe.direction.value) {
+    case SwipeDirection.RIGHT:
+      isVisible.value = true
+      break
+    case SwipeDirection.LEFT:
+      isVisible.value = false
+      break
+    default:
+      break
   }
 })
 
 const toggleSidebar = () => {
-  isShowSidebar.value ? hideSidebar() : showSidebar()
+  isVisible.value ? hideSidebar() : showSidebar()
 }
 
 const showSidebar = () => {
-  isShowSidebar.value = true
+  isVisible.value = true
 }
 
 const hideSidebar = () => {
-  isShowSidebar.value = false
+  isVisible.value = false
 }
 
 Bus.on(Bus.eventList.toggleSidebar, toggleSidebar)
@@ -226,10 +222,9 @@ $z-local: 5;
 .app-sidebar__logo-subtitle {
   text-transform: uppercase;
   text-align: center;
-
-  @include p-body-2;
-
-  @include text-secondary-color-invert;
+  color: var(--text-secondary-invert-main);
+  font-size: toRem(14);
+  line-height: 120%;
 
   @include respond-to(tablet) {
     font-size: toRem(10);
@@ -246,10 +241,8 @@ $z-local: 5;
 }
 
 .app-sidebar__link {
-  @include text-secondary-color-invert;
-
-  @include link-bold;
-
+  color: var(--text-secondary-invert-main);
+  font-weight: 700;
   position: relative;
   display: flex;
   align-items: center;
@@ -297,10 +290,9 @@ $z-local: 5;
 
 .app-sidebar__copyright {
   align-self: center;
-
-  @include p-body-2;
-
-  @include text-color-invert;
+  color: var(--text-primary-invert-main);
+  font-size: toRem(12);
+  line-height: 120%;
 }
 
 .app-sidebar__close-button {

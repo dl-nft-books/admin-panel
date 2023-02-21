@@ -89,7 +89,7 @@ networksStore.loadNetworks()
     background-color: var(--background-tertiary);
   }
 
-  .account--dark-mode & {
+  .account-info--dark-mode & {
     background-color: transparent;
     border: toRem(1) solid var(--white);
   }
@@ -99,7 +99,7 @@ networksStore.loadNetworks()
   width: toRem(206);
   background-color: var(--background-primary);
 
-  .account--dark-mode & {
+  .account-info--dark-mode & {
     background-color: var(--background-quaternary);
   }
 }

@@ -41,12 +41,7 @@
     </template>
     <div class="sale-history-item__body">
       <template v-for="(item, index) in saleBody" :key="index">
-        <p
-          :class="[
-            'sale-history-item__header-col-label',
-            'sale-history-item__header-col-label--size-x-medium',
-          ]"
-        >
+        <p class="sale-history-item__header-col-label">
           {{ item.label }}
         </p>
         <p
@@ -54,7 +49,6 @@
           :class="[
             'sale-history-item__header-col-value',
             'sale-history-item__header-col-value--overflow',
-            'sale-history-item__header-col-value--size-x-large',
           ]"
         >
           {{ item.value }}
@@ -64,7 +58,6 @@
           :class="[
             'sale-history-item__header-col-value',
             'sale-history-item__header-col-value--overflow',
-            'sale-history-item__header-col-value--size-x-large',
           ]"
           :href="item.value"
           target="_blank"
@@ -190,9 +183,8 @@ $padding-bottom: toRem(26);
 }
 
 .sale-history-item__header-col-label {
-  @include p-body-2;
-
   color: var(--text-secondary-main);
+  line-height: 120%;
 
   @include respond-to(xmedium) {
     font-size: toRem(14);
@@ -204,7 +196,8 @@ $padding-bottom: toRem(26);
 }
 
 .sale-history-item__header-col-value {
-  @include p-body-2;
+  font-size: toRem(20);
+  line-height: 120%;
 
   &--overflow {
     @include text-ellipsis;

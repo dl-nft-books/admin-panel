@@ -15,13 +15,7 @@
         >
           {{ item.label }}
         </span>
-        <p
-          :class="[
-            'nft-card__content-value',
-            'nft-card__content-value--size-x-large',
-            'nft-card__content-value--bold',
-          ]"
-        >
+        <p class="nft-card__content-value">
           {{ item.value }}
         </p>
       </div>
@@ -103,8 +97,8 @@ const cardHeader = [
 }
 
 .nft-card__content {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   row-gap: toRem(10);
   width: 20%;
@@ -131,8 +125,8 @@ const cardHeader = [
 
 .nft-card__content-label {
   color: var(--text-secondary-main);
-
-  @include p-body-2;
+  font-size: toRem(16);
+  line-height: 120%;
 
   @include respond-to(medium) {
     font-size: toRem(14);
@@ -141,10 +135,11 @@ const cardHeader = [
 }
 
 .nft-card__content-value {
-  @include p-body-2;
-
+  font-size: toRem(20);
+  line-height: 120%;
   width: 100%;
   max-width: 40vw;
+  font-weight: 500;
 
   @include text-ellipsis;
 

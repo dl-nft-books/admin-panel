@@ -60,13 +60,7 @@
           <p class="promocode-item__head promocode-item__head--size-x-medium">
             {{ $t('promocodes-page.expire-date') }}
           </p>
-          <p
-            :class="[
-              'promocode-item__value',
-              'promocode-item__value--size-x-large',
-              'promocode-item__value--bold',
-            ]"
-          >
+          <p class="promocode-item__value">
             {{ $d(promocode.expiration_date, 'short') }}
           </p>
         </div>
@@ -211,22 +205,23 @@ const copyPromocode = async (promocode: string) => {
 }
 
 .promocode-item__info {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   gap: toRem(10);
 }
 
 .promocode-item__value {
   @include text-ellipsis;
 
-  @include p-body-2;
+  font-size: toRem(20);
+  line-height: 120%;
+  font-weight: 500;
 }
 
 .promocode-item__head {
   @include text-ellipsis;
 
-  @include p-body-2;
-
+  line-height: 120%;
   color: var(--text-secondary-main);
 }
 

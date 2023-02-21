@@ -26,8 +26,8 @@ import { AppLogo } from '@/common'
 
 <style lang="scss" scoped>
 .login-page {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   flex: 1;
   background: url('/images/login-page-bg.png') no-repeat bottom / cover;
 }
@@ -39,8 +39,8 @@ import { AppLogo } from '@/common'
 }
 
 .login-page__content {
-  @include flex-container;
-
+  display: flex;
+  flex-direction: column;
   flex: 1;
   justify-content: center;
 }
@@ -59,10 +59,16 @@ import { AppLogo } from '@/common'
 }
 
 .login-page__subtitle {
-  @include info-headline;
-
+  font-size: toRem(30);
+  line-height: toRem(40);
+  color: var(--text-secondary-dark);
   white-space: pre-line;
   text-align: center;
   margin: toRem(50) 0;
+
+  @include respond-to(tablet) {
+    font-size: toRem(20);
+    line-height: 1.3;
+  }
 }
 </style>

@@ -45,8 +45,7 @@ const classes = computed(() => [
 }
 
 .promocode-state__title {
-  @include p-body-2;
-
+  line-height: 120%;
   user-select: none;
 
   .promocode-state--available & {

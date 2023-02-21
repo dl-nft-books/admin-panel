@@ -28,7 +28,8 @@ import { AppNavbar, AppSidebar } from '@/common'
 }
 
 .authorized-layout__main-wrp {
-  @include flex-container;
+  display: flex;
+  flex-direction: column;
 }
 
 .authorized-layout__main {

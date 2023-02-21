@@ -68,10 +68,10 @@ withDefaults(
 }
 
 .notification__title {
-  @include text-color-invert;
+  color: var(--text-primary-invert-main);
 }
 
 .notification__message {
-  @include text-color-invert;
+  color: var(--text-primary-invert-main);
 }
 </style>

@@ -131,13 +131,16 @@ init()
   max-width: 45vw;
   font-weight: 600;
   word-wrap: break-word;
-
-  @include info-headline;
+  font-size: toRem(30);
+  line-height: toRem(40);
+  color: var(--text-secondary-dark);
 
   @include respond-to(xmedium) {
     max-width: 30vw;
     margin-top: toRem(20);
     text-align: center;
+    font-size: toRem(20);
+    line-height: 1.3;
   }
 
   @include respond-to(small) {
@@ -148,8 +151,7 @@ init()
 .nft-item-page__link-button {
   width: toRem(180);
   order: -1;
-
-  @include link-bold;
+  font-weight: 700;
 
   @include respond-to(small) {
     width: toRem(54);

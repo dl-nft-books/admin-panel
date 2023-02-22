@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { AppButton, Loader, ErrorMessage, Modal, NoDataMessage } from '@/common'
-import { usePaginate, useContext } from '@/composables'
+import { usePaginate } from '@/composables'
 import { SelectField } from '@/fields'
 import { getPromocodes } from '@/api'
 import { PROMOCODE_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
@@ -69,6 +69,7 @@ import { Bus, ErrorHandler } from '@/helpers'
 import { PromocodeItem } from '@/pages/promocodes-page'
 import { PromocodeForm } from '@/forms'
 import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
 enum PROMOCODES_FILTERS {
   ALL = 'all',
@@ -77,26 +78,26 @@ enum PROMOCODES_FILTERS {
 }
 
 const { width } = useWindowSize()
-const { $t } = useContext()
+const { t } = useI18n()
 
 const buttonText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.tablet
-    ? $t('promocodes-page.create-lbl')
+    ? t('promocodes-page.create-lbl')
     : '',
 )
 
 const filter = ref<PROMOCODES_FILTERS>(PROMOCODES_FILTERS.ALL)
 const filterOptions = computed(() => [
   {
-    label: $t('promocodes-page.filter-all'),
+    label: t('promocodes-page.filter-all'),
     value: PROMOCODES_FILTERS.ALL,
   },
   {
-    label: $t('promocodes-page.filter-active'),
+    label: t('promocodes-page.filter-active'),
     value: PROMOCODES_FILTERS.ACTIVE,
   },
   {
-    label: $t('promocodes-page.filter-inactive'),
+    label: t('promocodes-page.filter-inactive'),
     value: PROMOCODES_FILTERS.INACTIVE,
   },
 ])

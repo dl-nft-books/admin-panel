@@ -84,10 +84,11 @@ import {
 import { useWindowSize } from '@vueuse/core'
 import { InputField, SelectField } from '@/fields'
 import { getBooks } from '@/api'
-import { usePaginate, useContext } from '@/composables'
+import { usePaginate } from '@/composables'
 import { Book } from '@/types'
 import { debounce } from 'lodash'
 import { config } from '@/config'
+import { useI18n } from 'vue-i18n'
 
 const searchByString = ref('')
 const searchModel = ref('')
@@ -95,7 +96,7 @@ const booksList = ref<BookRecord[]>([])
 const isLoadFailed = ref(false)
 
 const { width } = useWindowSize()
-const { $t } = useContext()
+const { t } = useI18n()
 
 watch(
   searchModel,
@@ -108,38 +109,38 @@ const currentChainId = ref('0')
 
 const prodOptions = [
   {
-    label: $t('overview-nfts.all-networks-filter'),
+    label: t('overview-nfts.all-networks-filter'),
     value: '0',
   },
   {
-    label: $t('overview-nfts.ethereum-filter'),
+    label: t('overview-nfts.ethereum-filter'),
     value: ETHEREUM_CHAINS.ethereum,
   },
   {
-    label: $t('overview-nfts.polygon-filter'),
+    label: t('overview-nfts.polygon-filter'),
     value: POLYGON_CHAINS.mainnet,
   },
   {
-    label: $t('overview-nfts.q-filter'),
+    label: t('overview-nfts.q-filter'),
     value: Q_CHAINS.mainet,
   },
 ]
 
 const devOptions = [
   {
-    label: $t('overview-nfts.all-networks-filter'),
+    label: t('overview-nfts.all-networks-filter'),
     value: '0',
   },
   {
-    label: $t('overview-nfts.ethereum-filter'),
+    label: t('overview-nfts.ethereum-filter'),
     value: ETHEREUM_CHAINS.goerli,
   },
   {
-    label: $t('overview-nfts.polygon-filter'),
+    label: t('overview-nfts.polygon-filter'),
     value: POLYGON_CHAINS.mumbai,
   },
   {
-    label: $t('overview-nfts.q-filter'),
+    label: t('overview-nfts.q-filter'),
     value: Q_CHAINS.testnet,
   },
 ]
@@ -180,7 +181,7 @@ function onError(e: Error) {
 
 const buttonLinkText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.tablet
-    ? $t('overview-nfts.create-button')
+    ? t('overview-nfts.create-button')
     : '',
 )
 </script>

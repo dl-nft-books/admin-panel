@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts" setup>
-import { NftDetails, NftPayment, Payment } from '@/types'
+import { NftPayment, Payment } from '@/types'
 import { Collapse, AppButton } from '@/common'
 import {
   formatFiatAssetFromWei,
@@ -79,12 +79,13 @@ import {
   cropAddress,
   formatDMY,
 } from '@/helpers'
-import { useContext } from '@/composables'
-import { CURRENCY } from '@/enums'
+import { CURRENCIES } from '@/enums'
+import { NftDetails } from '@/pages/nft-item-page/NftDetails.vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{ historyItem: Payment | NftPayment }>()
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const getSaleBody = () => {
   if (props.historyItem.erc20_data) {
@@ -92,22 +93,22 @@ const getSaleBody = () => {
 
     return [
       {
-        label: $t('sale-history-item.buyer-address-lbl'),
+        label: t('sale-history-item.buyer-address-lbl'),
         value: historyItem.payer_address,
       },
       {
-        label: $t('sale-history-item.token-lbl'),
+        label: t('sale-history-item.token-lbl'),
         value: historyItem.erc20_data.symbol,
       },
       {
-        label: $t('sale-history-item.token-amount-lbl'),
+        label: t('sale-history-item.token-amount-lbl'),
         value: formatAssetFromWei(
           historyItem.amount,
           historyItem.erc20_data.decimals,
         ),
       },
       {
-        label: $t('sale-history-item.book-link-lbl'),
+        label: t('sale-history-item.book-link-lbl'),
         value: historyItem.book_url,
         isUrl: true,
       },
@@ -117,23 +118,23 @@ const getSaleBody = () => {
 
     return [
       {
-        label: $t('sale-history-item.buyer-address-lbl'),
+        label: t('sale-history-item.buyer-address-lbl'),
         value: historyItem.payer_address,
       },
       {
-        label: $t('sale-history-item.nft-address'),
+        label: t('sale-history-item.nft-address'),
         value: historyItem.nft_address,
       },
       {
-        label: $t('sale-history-item.nft-id'),
+        label: t('sale-history-item.nft-id'),
         value: historyItem.nft_id,
       },
       {
-        label: $t('sale-history-item.floor-price'),
-        value: formatFiatAssetFromWei(historyItem.floor_price, CURRENCY.USD),
+        label: t('sale-history-item.floor-price'),
+        value: formatFiatAssetFromWei(historyItem.floor_price, CURRENCIES.USD),
       },
       {
-        label: $t('sale-history-item.book-link-lbl'),
+        label: t('sale-history-item.book-link-lbl'),
         value: historyItem.book_url,
         isUrl: true,
       },
@@ -143,18 +144,18 @@ const getSaleBody = () => {
 
 const saleHeader: NftDetails[] = [
   {
-    label: $t('sale-history-item.buyer-address-lbl'),
+    label: t('sale-history-item.buyer-address-lbl'),
     value: cropAddress(props.historyItem.payer_address, 10),
   },
   {
-    label: $t('sale-history-item.purchase-date-lbl'),
+    label: t('sale-history-item.purchase-date-lbl'),
     value: formatDMY(props.historyItem.purchase_timestamp),
   },
   {
-    label: $t('sale-history-item.price-lbl'),
+    label: t('sale-history-item.price-lbl'),
     value: formatFiatAssetFromWei(
       props.historyItem.minted_token_price,
-      CURRENCY.USD,
+      CURRENCIES.USD,
     ),
   },
 ]

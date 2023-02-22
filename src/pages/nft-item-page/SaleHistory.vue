@@ -23,19 +23,19 @@
 import { Tabs } from '@/common'
 import { SaleHistoryTokens, SaleHistoryNfts } from '@/pages/nft-item-page'
 import { ref } from 'vue'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 
 defineProps<{ bookId: string | number }>()
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const TABS = {
   tokens: {
-    translation: $t('sale-history.tokens-tab'),
+    translation: t('sale-history.tokens-tab'),
     id: 'tokens-tab',
   },
   nfts: {
-    translation: $t('sale-history.nfts-tab'),
+    translation: t('sale-history.nfts-tab'),
     id: 'nfts-tab',
   },
 }

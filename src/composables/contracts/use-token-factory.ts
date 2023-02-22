@@ -1,44 +1,52 @@
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import {
   TokenFactory,
   TokenFactory__factory,
   EthProviderRpcError,
-  UseUnrefProvider,
 } from '@/types'
 
 import { handleEthError } from '@/helpers'
+import { useWeb3ProvidersStore } from '@/store'
 
-export const useTokenFactory = (
-  provider: UseUnrefProvider,
-  address?: string,
-) => {
+export const useTokenFactory = (address?: string) => {
   const _instance = ref<TokenFactory | undefined>()
   const _instance_rw = ref<TokenFactory | undefined>()
+
+  const web3ProvidersStore = useWeb3ProvidersStore()
+  const provider = computed(() => web3ProvidersStore.provider)
 
   watch(provider, () => {
     if (address) init(address)
   })
 
-  if (address && provider.currentProvider && provider.currentSigner) {
+  if (
+    address &&
+    provider.value.currentProvider &&
+    provider.value.currentSigner
+  ) {
     _instance.value = TokenFactory__factory.connect(
       address,
-      provider.currentProvider,
+      provider.value.currentProvider,
     )
     _instance_rw.value = TokenFactory__factory.connect(
       address,
-      provider.currentSigner,
+      provider.value.currentSigner,
     )
   }
 
   const init = (address: string) => {
-    if (address && provider.currentProvider && provider.currentSigner) {
+    if (
+      address &&
+      provider.value.currentProvider &&
+      provider.value.currentSigner
+    ) {
       _instance.value = TokenFactory__factory.connect(
         address,
-        provider.currentProvider,
+        provider.value.currentProvider,
       )
       _instance_rw.value = TokenFactory__factory.connect(
         address,
-        provider.currentSigner,
+        provider.value.currentSigner,
       )
     }
   }

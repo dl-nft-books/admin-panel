@@ -10,9 +10,7 @@
         :key="index"
         class="nft-card__content"
       >
-        <span
-          class="nft-card__content-label nft-card__content-label--size-x-medium"
-        >
+        <span class="nft-card__content-label">
           {{ item.label }}
         </span>
         <p class="nft-card__content-value">
@@ -26,27 +24,27 @@
 <script lang="ts" setup>
 import { formatFiatAssetFromWei, formatDMY } from '@/helpers'
 import { BookRecord } from '@/records'
-import { useContext } from '@/composables'
-import { CURRENCY } from '@/enums'
+import { CURRENCIES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   nft: BookRecord
 }>()
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const cardHeader = [
   {
-    label: $t('nft-card.name-description'),
+    label: t('nft-card.name-description'),
     value: props.nft.title,
   },
   {
-    label: $t('nft-card.date-description'),
+    label: t('nft-card.date-description'),
     value: formatDMY(props.nft.createdAt),
   },
   {
-    label: $t('nft-card.price-description'),
-    value: formatFiatAssetFromWei(props.nft.price, CURRENCY.USD),
+    label: t('nft-card.price-description'),
+    value: formatFiatAssetFromWei(props.nft.price, CURRENCIES.USD),
   },
 ]
 </script>

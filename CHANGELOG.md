@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.4.0-rc.1]
 #### Added
 - Floor price for nft books
 - Tabs in sale history for erc-20 payments and NFT exchange payments
@@ -16,6 +16,10 @@ for further information about branching and tagging conventions.
 - Typography refactored
 - All components refactored to script setup style
 - All components refactored to 'template -> script -> style' pattern
+- Refactored composable folder structure
+
+#### Removed
+- useContext hook
 
 ## [1.3.0] - 2023-02-01
 #### Added

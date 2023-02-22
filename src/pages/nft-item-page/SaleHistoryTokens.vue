@@ -36,11 +36,9 @@ import { Payment } from '@/types'
 import { ErrorHandler } from '@/helpers'
 import { getPayments } from '@/api'
 import { ref, computed } from 'vue'
-import { usePaginate, useContext } from '@/composables'
+import { usePaginate } from '@/composables'
 
 const props = defineProps<{ bookId: string | number }>()
-
-const { $t } = useContext()
 
 const isLoadFailed = ref(false)
 

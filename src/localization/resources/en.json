@@ -52,7 +52,8 @@
     "polygon": "Polygon Mainnet",
     "ethereum": "Ethereum Mainnet",
     "q": "Q Mainnet",
-    "unsupported": "Unknown network"
+    "unsupported": "Unknown network",
+    "network-error": "Failed to load network list"
   },
   "app-sidebar": {
     "logo-subtitle": "Admin panel",

@@ -18,11 +18,12 @@ import { useWeb3ProvidersStore } from '@/store'
 import { ErrorHandler, getAuthNonce, sleep } from '@/helpers'
 
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 import { ROUTE_NAMES } from '@/enums'
-import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/store'
 
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -35,6 +36,8 @@ const submit = async () => {
       const authNonce = await getAuthNonce(provider.value.selectedAddress)
 
       const signedMessage = await provider.value.signMessage(authNonce)
+
+      if (!signedMessage) return
 
       await authStore.login(provider.value.selectedAddress, signedMessage)
 

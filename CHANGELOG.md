@@ -12,6 +12,10 @@ for further information about branching and tagging conventions.
 - Typography refactored
 - All components refactored to script setup style
 - All components refactored to 'template -> script -> style' pattern
+- Refactored composable folder structure
+
+#### Removed
+- useContext hook
 
 ## [1.3.0] - 2023-02-01
 #### Added

@@ -52,8 +52,8 @@ import { ref, computed } from 'vue'
 import { BookRecord } from '@/records'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
-import { useContext } from '@/composables'
 import { getBookById } from '@/api'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   id: string
@@ -65,7 +65,7 @@ const isLoadFailed = ref(false)
 const book = ref<BookRecord | undefined>()
 
 const { width } = useWindowSize()
-const { $t } = useContext()
+const { t } = useI18n()
 
 const init = async () => {
   try {
@@ -79,8 +79,8 @@ const init = async () => {
 }
 
 const buttonLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small
-    ? $t('nft-item-page.edit-button')
+  width.value >= WINDOW_BREAKPOINTS.tablet
+    ? t('nft-item-page.edit-button')
     : '',
 )
 

@@ -1,10 +1,12 @@
 <template>
-  <span :class="classes">
-    <div :class="wrapperClasses">
+  <button :class="classes">
+    <span :class="wrapperClasses">
       <icon class="network-item__icon" :name="getIconByScheme(scheme)" />
-    </div>
-    {{ title }}
-  </span>
+    </span>
+    <p v-if="!isTitleHidden" class="network-item__title">
+      {{ title }}
+    </p>
+  </button>
 </template>
 
 <script setup lang="ts">
@@ -12,12 +14,13 @@ import { Icon } from '@/common'
 import { computed } from 'vue'
 import { NETWORKS, WINDOW_BREAKPOINTS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
-import { useContext } from '@/composables'
+import { useI18n } from 'vue-i18n'
 import { useWindowSize } from '@vueuse/core'
 
-const { $t } = useContext()
+type MODIFICATIONS = 'non-active' | 'dark-mode' | 'default'
 
-type MODIFICATIONS = 'non-active' | 'default'
+const { t } = useI18n()
+const { width } = useWindowSize()
 
 const props = withDefaults(
   defineProps<{
@@ -32,23 +35,21 @@ const props = withDefaults(
   },
 )
 
-const { width } = useWindowSize()
-
-const networkTitle = computed(() =>
+const title = computed(() =>
   props.scheme !== NETWORKS.UNSUPPORTED
     ? props.name
-    : $t('networks.unsupported'),
+    : t('networks.unsupported'),
 )
 
-const title = computed(() =>
-  width.value <= WINDOW_BREAKPOINTS.small && props.modification === 'non-active'
-    ? ''
-    : networkTitle.value,
+const isTitleHidden = computed(
+  () =>
+    width.value <= WINDOW_BREAKPOINTS.small &&
+    props.modification.includes('non-active'),
 )
 
 const classes = computed(() => [
   'network-item',
-  `network-item--${props.modification}`,
+  ...props.modification.split(' ').map(mod => `network-item--${mod}`),
 ])
 
 const wrapperClasses = computed(() => [
@@ -60,6 +61,7 @@ const wrapperClasses = computed(() => [
 <style lang="scss" scoped>
 .network-item {
   --background-hover-color: rgba(var(--drop-down-shadow-rgb), 0.2);
+  --item-color: var(--text-secondary-main);
 
   display: flex;
   align-items: center;
@@ -67,21 +69,27 @@ const wrapperClasses = computed(() => [
   padding: toRem(15);
   width: 100%;
   line-height: toRem(19);
-  color: var(--text-secondary-main);
+  color: var(--item-color);
   user-select: none;
   transition: 0.2s ease-in-out;
   transition-property: background-color;
 
-  &--default {
-    &:hover {
-      cursor: pointer;
-      background-color: var(--background-hover-color);
-    }
+  &:hover {
+    cursor: pointer;
+    background-color: var(--background-hover-color);
+  }
+
+  &--dark-mode {
+    --item-color: var(--text-secondary-invert-main);
   }
 
   &--non-active {
     padding: 0;
     font-weight: 500;
+
+    &:hover {
+      --background-hover-color: transparent;
+    }
   }
 }
 
@@ -121,6 +129,17 @@ const wrapperClasses = computed(() => [
     max-width: toRem(14);
     max-height: toRem(13);
     color: var(--network-green);
+  }
+}
+
+.network-item__title {
+  font-weight: 400;
+  font-size: toRem(16);
+  color: var(--item-color);
+  user-select: none;
+
+  .network-item--non-active & {
+    font-weight: 500;
   }
 }
 </style>

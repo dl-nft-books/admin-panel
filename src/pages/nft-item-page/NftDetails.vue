@@ -42,10 +42,10 @@ import {
   formatMDY,
 } from '@/helpers'
 import { BookRecord } from '@/records'
-import { useContext } from '@/composables'
-import { CURRENCY } from '@/enums'
+import { CURRENCIES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
-type NftDetails = {
+export type NftDetails = {
   label: string
   value: string
   isUrl?: boolean
@@ -53,38 +53,38 @@ type NftDetails = {
 
 const props = defineProps<{ book: BookRecord }>()
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const details: NftDetails[] = [
   {
-    label: $t('nft-details.creation-date-lbl'),
+    label: t('nft-details.creation-date-lbl'),
     value: formatMDY(props.book.createdAt),
   },
   {
-    label: $t('nft-details.price-lbl'),
-    value: formatFiatAssetFromWei(props.book.price, CURRENCY.USD),
+    label: t('nft-details.price-lbl'),
+    value: formatFiatAssetFromWei(props.book.price, CURRENCIES.USD),
   },
   {
-    label: $t('nft-details.voucher-lbl'),
+    label: t('nft-details.voucher-lbl'),
     value:
       props.book.voucherToken !== ethers.constants.AddressZero
         ? props.book.voucherToken
         : '',
   },
   {
-    label: $t('nft-details.voucher-amount-lbl'),
+    label: t('nft-details.voucher-amount-lbl'),
     value:
       props.book.voucherToken !== ethers.constants.AddressZero
         ? formatAssetFromWei(props.book.voucherTokenAmount, 2)
         : '',
   },
   {
-    label: $t('nft-details.document-lbl'),
+    label: t('nft-details.document-lbl'),
     value: props.book.fileUrl,
     isUrl: true,
   },
   {
-    label: $t('nft-details.description-lbl'),
+    label: t('nft-details.description-lbl'),
     value: props.book.description,
   },
 ]

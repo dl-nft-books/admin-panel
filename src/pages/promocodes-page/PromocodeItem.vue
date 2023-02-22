@@ -96,15 +96,21 @@
 <script setup lang="ts">
 import { deletePromocode as _deletePromocode } from '@/api'
 import { Collapse, AppButton, Modal, ConfirmationModal } from '@/common'
-import { Promocode, PromocodeInfo } from '@/types'
+import { Promocode } from '@/types'
 import { PromocodeState } from '@/pages/promocodes-page'
 import { computed, ref } from 'vue'
 import { PROMOCODE_STATUSES } from '@/enums'
-import { useContext } from '@/composables'
 import { PromocodeForm } from '@/forms'
 import { Bus, copyToClipboard, ErrorHandler } from '@/helpers'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+type PromocodeInfo = {
+  label: string
+  value: string | number
+  isCopyable?: boolean
+}
+
+const { t } = useI18n()
 
 const props = defineProps<{
   promocode: Promocode
@@ -112,30 +118,30 @@ const props = defineProps<{
 
 const headerInfo: PromocodeInfo[] = [
   {
-    label: $t('promocodes-page.promocode-lbl'),
+    label: t('promocodes-page.promocode-lbl'),
     value: props.promocode.promocode,
     isCopyable: true,
   },
   {
-    label: $t('promocodes-page.discount-lbl'),
-    value: $t('promocodes-page.discount-value', {
+    label: t('promocodes-page.discount-lbl'),
+    value: t('promocodes-page.discount-value', {
       amount: (props.promocode.discount * 100).toFixed(),
     }),
   },
   {
-    label: $t('promocodes-page.uses-lbl'),
+    label: t('promocodes-page.uses-lbl'),
     value: props.promocode.initial_usages,
   },
   {
-    label: $t('promocodes-page.used-lbl'),
+    label: t('promocodes-page.used-lbl'),
     value: props.promocode.usages,
   },
 ]
 
 const promocodeStatusText = computed(() =>
   props.promocode.state !== PROMOCODE_STATUSES.ACTIVE
-    ? $t('promocodes-page.inactive')
-    : $t('promocodes-page.active'),
+    ? t('promocodes-page.inactive')
+    : t('promocodes-page.active'),
 )
 const promocodeStatusScheme = computed(() =>
   props.promocode.state !== PROMOCODE_STATUSES.ACTIVE
@@ -159,7 +165,7 @@ const deletePromocode = async () => {
     await _deletePromocode(props.promocode.id)
     Bus.emit(Bus.eventList.reloadPromocodesList)
 
-    Bus.success($t('promocodes-page.delete-success'))
+    Bus.success(t('promocodes-page.delete-success'))
   } catch (error) {
     ErrorHandler.process(error)
   }
@@ -168,7 +174,7 @@ const deletePromocode = async () => {
 const copyPromocode = async (promocode: string) => {
   try {
     await copyToClipboard(promocode)
-    Bus.info($t('promocodes-page.copy-success'))
+    Bus.info(t('promocodes-page.copy-success'))
   } catch (error) {
     ErrorHandler.process(error)
   }

@@ -49,12 +49,13 @@
 <script lang="ts" setup>
 import { useDropZone } from '@vueuse/core'
 import { computed, ref } from 'vue'
-import { useFile, useContext } from '@/composables'
+import { useFile } from '@/composables'
 import { Icon, AppButton } from '@/common'
 import { Bus } from '@/helpers'
 import { ErrorHandler } from '@/helpers/error-handler'
 import { formatBytes } from '@/helpers'
 import { Document } from '@/api'
+import { useI18n } from 'vue-i18n'
 
 type FileExtension = 'jpg' | 'png' | 'pdf' | 'jpeg'
 
@@ -82,7 +83,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: Document): void
 }>()
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const dropZoneRef = ref<HTMLDivElement | null>(null)
 
@@ -144,7 +145,7 @@ const onChange = (file: File) => {
       .join(', ')
 
     Bus.error(
-      $t('file-field.incorrect-file-type-err', {
+      t('file-field.incorrect-file-type-err', {
         allowedTypes: acceptedExtensions,
         type: `.${getFileExtension(file)}`,
       }),
@@ -154,7 +155,7 @@ const onChange = (file: File) => {
 
   if (file.size > maxSizeBytes.value) {
     Bus.error(
-      $t('file-field.max-size-exceeded-err', {
+      t('file-field.max-size-exceeded-err', {
         maxSize: props.maxSize,
       }),
     )

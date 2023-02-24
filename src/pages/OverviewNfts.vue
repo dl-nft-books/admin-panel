@@ -231,6 +231,7 @@ const buttonLinkText = computed(() =>
   flex-direction: column;
   margin-top: toRem(20);
   row-gap: toRem(15);
+  overflow: hidden;
 
   @include respond-to(medium) {
     display: grid;

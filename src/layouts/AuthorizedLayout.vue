@@ -19,7 +19,7 @@ import { AppNavbar, AppSidebar } from '@/common'
 <style lang="scss" scoped>
 .authorized-layout {
   display: grid;
-  grid-template-columns: toRem(302) 1fr;
+  grid-template-columns: toRem(302) minmax(0, 1fr);
   padding: toRem(20);
 
   @include respond-to(tablet) {

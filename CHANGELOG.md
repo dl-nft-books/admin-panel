@@ -18,6 +18,9 @@ for further information about branching and tagging conventions.
 - All components refactored to 'template -> script -> style' pattern
 - Refactored composable folder structure
 
+#### Fixed
+- Overflowing horizontal scroll on nft page
+
 #### Removed
 - useContext hook
 

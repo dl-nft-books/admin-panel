@@ -1,11 +1,16 @@
 <template>
   <div class="textarea-field" :class="textareaClasses">
-    <label v-if="label" class="textarea-field__label">
+    <label
+      v-if="label"
+      class="textarea-field__label"
+      :for="`textarea-field--${uid}`"
+    >
       {{ label }}
     </label>
     <div class="textarea-field__textarea-wrp">
       <textarea
         class="textarea-field__textarea"
+        :id="`textarea-field--${uid}`"
         v-bind="$attrs"
         v-on="listeners"
         :value="modelValue"
@@ -31,6 +36,7 @@
 </template>
 
 <script lang="ts" setup>
+import uuid from 'uuidv4'
 import { computed, useAttrs } from 'vue'
 import { FIELD_LENGTH } from '@/enums'
 
@@ -55,6 +61,8 @@ const emit = defineEmits<{
 }>()
 
 const attrs = useAttrs()
+
+const uid = uuid()
 
 const isDisabled = computed(() =>
   ['', 'disabled', true].includes(attrs.disabled as string | boolean),

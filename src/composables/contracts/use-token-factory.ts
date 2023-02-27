@@ -1,54 +1,35 @@
-import { ref, watch, computed } from 'vue'
-import {
-  TokenFactory,
-  TokenFactory__factory,
-  EthProviderRpcError,
-} from '@/types'
+import { ref, computed } from 'vue'
+import { TokenFactory__factory, EthProviderRpcError } from '@/types'
 
-import { handleEthError } from '@/helpers'
+import { handleEthError, sleep } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
 
 export const useTokenFactory = (address?: string) => {
-  const _instance = ref<TokenFactory | undefined>()
-  const _instance_rw = ref<TokenFactory | undefined>()
-
   const web3ProvidersStore = useWeb3ProvidersStore()
   const provider = computed(() => web3ProvidersStore.provider)
 
-  watch(provider, () => {
-    if (address) init(address)
-  })
+  const contractAddress = ref(address || '')
 
-  if (
-    address &&
-    provider.value.currentProvider &&
-    provider.value.currentSigner
-  ) {
-    _instance.value = TokenFactory__factory.connect(
-      address,
-      provider.value.currentProvider,
-    )
-    _instance_rw.value = TokenFactory__factory.connect(
-      address,
-      provider.value.currentSigner,
-    )
-  }
+  // temporary unused
+  // eslint-disable-next-line
+  const contractInstance = computed(
+    () =>
+      (!!provider.value &&
+        !!provider.value.currentSigner &&
+        !!contractAddress.value &&
+        TokenFactory__factory.connect(
+          contractAddress.value,
+          provider.value.currentSigner,
+        )) ||
+      undefined,
+  )
+
+  const contractInterface = TokenFactory__factory.createInterface()
 
   const init = (address: string) => {
-    if (
-      address &&
-      provider.value.currentProvider &&
-      provider.value.currentSigner
-    ) {
-      _instance.value = TokenFactory__factory.connect(
-        address,
-        provider.value.currentProvider,
-      )
-      _instance_rw.value = TokenFactory__factory.connect(
-        address,
-        provider.value.currentSigner,
-      )
-    }
+    if (!address) return
+
+    contractAddress.value = address
   }
 
   const deployTokenContract = async (
@@ -64,7 +45,7 @@ export const useTokenFactory = (address?: string) => {
     v: number,
   ) => {
     try {
-      const contractTransaction = await _instance_rw.value?.deployTokenContract(
+      const data = contractInterface.encodeFunctionData('deployTokenContract', [
         {
           tokenContractId: Number(tokenId),
           tokenName: name,
@@ -77,11 +58,15 @@ export const useTokenFactory = (address?: string) => {
         r,
         s,
         v,
-      )
+      ])
 
-      await contractTransaction?.wait()
+      const receipt = await provider.value.signAndSendTx({
+        to: contractAddress.value,
+        data,
+      })
 
-      return contractTransaction
+      await sleep(1000)
+      return receipt
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }

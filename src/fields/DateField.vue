@@ -1,10 +1,11 @@
 <template>
   <div :class="classes">
-    <label v-if="label" class="date-field__label">
+    <label v-if="label" class="date-field__label" :for="`date-field--${uid}`">
       {{ label }}
     </label>
     <input
       ref="dateInput"
+      :id="`date-field--${uid}`"
       type="date"
       class="date-field__input"
       :placeholder="placeholder"
@@ -33,6 +34,7 @@ import { ICON_NAMES } from '@/enums'
 import { Icon } from '@/common'
 
 import { computed, ref } from 'vue'
+import uuid from 'uuidv4'
 
 const props = withDefaults(
   defineProps<{
@@ -55,6 +57,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
+
+const uid = uuid()
 
 const dateInput = ref<HTMLInputElement | null>(null)
 

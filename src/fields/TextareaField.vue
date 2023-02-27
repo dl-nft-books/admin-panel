@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { uuid } from 'uuidv4'
+import uuid from 'uuidv4'
 import { computed, useAttrs } from 'vue'
 import { FIELD_LENGTH } from '@/enums'
 

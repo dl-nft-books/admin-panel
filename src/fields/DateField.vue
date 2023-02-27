@@ -34,7 +34,7 @@ import { ICON_NAMES } from '@/enums'
 import { Icon } from '@/common'
 
 import { computed, ref } from 'vue'
-import { uuid } from 'uuidv4'
+import uuid from 'uuidv4'
 
 const props = withDefaults(
   defineProps<{

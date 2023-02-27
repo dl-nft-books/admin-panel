@@ -96,7 +96,7 @@ import { Icon } from '@/common'
 import { computed, onMounted, ref, useAttrs, watch } from 'vue'
 import { useRouter } from '@/router'
 import { onClickOutside } from '@vueuse/core'
-import { uuid } from 'uuidv4'
+import uuid from 'uuidv4'
 
 const props = withDefaults(
   defineProps<{

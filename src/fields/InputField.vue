@@ -51,7 +51,7 @@
 
 <script lang="ts" setup>
 import { Icon } from '@/common'
-import { uuid } from 'uuidv4'
+import uuid from 'uuidv4'
 
 import { BN } from '@/utils/math.util'
 import { computed, ref, useAttrs, useSlots } from 'vue'

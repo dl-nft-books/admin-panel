@@ -45,6 +45,14 @@
         :disabled="isFormDisabled"
         @blur="touchField('price')"
       />
+      <amount-field
+        v-model="form.floorPrice"
+        :placeholder="$t('nft-form.input-floor-price-placeholder')"
+        :label="$t('nft-form.input-floor-price-label')"
+        :error-message="getFieldErrorMessage('floorPrice')"
+        :disabled="isFormDisabled"
+        @blur="touchField('floorPrice')"
+      />
       <input-field
         v-model="form.symbol"
         :max-length="FIELD_LENGTH.tokenSymbol"
@@ -208,6 +216,8 @@ const secondSubtitleText = computed(() =>
 )
 
 const nftPrice = new BN(props.book?.price || 0).fromWei().toString()
+const nftFloorPrice = new BN(props.book?.floorPrice || 0).fromWei().toString()
+
 const formatedVoucherTokenAmount = props.book?.voucherTokenAmount
   ? formatAssetFromWei(props.book?.voucherTokenAmount, 0)
   : '1'
@@ -216,7 +226,8 @@ const isContractValuesUpdated = computed(
   () =>
     form.symbol !== props.book?.contractSymbol ||
     form.price !== nftPrice ||
-    form.name !== props.book?.contractName,
+    form.name !== props.book?.contractName ||
+    form.floorPrice !== nftFloorPrice,
 )
 
 const isVoucherParamsUpdated = computed(
@@ -250,6 +261,7 @@ const isSubmitBtnDisabled = computed(
 const form = reactive<{
   name: string
   price: string
+  floorPrice: string
   description: string
   symbol: string
   photo: Document
@@ -260,6 +272,7 @@ const form = reactive<{
 }>({
   name: props.book?.contractName || '',
   price: isUpdateNft.value ? nftPrice : '',
+  floorPrice: isUpdateNft.value ? nftFloorPrice : '',
   description: props.book?.description || '',
   symbol: props.book?.contractSymbol || '',
   photo: props.book?.banner || new Document(),
@@ -286,6 +299,11 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   {
     name: { required, alphaNumWithSpecialChars },
     price: {
+      required,
+      minValue: minValue(MIN_PRICE_VALUE),
+      maxValue: maxValue(MAX_PRICE_VALUE),
+    },
+    floorPrice: {
       required,
       minValue: minValue(MIN_PRICE_VALUE),
       maxValue: maxValue(MAX_PRICE_VALUE),
@@ -334,7 +352,12 @@ const handleSwitchNetworkClick = () => {
 const updateNftBook = async (book: Document, banner: Document) => {
   if (isContractValuesUpdated.value) {
     bookNft.init(props.book?.contractAddress!)
-    await bookNft.updateTokenContractParams(form.price, form.name, form.symbol)
+    await bookNft.updateTokenContractParams(
+      form.price,
+      form.floorPrice,
+      form.name,
+      form.symbol,
+    )
   }
 
   if (isVoucherParamsUpdated.value) {
@@ -359,6 +382,7 @@ const updateNftBook = async (book: Document, banner: Document) => {
 
 const createNftBook = async (book: Document, banner: Document) => {
   const weiPrice = new BN(form.price).toWei().toString()
+  const weiFloorPrice = new BN(form.floorPrice).toWei().toString()
   const weiTokenAmount = new BN(form.voucherTokenAmount).toWei().toString()
 
   const currentNetwork = networkStore.list.find(
@@ -379,6 +403,7 @@ const createNftBook = async (book: Document, banner: Document) => {
     voucherToken: form.isVoucherAllowed ? form.voucherTokenAddress : undefined,
     voucherTokenAmount: form.isVoucherAllowed ? weiTokenAmount : undefined,
     chainID: Number(provider.value.chainId),
+    floorPrice: weiFloorPrice,
   })
 
   await tokenFactory.deployTokenContract(
@@ -390,6 +415,7 @@ const createNftBook = async (book: Document, banner: Document) => {
       ? form.voucherTokenAddress
       : ethers.constants.AddressZero,
     form.isVoucherAllowed ? weiTokenAmount : '0',
+    weiFloorPrice,
     bookSignature.signature.r,
     bookSignature.signature.s,
     bookSignature.signature.v,

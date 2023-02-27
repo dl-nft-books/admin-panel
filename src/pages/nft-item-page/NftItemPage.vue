@@ -153,7 +153,7 @@ init()
   order: -1;
   font-weight: 700;
 
-  @include respond-to(small) {
+  @include respond-to(tablet) {
     width: toRem(54);
     height: toRem(54);
     order: 1;

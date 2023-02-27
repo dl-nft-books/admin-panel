@@ -10,8 +10,6 @@ export const useNftBookToken = (address?: string) => {
 
   const contractAddress = ref(address || '')
 
-  // temporary unused
-  // eslint-disable-next-line
   const contractInstance = computed(
     () =>
       (!!provider.value &&
@@ -34,15 +32,17 @@ export const useNftBookToken = (address?: string) => {
 
   const updateTokenContractParams = async (
     price: string,
+    minNFTFloorPrice: string,
     name: string,
     symbol: string,
   ) => {
     try {
       const convertedPrice = new BN(price).toWei().toString()
+      const convertedFloorPrice = new BN(minNFTFloorPrice).toWei().toString()
 
       const data = contractInterface.encodeFunctionData(
         'updateTokenContractParams',
-        [convertedPrice, name, symbol],
+        [convertedPrice, convertedFloorPrice, name, symbol],
       )
 
       const receipt = await provider.value.signAndSendTx({
@@ -81,9 +81,16 @@ export const useNftBookToken = (address?: string) => {
     }
   }
 
+  const minNFTFloorPrice = () => {
+    if (!contractInstance.value) return
+
+    return contractInstance.value.minNFTFloorPrice()
+  }
+
   return {
     init,
     updateTokenContractParams,
     updateVoucherParams,
+    minNFTFloorPrice,
   }
 }

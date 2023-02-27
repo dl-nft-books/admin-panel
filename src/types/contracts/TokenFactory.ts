@@ -36,6 +36,7 @@ export declare namespace ITokenFactory {
     pricePerOneToken: PromiseOrValue<BigNumberish>;
     voucherTokenContract: PromiseOrValue<string>;
     voucherTokensAmount: PromiseOrValue<BigNumberish>;
+    minNFTFloorPrice: PromiseOrValue<BigNumberish>;
   };
 
   export type DeployTokenContractParamsStructOutput = [
@@ -44,6 +45,7 @@ export declare namespace ITokenFactory {
     string,
     BigNumber,
     string,
+    BigNumber,
     BigNumber
   ] & {
     tokenContractId: BigNumber;
@@ -52,6 +54,7 @@ export declare namespace ITokenFactory {
     pricePerOneToken: BigNumber;
     voucherTokenContract: string;
     voucherTokensAmount: BigNumber;
+    minNFTFloorPrice: BigNumber;
   };
 
   export type BaseTokenContractInfoStruct = {
@@ -79,7 +82,7 @@ export interface TokenFactoryInterface extends utils.Interface {
   functions: {
     "__TokenFactory_init(address[],string,uint8)": FunctionFragment;
     "baseTokenContractsURI()": FunctionFragment;
-    "deployTokenContract((uint256,string,string,uint256,address,uint256),bytes32,bytes32,uint8)": FunctionFragment;
+    "deployTokenContract((uint256,string,string,uint256,address,uint256,uint256),bytes32,bytes32,uint8)": FunctionFragment;
     "getAdmins()": FunctionFragment;
     "getBaseTokenContractsInfo(address[])": FunctionFragment;
     "getTokenContractsCount()": FunctionFragment;

@@ -65,6 +65,10 @@ const details: NftDetails[] = [
     value: formatFiatAssetFromWei(props.book.price, CURRENCIES.USD),
   },
   {
+    label: t('nft-details.floor-price-lbl'),
+    value: formatFiatAssetFromWei(props.book.floorPrice, CURRENCIES.USD),
+  },
+  {
     label: t('nft-details.voucher-lbl'),
     value:
       props.book.voucherToken !== ethers.constants.AddressZero

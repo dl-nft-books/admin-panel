@@ -44,6 +44,7 @@ export function createBook(opts: {
   banner: Document
   book: Document
   chainID: number
+  floorPrice: string
 }) {
   return api.post<CreateBookResponse>('/integrations/books', {
     data: {
@@ -54,6 +55,7 @@ export function createBook(opts: {
         token_name: opts.tokenName,
         token_symbol: opts.tokenSymbol,
         price: opts.price,
+        floor_price: opts.floorPrice,
         voucher_token: opts.voucherToken,
         voucher_token_amount: opts.voucherTokenAmount,
         banner: {

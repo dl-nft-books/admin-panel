@@ -1,54 +1,35 @@
-import { ref, watch, computed } from 'vue'
-import {
-  NftBookToken,
-  NftBookToken__factory,
-  EthProviderRpcError,
-} from '@/types'
+import { ref, computed } from 'vue'
+import { NftBookToken__factory, EthProviderRpcError } from '@/types'
 import { BN } from '@/utils/math.util'
-import { handleEthError } from '@/helpers'
+import { handleEthError, sleep } from '@/helpers'
 import { useWeb3ProvidersStore } from '@/store'
 
 export const useNftBookToken = (address?: string) => {
-  const _instance = ref<NftBookToken | undefined>()
-  const _instance_rw = ref<NftBookToken | undefined>()
-
   const web3ProvidersStore = useWeb3ProvidersStore()
   const provider = computed(() => web3ProvidersStore.provider)
 
-  watch(provider, () => {
-    if (address) init(address)
-  })
+  const contractAddress = ref(address || '')
 
-  if (
-    address &&
-    provider.value.currentProvider &&
-    provider.value.currentSigner
-  ) {
-    _instance.value = NftBookToken__factory.connect(
-      address,
-      provider.value.currentProvider,
-    )
-    _instance_rw.value = NftBookToken__factory.connect(
-      address,
-      provider.value.currentSigner,
-    )
-  }
+  // temporary unused
+  // eslint-disable-next-line
+  const contractInstance = computed(
+    () =>
+      (!!provider.value &&
+        !!provider.value.currentSigner &&
+        !!contractAddress.value &&
+        NftBookToken__factory.connect(
+          contractAddress.value,
+          provider.value.currentSigner,
+        )) ||
+      undefined,
+  )
+
+  const contractInterface = NftBookToken__factory.createInterface()
 
   const init = (address: string) => {
-    if (
-      address &&
-      provider.value.currentProvider &&
-      provider.value.currentSigner
-    ) {
-      _instance.value = NftBookToken__factory.connect(
-        address,
-        provider.value.currentProvider,
-      )
-      _instance_rw.value = NftBookToken__factory.connect(
-        address,
-        provider.value.currentSigner,
-      )
-    }
+    if (!address) return
+
+    contractAddress.value = address
   }
 
   const updateTokenContractParams = async (
@@ -59,13 +40,18 @@ export const useNftBookToken = (address?: string) => {
     try {
       const convertedPrice = new BN(price).toWei().toString()
 
-      const updateTx = await _instance_rw.value?.updateTokenContractParams(
-        convertedPrice,
-        name,
-        symbol,
+      const data = contractInterface.encodeFunctionData(
+        'updateTokenContractParams',
+        [convertedPrice, name, symbol],
       )
 
-      await updateTx?.wait()
+      const receipt = await provider.value.signAndSendTx({
+        to: contractAddress.value,
+        data,
+      })
+
+      await sleep(1000)
+      return receipt
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
@@ -78,12 +64,18 @@ export const useNftBookToken = (address?: string) => {
     try {
       const convertedAmount = new BN(voucherTokenAmount).toWei().toString()
 
-      const updateTx = await _instance_rw.value?.updateVoucherParams(
+      const data = contractInterface.encodeFunctionData('updateVoucherParams', [
         voucherTokenAddress,
         convertedAmount,
-      )
+      ])
 
-      await updateTx?.wait()
+      const receipt = await provider.value.signAndSendTx({
+        to: contractAddress.value,
+        data,
+      })
+
+      await sleep(1000)
+      return receipt
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }

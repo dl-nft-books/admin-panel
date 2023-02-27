@@ -9,9 +9,9 @@
       />
       <template v-else>
         <section class="promocodes-page__header">
-          <h1 class="promocodes-page__title">
+          <h3 class="promocodes-page__title">
             {{ $t('promocodes-page.title') }}
-          </h1>
+          </h3>
           <div class="promocodes-page__filter">
             <select-field v-model="filter" :value-options="filterOptions" />
           </div>
@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { AppButton, Loader, ErrorMessage, Modal, NoDataMessage } from '@/common'
-import { usePaginate, useContext } from '@/composables'
+import { usePaginate } from '@/composables'
 import { SelectField } from '@/fields'
 import { getPromocodes } from '@/api'
 import { PROMOCODE_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
@@ -69,6 +69,7 @@ import { Bus, ErrorHandler } from '@/helpers'
 import { PromocodeItem } from '@/pages/promocodes-page'
 import { PromocodeForm } from '@/forms'
 import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
 enum PROMOCODES_FILTERS {
   ALL = 'all',
@@ -77,26 +78,26 @@ enum PROMOCODES_FILTERS {
 }
 
 const { width } = useWindowSize()
-const { $t } = useContext()
+const { t } = useI18n()
 
 const buttonText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small
-    ? $t('promocodes-page.create-lbl')
+  width.value >= WINDOW_BREAKPOINTS.tablet
+    ? t('promocodes-page.create-lbl')
     : '',
 )
 
 const filter = ref<PROMOCODES_FILTERS>(PROMOCODES_FILTERS.ALL)
 const filterOptions = computed(() => [
   {
-    label: $t('promocodes-page.filter-all'),
+    label: t('promocodes-page.filter-all'),
     value: PROMOCODES_FILTERS.ALL,
   },
   {
-    label: $t('promocodes-page.filter-active'),
+    label: t('promocodes-page.filter-active'),
     value: PROMOCODES_FILTERS.ACTIVE,
   },
   {
-    label: $t('promocodes-page.filter-inactive'),
+    label: t('promocodes-page.filter-inactive'),
     value: PROMOCODES_FILTERS.INACTIVE,
   },
 ])
@@ -163,8 +164,6 @@ Bus.on(Bus.eventList.reloadPromocodesList, loadFirstPage)
 }
 
 .promocodes-page__title {
-  font-size: toRem(40);
-  line-height: toRem(49);
   user-select: none;
 }
 
@@ -177,7 +176,7 @@ Bus.on(Bus.eventList.reloadPromocodesList, loadFirstPage)
   order: -1;
   text-transform: uppercase;
 
-  @include respond-to(small) {
+  @include respond-to(tablet) {
     width: toRem(54);
     height: toRem(54);
     order: 1;

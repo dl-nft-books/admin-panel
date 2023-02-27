@@ -1,9 +1,9 @@
 <template>
   <form class="promocode-form" @submit.prevent="submit">
     <div class="promocode-form__header">
-      <h1>
+      <h4>
         {{ formTitle }}
-      </h1>
+      </h4>
       <p v-if="isUpdate" class="promocode-form__subtitle">
         {{ $t('promocode-form.update-subtitle') }}
       </p>
@@ -58,15 +58,16 @@ import { reactive, computed } from 'vue'
 import { updatePromocode, createPromocode } from '@/api'
 import { AppButton } from '@/common'
 import { InputField, DateField } from '@/fields'
-import { useForm, useFormValidation, useContext } from '@/composables'
+import { useForm, useFormValidation } from '@/composables'
 import { required, minValue, maxValue, requiredIf } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { Promocode } from '@/types'
 import { DateUtil } from '@/utils/date.util'
 
 import { MAX_DISCOUNT, MAX_PROMOCODE_USES_VALUE } from '@/consts'
+import { useI18n } from 'vue-i18n'
 
-const { $t } = useContext()
+const { t } = useI18n()
 
 const emit = defineEmits<{
   (event: 'close'): void
@@ -79,13 +80,13 @@ const props = defineProps<{
 const isUpdate = computed(() => Boolean(props.promocode))
 const formTitle = computed(() =>
   isUpdate.value
-    ? $t('promocode-form.update-title')
-    : $t('promocode-form.create-title'),
+    ? t('promocode-form.update-title')
+    : t('promocode-form.create-title'),
 )
 const submitText = computed(() =>
   isUpdate.value
-    ? $t('promocode-form.submit-update-btn-lbl')
-    : $t('promocode-form.submit-create-btn-lbl'),
+    ? t('promocode-form.submit-update-btn-lbl')
+    : t('promocode-form.submit-create-btn-lbl'),
 )
 
 const form = reactive({
@@ -137,7 +138,7 @@ const submit = async () => {
         expiration_date: DateUtil.toISO(form.dueDate),
       })
 
-      Bus.success($t('promocode-form.success-update-msg'))
+      Bus.success(t('promocode-form.success-update-msg'))
     } else {
       await createPromocode({
         discount: Number(form.discount) / 100,
@@ -145,7 +146,7 @@ const submit = async () => {
         initial_usages: Number(form.numberOfUses),
       })
 
-      Bus.success($t('promocode-form.success-create-msg'))
+      Bus.success(t('promocode-form.success-create-msg'))
     }
 
     emit('close')
@@ -176,8 +177,8 @@ const submit = async () => {
 }
 
 .promocode-form__subtitle {
-  font-size: toRem(18);
-  line-height: 160%;
+  font-size: toRem(16);
+  line-height: 120%;
   opacity: 0.7;
 }
 

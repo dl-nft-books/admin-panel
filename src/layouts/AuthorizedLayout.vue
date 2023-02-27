@@ -12,15 +12,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { AppNavbar, AppSidebar } from '@/common'
-
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'authorized-layout',
-  components: { AppSidebar, AppNavbar },
-})
 </script>
 
 <style lang="scss" scoped>

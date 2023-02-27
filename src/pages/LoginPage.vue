@@ -1,8 +1,3 @@
-<script lang="ts" setup>
-import LoginForm from '@/forms/LoginForm.vue'
-import { AppLogo } from '@/common'
-</script>
-
 <template>
   <div class="login-page">
     <div class="login-page__header">
@@ -13,9 +8,9 @@ import { AppLogo } from '@/common'
         <h1 class="login-page__title">
           {{ $t('login-page.title') }}
         </h1>
-        <h2 class="login-page__subtitle">
+        <p class="login-page__subtitle">
           {{ $t('login-page.subtitle') }}
-        </h2>
+        </p>
       </div>
       <div class="login-page__form-wrp">
         <login-form class="login-page__form" />
@@ -24,23 +19,29 @@ import { AppLogo } from '@/common'
   </div>
 </template>
 
+<script lang="ts" setup>
+import { LoginForm } from '@/forms'
+import { AppLogo } from '@/common'
+</script>
+
 <style lang="scss" scoped>
 .login-page {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
   background: url('/images/login-page-bg.png') no-repeat bottom / cover;
 }
 
 .login-page__header {
-  position: absolute;
+  position: fixed;
+  top: 0;
   padding: toRem(40) toRem(30);
 }
 
 .login-page__content {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
   justify-content: center;
 }
 
@@ -49,10 +50,7 @@ import { AppLogo } from '@/common'
 }
 
 .login-page__title {
-  font-weight: 1000;
-  font-size: toRem(58);
   text-align: center;
-  text-transform: uppercase;
   color: var(--text-tertiary-main);
 
   @include respond-to(medium) {
@@ -61,15 +59,16 @@ import { AppLogo } from '@/common'
 }
 
 .login-page__subtitle {
-  white-space: pre-line;
-  font-weight: 400;
   font-size: toRem(30);
   line-height: toRem(40);
+  color: var(--text-secondary-dark);
+  white-space: pre-line;
   text-align: center;
   margin: toRem(50) 0;
 
-  @include respond-to(medium) {
-    font-size: toRem(24);
+  @include respond-to(tablet) {
+    font-size: toRem(20);
+    line-height: 1.3;
   }
 }
 </style>

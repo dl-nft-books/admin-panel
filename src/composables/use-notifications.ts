@@ -1,15 +1,15 @@
 import { Notification } from '@/common'
 
 import { TYPE, useToast } from 'vue-toastification'
-import { useContext } from '@/composables'
 import { NotificationObjectPayload } from '@/types'
 import { Bus } from '@/helpers'
 import { isObject } from 'lodash-es'
 import { ICON_NAMES } from '@/enums'
+import { useI18n } from 'vue-i18n'
 
 export const useNotifications = (): void => {
   const toast = useToast()
-  const { $t } = useContext()
+  const { t } = useI18n()
 
   Bus.on(Bus.eventList.success, payload => showToast(TYPE.SUCCESS, payload))
   Bus.on(Bus.eventList.warning, payload => showToast(TYPE.WARNING, payload))
@@ -26,18 +26,18 @@ export const useNotifications = (): void => {
     let iconName = ''
 
     const defaultTitles = {
-      [TYPE.SUCCESS]: $t('notification.default-title-success'),
-      [TYPE.ERROR]: $t('notification.default-title-error'),
-      [TYPE.WARNING]: $t('notification.default-title-warning'),
-      [TYPE.INFO]: $t('notification.default-title-info'),
-      [TYPE.DEFAULT]: $t('notification.default-title-default'),
+      [TYPE.SUCCESS]: t('notification.default-title-success'),
+      [TYPE.ERROR]: t('notification.default-title-error'),
+      [TYPE.WARNING]: t('notification.default-title-warning'),
+      [TYPE.INFO]: t('notification.default-title-info'),
+      [TYPE.DEFAULT]: t('notification.default-title-default'),
     }
     const defaultMessages = {
-      [TYPE.DEFAULT]: $t('notification.default-message-default'),
-      [TYPE.INFO]: $t('notification.default-message-info'),
-      [TYPE.SUCCESS]: $t('notification.default-message-success'),
-      [TYPE.ERROR]: $t('notification.default-message-error'),
-      [TYPE.WARNING]: $t('notification.default-message-warning'),
+      [TYPE.DEFAULT]: t('notification.default-message-default'),
+      [TYPE.INFO]: t('notification.default-message-info'),
+      [TYPE.SUCCESS]: t('notification.default-message-success'),
+      [TYPE.ERROR]: t('notification.default-message-error'),
+      [TYPE.WARNING]: t('notification.default-message-warning'),
     }
     const defaultIconNames = {
       [TYPE.DEFAULT]: ICON_NAMES.informationCircle,

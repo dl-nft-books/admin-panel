@@ -1,3 +1,66 @@
+<template>
+  <div class="overview-nfts">
+    <div class="overview-nfts__header">
+      <h3>
+        {{ $t('overview-nfts.title') }}
+      </h3>
+      <section class="overview-nfts__filter-wrapper">
+        <select-field
+          v-model="currentChainId"
+          class="overview-nfts__filter"
+          :value-options="filterOptions"
+        />
+        <div class="overview-nfts__search-wrapper">
+          <input-field
+            v-model="searchModel"
+            :placeholder="$t('overview-nfts.search-placeholder')"
+            iconned
+          >
+            <template #nodeLeft>
+              <icon class="overview-nfts__search-icon" :name="$icons.search" />
+            </template>
+          </input-field>
+        </div>
+      </section>
+    </div>
+
+    <error-message
+      v-if="isLoadFailed"
+      :message="$t('overview-nfts.error-message')"
+      :title="$t('overview-nfts.error-title')"
+    />
+
+    <template v-else-if="booksList.length || isLoading">
+      <div v-if="booksList.length" class="overview-nfts__content">
+        <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
+      </div>
+
+      <loader v-if="isLoading" />
+
+      <app-button
+        v-if="isLoadMoreBtnShown"
+        class="overview-nfts__load-more-btn"
+        size="small"
+        scheme="flat"
+        :text="$t('overview-nfts.load-more-btn')"
+        @click="loadNextPage"
+      />
+    </template>
+
+    <no-data-message v-else :message="$t('overview-nfts.no-data-message')" />
+
+    <mounted-teleport to="#app-navbar__right-buttons">
+      <app-button
+        class="overview-nfts__link-button"
+        size="small"
+        :icon-left="$icons.plus"
+        :text="buttonLinkText"
+        :route="{ name: $routes.nftsCreate }"
+      />
+    </mounted-teleport>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import {
@@ -21,10 +84,11 @@ import {
 import { useWindowSize } from '@vueuse/core'
 import { InputField, SelectField } from '@/fields'
 import { getBooks } from '@/api'
-import { usePaginate, useContext } from '@/composables'
+import { usePaginate } from '@/composables'
 import { Book } from '@/types'
 import { debounce } from 'lodash'
 import { config } from '@/config'
+import { useI18n } from 'vue-i18n'
 
 const searchByString = ref('')
 const searchModel = ref('')
@@ -32,7 +96,7 @@ const booksList = ref<BookRecord[]>([])
 const isLoadFailed = ref(false)
 
 const { width } = useWindowSize()
-const { $t } = useContext()
+const { t } = useI18n()
 
 watch(
   searchModel,
@@ -45,38 +109,38 @@ const currentChainId = ref('0')
 
 const prodOptions = [
   {
-    label: $t('overview-nfts.all-networks-filter'),
+    label: t('overview-nfts.all-networks-filter'),
     value: '0',
   },
   {
-    label: $t('overview-nfts.ethereum-filter'),
+    label: t('overview-nfts.ethereum-filter'),
     value: ETHEREUM_CHAINS.ethereum,
   },
   {
-    label: $t('overview-nfts.polygon-filter'),
+    label: t('overview-nfts.polygon-filter'),
     value: POLYGON_CHAINS.mainnet,
   },
   {
-    label: $t('overview-nfts.q-filter'),
+    label: t('overview-nfts.q-filter'),
     value: Q_CHAINS.mainet,
   },
 ]
 
 const devOptions = [
   {
-    label: $t('overview-nfts.all-networks-filter'),
+    label: t('overview-nfts.all-networks-filter'),
     value: '0',
   },
   {
-    label: $t('overview-nfts.ethereum-filter'),
+    label: t('overview-nfts.ethereum-filter'),
     value: ETHEREUM_CHAINS.goerli,
   },
   {
-    label: $t('overview-nfts.polygon-filter'),
+    label: t('overview-nfts.polygon-filter'),
     value: POLYGON_CHAINS.mumbai,
   },
   {
-    label: $t('overview-nfts.q-filter'),
+    label: t('overview-nfts.q-filter'),
     value: Q_CHAINS.testnet,
   },
 ]
@@ -116,78 +180,11 @@ function onError(e: Error) {
 }
 
 const buttonLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.small
-    ? $t('overview-nfts.create-button')
+  width.value >= WINDOW_BREAKPOINTS.tablet
+    ? t('overview-nfts.create-button')
     : '',
 )
 </script>
-
-<template>
-  <div class="overview-nfts">
-    <div class="overview-nfts__header">
-      <h2 class="overview-nfts__title">
-        {{ $t('overview-nfts.title') }}
-      </h2>
-      <section class="overview-nfts__filter-wrapper">
-        <select-field
-          v-model="currentChainId"
-          class="overview-nfts__filter"
-          :value-options="filterOptions"
-        />
-        <div class="overview-nfts__search-wrapper">
-          <input-field
-            v-model="searchModel"
-            :placeholder="$t('overview-nfts.search-placeholder')"
-            iconned
-          >
-            <template #nodeLeft>
-              <icon class="overview-nfts__search-icon" :name="$icons.search" />
-            </template>
-          </input-field>
-        </div>
-      </section>
-    </div>
-
-    <template v-if="isLoadFailed">
-      <error-message
-        :message="$t('overview-nfts.error-message')"
-        :title="$t('overview-nfts.error-title')"
-      />
-    </template>
-    <template v-else-if="booksList.length || isLoading">
-      <template v-if="booksList.length">
-        <div class="overview-nfts__content">
-          <nft-card v-for="(nft, idx) in booksList" :key="idx" :nft="nft" />
-        </div>
-      </template>
-      <template v-if="isLoading">
-        <loader />
-      </template>
-
-      <app-button
-        v-if="isLoadMoreBtnShown"
-        class="overview-nfts__load-more-btn"
-        size="small"
-        scheme="flat"
-        :text="$t('overview-nfts.load-more-btn')"
-        @click="loadNextPage"
-      />
-    </template>
-    <template v-else>
-      <no-data-message :message="$t('overview-nfts.no-data-message')" />
-    </template>
-
-    <mounted-teleport to="#app-navbar__right-buttons">
-      <app-button
-        class="overview-nfts__link-button"
-        size="small"
-        :icon-left="$icons.plus"
-        :text="buttonLinkText"
-        :route="{ name: $routes.nftsCreate }"
-      />
-    </mounted-teleport>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .overview-nfts__header {
@@ -213,15 +210,6 @@ const buttonLinkText = computed(() =>
   max-width: toRem(350);
 }
 
-.overview-nfts__title {
-  font-weight: 600;
-  font-size: toRem(40);
-
-  @include respond-to(small) {
-    font-size: toRem(30);
-  }
-}
-
 .overview-nfts__search-wrapper {
   position: relative;
   width: toRem(180);
@@ -239,9 +227,9 @@ const buttonLinkText = computed(() =>
 }
 
 .overview-nfts__content {
-  margin-top: toRem(20);
   display: flex;
   flex-direction: column;
+  margin-top: toRem(20);
   row-gap: toRem(15);
 
   @include respond-to(medium) {
@@ -255,8 +243,9 @@ const buttonLinkText = computed(() =>
 .overview-nfts__link-button {
   width: toRem(180);
   order: -1;
+  font-weight: 700;
 
-  @include respond-to(small) {
+  @include respond-to(tablet) {
     width: toRem(54);
     height: toRem(54);
     order: 1;

@@ -1,35 +1,30 @@
 <template>
   <div class="loader">
-    <template v-if="scheme === SCHEMES.spinner">
-      <spinner />
-    </template>
+    <component :is="loader" />
   </div>
 </template>
 
-<script lang="ts">
-/* create skeletons */
-import Spinner from '@/common/loader/Spinner.vue'
+<script setup lang="ts">
+import { computed } from 'vue'
+import { Spinner } from '@/common/loader'
 
-import { defineComponent } from 'vue'
+type SCHEME = 'spinner' | 'default'
 
-const SCHEMES = {
-  spinner: 'spinner',
-}
-
-export default defineComponent({
-  name: 'loader',
-  components: { Spinner },
-  props: {
-    scheme: {
-      type: String,
-      default: SCHEMES.spinner,
-    },
+const props = withDefaults(
+  defineProps<{
+    scheme?: SCHEME
+  }>(),
+  {
+    scheme: 'spinner',
   },
-  setup() {
-    return {
-      SCHEMES,
-    }
-  },
+)
+
+const loader = computed(() => {
+  switch (props.scheme) {
+    case 'spinner':
+    default:
+      return Spinner
+  }
 })
 </script>
 

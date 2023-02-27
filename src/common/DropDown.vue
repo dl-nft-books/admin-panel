@@ -25,11 +25,9 @@ import { ref, onMounted } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    top?: number
     right?: number
   }>(),
   {
-    top: 60,
     right: -10,
   },
 )
@@ -53,7 +51,6 @@ const exposedMenuObject = {
 }
 
 const cssVars = computed(() => ({
-  '--dropdown-top': `${props.top}px`,
   '--dropdown-right': `${props.right}px`,
 }))
 
@@ -87,8 +84,8 @@ onMounted(() => {
 
 .drop-down__body {
   position: absolute;
-  z-index: var(--drop-down-index);
-  top: var(--dropdown-top);
+  z-index: var(--z-index-layer-1);
+  top: toRem(60);
   right: var(--dropdown-right);
   border-radius: toRem(8);
   width: fit-content;

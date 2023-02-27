@@ -1,8 +1,8 @@
 <template>
   <form class="nft-form" @submit.prevent="submit">
-    <h3 class="nft-form__subtitle">
+    <h4 class="nft-form__subtitle">
       {{ $t('nft-form.uploading-subtitle') }}
-    </h3>
+    </h4>
     <div class="nft-form__uploadings">
       <file-field
         class="nft-form__upload-field"
@@ -24,9 +24,9 @@
         :max-size="MAX_BOOK_SIZE"
       />
     </div>
-    <h3 class="nft-form__subtitle">
+    <h4 class="nft-form__subtitle">
       {{ secondSubtitleText }}
-    </h3>
+    </h4>
     <div class="nft-form__details">
       <input-field
         v-model="form.name"
@@ -107,28 +107,23 @@
           :disabled="isFormDisabled"
         />
 
-        <template v-if="isValidChain">
-          <app-button
-            type="submit"
-            size="small"
-            class="nft-form__button"
-            :text="submitButtonText"
-            :disabled="isSubmitBtnDisabled"
-          />
-        </template>
-        <template v-else>
-          <app-button
-            type="button"
-            class="nft-form__button"
-            size="small"
-            :text="$t('nft-form.switch-chain-button')"
-            @click="
-              switchNetwork(
-                isUpdateNft ? book?.chainID : networkStore.list[0].chain_id,
-              )
-            "
-          />
-        </template>
+        <app-button
+          v-if="isValidChain"
+          type="submit"
+          size="small"
+          class="nft-form__button"
+          :text="submitButtonText"
+          :disabled="isSubmitBtnDisabled"
+        />
+
+        <app-button
+          v-else
+          type="button"
+          class="nft-form__button"
+          size="small"
+          :text="$t('nft-form.switch-chain-button')"
+          @click="handleSwitchNetworkClick"
+        />
       </div>
     </div>
   </form>
@@ -151,10 +146,8 @@ import {
   useForm,
   useFormValidation,
   useNftBookToken,
-  useContext,
 } from '@/composables'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { storeToRefs } from 'pinia'
 import { Document, createBook, updateBook } from '@/api'
 import {
   required,
@@ -175,18 +168,20 @@ import {
   MAX_PRICE_VALUE,
   MAX_BOOK_SIZE,
 } from '@/consts'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   book?: BookRecord
 }>()
 
-const { $t } = useContext()
+const { t } = useI18n()
 const router = useRouter()
-const { provider } = storeToRefs(useWeb3ProvidersStore())
+const web3ProvidersStore = useWeb3ProvidersStore()
+const provider = computed(() => web3ProvidersStore.provider)
 
 const networkStore = useNetworksStore()
 
-const bookNft = useNftBookToken(provider.value)
+const bookNft = useNftBookToken()
 
 /* 
   if we CREATING nft - any chain from network list is valid for us
@@ -203,13 +198,13 @@ const isValidChain = computed(() =>
 const isUpdateNft = computed(() => Boolean(props.book))
 
 const submitButtonText = computed(() =>
-  isUpdateNft.value ? $t('nft-form.edit-button') : $t('nft-form.create-button'),
+  isUpdateNft.value ? t('nft-form.edit-button') : t('nft-form.create-button'),
 )
 
 const secondSubtitleText = computed(() =>
   isUpdateNft.value
-    ? $t('nft-form.update-details-subtitle')
-    : $t('nft-form.details-subtitle'),
+    ? t('nft-form.update-details-subtitle')
+    : t('nft-form.details-subtitle'),
 )
 
 const nftPrice = new BN(props.book?.price || 0).fromWei().toString()
@@ -328,6 +323,14 @@ const submit = async () => {
   enableForm()
 }
 
+const handleSwitchNetworkClick = () => {
+  if (!props.book?.chainID) return
+
+  switchNetwork(
+    isUpdateNft.value ? props.book.chainID : networkStore.list[0].chain_id,
+  )
+}
+
 const updateNftBook = async (book: Document, banner: Document) => {
   if (isContractValuesUpdated.value) {
     bookNft.init(props.book?.contractAddress!)
@@ -351,7 +354,7 @@ const updateNftBook = async (book: Document, banner: Document) => {
       ...(isTitleUpdated.value ? { title: form.name } : {}),
     })
   }
-  Bus.success($t('nft-form.edit-success-msg'))
+  Bus.success(t('nft-form.edit-success-msg'))
 }
 
 const createNftBook = async (book: Document, banner: Document) => {
@@ -364,10 +367,7 @@ const createNftBook = async (book: Document, banner: Document) => {
 
   if (!currentNetwork) return
 
-  const tokenFactory = useTokenFactory(
-    provider.value,
-    currentNetwork.factory_address,
-  )
+  const tokenFactory = useTokenFactory(currentNetwork.factory_address)
 
   const { data: bookSignature } = await createBook({
     tokenName: form.name,
@@ -395,7 +395,7 @@ const createNftBook = async (book: Document, banner: Document) => {
     bookSignature.signature.v,
   )
 
-  Bus.success($t('nft-form.create-success-msg'))
+  Bus.success(t('nft-form.create-success-msg'))
 }
 </script>
 
@@ -407,13 +407,7 @@ const createNftBook = async (book: Document, banner: Document) => {
 }
 
 .nft-form__subtitle {
-  font-size: toRem(24);
-  font-weight: 600;
   margin-bottom: toRem(20);
-
-  @include respond-to(small) {
-    font-size: toRem(20);
-  }
 }
 
 .nft-form__uploadings {

@@ -6,9 +6,9 @@
         @submit.prevent="onConfirm(modal.close)"
       >
         <div class="confirmation-modal__header">
-          <h1 class="confirmation-modal__title">
+          <h4 class="confirmation-modal__title">
             {{ $t('confirm-modal.title', { entity: entity.toLowerCase() }) }}
-          </h1>
+          </h4>
           <p class="confirmation-modal__subtitle">
             {{ $t('confirm-modal.subtitle') }}
           </p>

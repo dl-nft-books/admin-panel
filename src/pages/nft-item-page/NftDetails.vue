@@ -1,76 +1,96 @@
-<script lang="ts" setup>
-import { Icon } from '@/common'
-import { formatAssetFromWei, formatFiatAssetFromWei } from '@/helpers'
-import { formatMDY } from '@/helpers'
-import { BookRecord } from '@/records'
-import { ethers } from 'ethers'
-
-defineProps<{ book: BookRecord }>()
-</script>
-
 <template>
   <div class="nft-details">
-    <div class="nft-details__row">
+    <div
+      v-for="(item, index) in nftDetails"
+      :key="index"
+      class="nft-details__row"
+    >
       <p class="nft-details__row-label">
-        {{ $t('nft-details.creation-date-lbl') }}
+        {{ item.label }}
       </p>
-      <p class="nft-details__row-value">
-        {{ formatMDY(book.createdAt) }}
-      </p>
-    </div>
-    <div class="nft-details__row">
-      <p class="nft-details__row-label">
-        {{ $t('nft-details.price-lbl') }}
-      </p>
-      <p class="nft-details__row-value">
-        <!-- FIXME: fix `assetCode` after bekend -->
-        {{ formatFiatAssetFromWei(book.price, 'USD') }}
-      </p>
-    </div>
-    <template v-if="book.voucherToken !== ethers.constants.AddressZero">
-      <div class="nft-details__row">
-        <p class="nft-details__row-label">
-          {{ $t('nft-details.voucher-lbl') }}
-        </p>
-        <p class="nft-details__row-value">
-          {{ book.voucherToken }}
-        </p>
-      </div>
-      <div class="nft-details__row">
-        <p class="nft-details__row-label">
-          {{ $t('nft-details.voucher-amount-lbl') }}
-        </p>
-        <p class="nft-details__row-value">
-          {{ formatAssetFromWei(book.voucherTokenAmount, 2) }}
-        </p>
-      </div>
-    </template>
-    <div class="nft-details__row">
-      <p class="nft-details__row-label">
-        {{ $t('nft-details.document-lbl') }}
+      <p v-if="!item.isUrl" class="nft-details__row-value">
+        {{ item.value }}
       </p>
       <a
+        v-else
         target="_blank"
         rel="noopener"
-        :href="book.fileUrl"
+        :href="item.value"
         class="nft-details__row-value nft-details__row-value--document"
       >
-        <span class="nft-details__row-value--document-text">
-          {{ book.fileName }}
+        <span
+          :class="[
+            'nft-details__row-value',
+            'nft-details__row-value--shortened',
+          ]"
+        >
+          {{ item.value }}
         </span>
         <icon class="nft-details__row-icon" :name="$icons.download" />
       </a>
     </div>
-    <div class="nft-details__row">
-      <p class="nft-details__row-label">
-        {{ $t('nft-details.description-lbl') }}
-      </p>
-      <p class="nft-details__row-value">
-        {{ book.description }}
-      </p>
-    </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { ethers } from 'ethers'
+import { Icon } from '@/common'
+import {
+  formatAssetFromWei,
+  formatFiatAssetFromWei,
+  formatMDY,
+} from '@/helpers'
+import { BookRecord } from '@/records'
+import { CURRENCIES } from '@/enums'
+import { useI18n } from 'vue-i18n'
+
+export type NftDetails = {
+  label: string
+  value: string
+  isUrl?: boolean
+}
+
+const props = defineProps<{ book: BookRecord }>()
+
+const { t } = useI18n()
+
+const details: NftDetails[] = [
+  {
+    label: t('nft-details.creation-date-lbl'),
+    value: formatMDY(props.book.createdAt),
+  },
+  {
+    label: t('nft-details.price-lbl'),
+    value: formatFiatAssetFromWei(props.book.price, CURRENCIES.USD),
+  },
+  {
+    label: t('nft-details.voucher-lbl'),
+    value:
+      props.book.voucherToken !== ethers.constants.AddressZero
+        ? props.book.voucherToken
+        : '',
+  },
+  {
+    label: t('nft-details.voucher-amount-lbl'),
+    value:
+      props.book.voucherToken !== ethers.constants.AddressZero
+        ? formatAssetFromWei(props.book.voucherTokenAmount, 2)
+        : '',
+  },
+  {
+    label: t('nft-details.document-lbl'),
+    value: props.book.fileUrl,
+    isUrl: true,
+  },
+  {
+    label: t('nft-details.description-lbl'),
+    value: props.book.description,
+  },
+]
+
+const nftDetails = computed(() => details.filter(item => Boolean(item.value)))
+</script>
 
 <style lang="scss" scoped>
 $icon-size: toRem(20);
@@ -78,7 +98,7 @@ $icon-size: toRem(20);
 .nft-details {
   display: flex;
   flex-direction: column;
-  gap: toRem(16);
+  gap: toRem(10);
 }
 
 .nft-details__row {
@@ -97,7 +117,7 @@ $icon-size: toRem(20);
 
 .nft-details__row-label {
   font-size: toRem(18);
-  line-height: 1.2;
+  line-height: 160%;
   color: var(--text-secondary-main);
 
   @include respond-to(xmedium) {
@@ -106,11 +126,24 @@ $icon-size: toRem(20);
 }
 
 .nft-details__row-value {
-  font-weight: 400;
   font-size: toRem(20);
-  line-height: 1.2;
-  max-width: 25vw;
-  word-wrap: break-word;
+  line-height: 120%;
+  max-width: 100%;
+  word-break: break-word;
+  white-space: pre-wrap;
+
+  &--document {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    max-width: 100%;
+    overflow: hidden;
+    font-weight: inherit;
+  }
+
+  &--shortened {
+    @include text-ellipsis;
+  }
 
   @include respond-to(medium) {
     font-size: toRem(16);
@@ -120,20 +153,6 @@ $icon-size: toRem(20);
   @include respond-to(small) {
     max-width: 90vw;
   }
-}
-
-.nft-details__row-value--document {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.nft-details__row-value--document-text {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 
 .nft-details__row-icon {

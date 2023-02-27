@@ -5,9 +5,9 @@
         <div class="app-sidebar__logo-wrp">
           <div class="app-sidebar__logo-container">
             <app-logo class="app-sidebar__logo" @click="hideSidebar" />
-            <span class="app-sidebar__logo-subtitle">
+            <p class="app-sidebar__logo-subtitle">
               {{ $t('app-sidebar.logo-subtitle') }}
-            </span>
+            </p>
           </div>
           <app-button
             scheme="default"
@@ -75,51 +75,53 @@ import {
   useWindowSize,
 } from '@vueuse/core'
 
-const hideWidth = WINDOW_BREAKPOINTS.tablet
-
 const asideElement = ref<HTMLElement | null>(null)
 
 const { width: windowWidth } = useWindowSize()
 const swipe = useSwipe(document.querySelector('#app'))
 
-const isShowSidebar = ref(true)
+const isVisible = ref(false)
 
-const isNeedToHideSidebar = computed(() => windowWidth.value <= hideWidth)
-
-const isSidebarShown = computed(
-  () => !isNeedToHideSidebar.value || isShowSidebar.value,
+const isTabletScreen = computed(
+  () => windowWidth.value <= WINDOW_BREAKPOINTS.tablet,
 )
 
+const isSidebarShown = computed(() => !isTabletScreen.value || isVisible.value)
+
 watch(swipe.direction, () => {
-  if (isShowSidebar.value) {
-    if (swipe.direction.value === SwipeDirection.RIGHT) {
-      isShowSidebar.value = true
-    } else if (swipe.direction.value === SwipeDirection.LEFT) {
-      isShowSidebar.value = false
-    }
+  if (!isVisible.value) return
+
+  switch (swipe.direction.value) {
+    case SwipeDirection.RIGHT:
+      isVisible.value = true
+      break
+    case SwipeDirection.LEFT:
+      isVisible.value = false
+      break
+    default:
+      break
   }
 })
 
 const toggleSidebar = () => {
-  isShowSidebar.value ? hideSidebar() : showSidebar()
+  isVisible.value ? hideSidebar() : showSidebar()
 }
 
 const showSidebar = () => {
-  isShowSidebar.value = true
+  isVisible.value = true
 }
 
 const hideSidebar = () => {
-  isShowSidebar.value = false
+  isVisible.value = false
 }
 
 Bus.on(Bus.eventList.toggleSidebar, toggleSidebar)
 
 watch(asideElement, () => {
-  if (asideElement.value) {
-    if (windowWidth.value < hideWidth) {
-      onClickOutside(asideElement, hideSidebar)
-    }
-  }
+  if (!asideElement.value || windowWidth.value > WINDOW_BREAKPOINTS.tablet)
+    return
+
+  onClickOutside(asideElement, hideSidebar)
 })
 </script>
 
@@ -220,9 +222,9 @@ $z-local: 5;
 .app-sidebar__logo-subtitle {
   text-transform: uppercase;
   text-align: center;
-  font-size: toRem(14);
-  line-height: 1.14;
   color: var(--text-secondary-invert-main);
+  font-size: toRem(14);
+  line-height: 120%;
 
   @include respond-to(tablet) {
     font-size: toRem(10);
@@ -239,12 +241,13 @@ $z-local: 5;
 }
 
 .app-sidebar__link {
+  color: var(--text-secondary-invert-main);
+  font-weight: 700;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: toRem(10);
-  color: var(--text-secondary-invert-main);
   padding: toRem(6) toRem(30);
   border-radius: 0;
   width: 100%;
@@ -287,9 +290,9 @@ $z-local: 5;
 
 .app-sidebar__copyright {
   align-self: center;
-  font-size: toRem(12);
-  line-height: 1.3;
   color: var(--text-primary-invert-main);
+  font-size: toRem(12);
+  line-height: 120%;
 }
 
 .app-sidebar__close-button {

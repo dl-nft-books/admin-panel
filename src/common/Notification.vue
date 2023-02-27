@@ -2,9 +2,9 @@
   <div class="notification">
     <icon class="notification__icon" :name="iconName" />
     <div class="notification__details">
-      <h4 class="notification__title">
+      <h5 class="notification__title">
         {{ title }}
-      </h4>
+      </h5>
       <p class="notification__message">
         {{ message }}
       </p>
@@ -12,42 +12,27 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { Icon } from '@/common'
-
-import { defineComponent, PropType } from 'vue'
 import { ICON_NAMES } from '@/enums'
 
-export default defineComponent({
-  name: 'notification',
-  components: { Icon },
-  props: {
-    title: {
-      type: String,
-      default: '',
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    iconName: {
-      type: String as PropType<ICON_NAMES>,
-      default: ICON_NAMES.check,
-    },
+withDefaults(
+  defineProps<{
+    title?: string
+    message: string
+    iconName?: ICON_NAMES
+  }>(),
+  {
+    title: '',
+    iconName: ICON_NAMES.check,
   },
-  setup() {
-    return {}
-  },
-})
+)
 </script>
 
 <style lang="scss">
 @import 'vue-toastification/src/scss/index';
 
 .Vue-Toastification__toast {
-  border-radius: toRem(12);
-  padding: toRem(18) toRem(16);
-
   &--success {
     background: var(--success-dark);
   }
@@ -79,7 +64,6 @@ export default defineComponent({
 
 .notification__details {
   display: grid;
-  grid-gap: toRem(4);
   width: 100%;
 }
 

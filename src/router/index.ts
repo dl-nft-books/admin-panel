@@ -62,7 +62,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: '/nfts/:id',
             name: ROUTE_NAMES.nftItem,
-            component: () => import('@/pages/NftItemPage.vue'),
+            component: () => import('@/pages/nft-item-page/NftItemPage.vue'),
             props: true,
             meta: {
               [ROUTE_METAS.isRequiredAuth]: true,

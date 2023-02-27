@@ -2,19 +2,12 @@
   <div class="spinner" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'spinner',
-})
-</script>
-
 <style lang="scss" scoped>
 .spinner {
   display: inline-block;
   width: toRem(80);
   height: toRem(80);
+  overflow: hidden;
 }
 
 .spinner:after {

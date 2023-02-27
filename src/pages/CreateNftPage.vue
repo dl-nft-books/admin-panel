@@ -1,24 +1,18 @@
 <template>
   <div class="create-nft-page">
-    <h2 class="create-nft-page__title">
+    <h3>
       {{ $t('create-nft-page.title') }}
-    </h2>
+    </h3>
     <nft-form />
   </div>
 </template>
 
 <script lang="ts" setup>
-import NftForm from '@/forms/NftForm.vue'
+import { NftForm } from '@/forms'
 </script>
 
 <style lang="scss" scoped>
 .create-nft-page__title {
-  font-weight: 600;
-  font-size: toRem(40);
   margin-bottom: toRem(30);
-
-  @include respond-to(small) {
-    font-size: toRem(30);
-  }
 }
 </style>

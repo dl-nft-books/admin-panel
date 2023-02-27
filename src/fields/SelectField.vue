@@ -1,6 +1,10 @@
 <template>
   <div :class="selectFieldClasses">
-    <label v-if="label" class="select-field__label">
+    <label
+      v-if="label"
+      class="select-field__label"
+      :for="`select-field--${uid}`"
+    >
       {{ label }}
     </label>
     <div ref="selectElement" class="select-field__select-wrp">
@@ -92,6 +96,7 @@ import { Icon } from '@/common'
 import { computed, onMounted, ref, useAttrs, watch } from 'vue'
 import { useRouter } from '@/router'
 import { onClickOutside } from '@vueuse/core'
+import { uuid } from 'uuidv4'
 
 const props = withDefaults(
   defineProps<{
@@ -115,6 +120,8 @@ const emit = defineEmits<{
 }>()
 
 const attrs = useAttrs()
+
+const uid = uuid()
 
 const selectElement = ref<HTMLDivElement>()
 

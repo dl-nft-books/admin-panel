@@ -51,9 +51,10 @@
 
 <script lang="ts" setup>
 import { Icon } from '@/common'
+import { uuid } from 'uuidv4'
 
 import { BN } from '@/utils/math.util'
-import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
+import { computed, ref, useAttrs, useSlots } from 'vue'
 import { FIELD_LENGTH } from '@/enums'
 
 type INPUT_TYPES = 'text' | 'number' | 'password'
@@ -86,7 +87,7 @@ const attrs = useAttrs()
 
 const slots = useSlots()
 
-const uid = getCurrentInstance()?.uid
+const uid = uuid()
 
 const isPasswordShown = ref(false)
 

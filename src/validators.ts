@@ -19,6 +19,7 @@ import { Document } from '@/api'
 const { t } = i18n.global || i18n
 
 const NameRegex = new RegExp(/^[ A-Za-z0-9_.,-=+!?"'“”/]*$/)
+const UrlSymbolsRegex = new RegExp(/^[\w-.~]+$/i)
 
 const messagePath = ({ $validator }: MessageProps) =>
   `validations.field-error_${$validator}`
@@ -62,4 +63,8 @@ export const nonEmptyDocument = <ValidationRule>(
 
 export const alphaNumWithSpecialChars = <ValidationRule>(
   withI18nMessage((value: string) => NameRegex.test(value))
+)
+
+export const urlSymbols = <ValidationRule>(
+  withI18nMessage((value: string) => UrlSymbolsRegex.test(value))
 )

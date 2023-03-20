@@ -9,7 +9,8 @@
     "field-error_minLength": "Length must be at least {min}",
     "field-error_maxLength": "Too long",
     "field-error_alphaNum": "Only Latin characters are supported",
-    "field-error_alphaNumWithSpecialChars": "Only Latin characters and special symbols are supported"
+    "field-error_alphaNumWithSpecialChars": "Only Latin characters and special symbols are supported",
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted"
   },
   "errors": {
     "default": "Oops... Something went wrong",

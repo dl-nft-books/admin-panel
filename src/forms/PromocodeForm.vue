@@ -74,6 +74,7 @@ import {
   minLength,
   maxLength,
   requiredIf,
+  urlSymbols,
 } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { Promocode } from '@/types'
@@ -134,6 +135,7 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     promocode: {
       minLength: minLength(MIN_PROMOCODE_LENGTH),
       maxLength: maxLength(MAX_PROMOCODE_LENGTH),
+      urlSymbols,
     },
     numberOfUses: {
       required,

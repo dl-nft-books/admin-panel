@@ -14,16 +14,19 @@
             <p class="promocode-item__head promocode-item__head--size-x-medium">
               {{ item.label }}
             </p>
-            <app-button
+            <a
               v-if="item.isCopyable"
               class="promocode-item__copy-promocode"
-              scheme="default"
-              size="default"
-              icon-size="large"
-              :text="item.value"
-              :icon-right="$icons.duplicate"
               @click="copyPromocode(item.value)"
-            />
+            >
+              <span class="promocode-item__copy-promocode-text">
+                {{ item.value }}</span
+              >
+              <icon
+                class="promocode-item__copy-promocode-icon"
+                :name="$icons.duplicate"
+              />
+            </a>
             <p
               v-else
               :class="[
@@ -95,7 +98,7 @@
 
 <script setup lang="ts">
 import { deletePromocode as _deletePromocode } from '@/api'
-import { Collapse, AppButton, Modal, ConfirmationModal } from '@/common'
+import { Collapse, AppButton, Modal, ConfirmationModal, Icon } from '@/common'
 import { Promocode } from '@/types'
 import { PromocodeState } from '@/pages/promocodes-page'
 import { computed, ref } from 'vue'
@@ -184,11 +187,38 @@ const copyPromocode = async (promocode: string) => {
 <style lang="scss" scoped>
 .promocode-item__copy-promocode {
   display: flex;
-  max-width: 100%;
+  width: 100%;
+  justify-content: flex-start;
+  gap: toRem(10);
+  align-items: center;
   max-height: toRem(30);
+
+  &:hover {
+    cursor: pointer;
+
+    & > * {
+      color: var(--text-secondary-main);
+    }
+  }
+}
+
+.promocode-item__copy-promocode-icon {
+  max-height: toRem(25);
+  max-width: toRem(30);
+  color: var(--text-primary-main);
+  transition: 0.2s ease-in-out;
+  transition-property: color;
+}
+
+.promocode-item__copy-promocode-text {
+  color: var(--text-primary-main);
   font-weight: 500;
   font-size: toRem(20);
   line-height: toRem(24);
+  transition: 0.2s ease-in-out;
+  transition-property: color;
+
+  @include text-ellipsis;
 }
 
 .promocode-item {

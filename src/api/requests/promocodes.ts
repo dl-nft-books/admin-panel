@@ -23,12 +23,14 @@ export function updatePromocode(opts: {
   id: string
   initial_usages: number
   expiration_date: string
+  promocode?: string
 }) {
   return api.patch(`/integrations/generator/promocodes/${opts.id}`, {
     data: {
       attributes: {
         initial_usages: opts.initial_usages,
         expiration_date: opts.expiration_date,
+        promocode: opts.promocode,
       },
     },
   })
@@ -38,6 +40,7 @@ export function createPromocode(opts: {
   discount: number
   initial_usages: number
   expiration_date: string
+  promocode?: string
 }) {
   return api.post<Promocode>('/integrations/generator/promocodes', {
     data: {
@@ -45,6 +48,7 @@ export function createPromocode(opts: {
         discount: opts.discount,
         expiration_date: opts.expiration_date,
         initial_usages: opts.initial_usages,
+        promocode: opts.promocode,
       },
     },
   })

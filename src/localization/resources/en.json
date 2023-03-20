@@ -76,7 +76,7 @@
     "update-btn-lbl": "UPDATE",
     "delete-success": "Promocode deleted",
     "copy-success": "Promocode copied to clipboard",
-    "filter-all": "All tokens",
+    "filter-all": "All promocodes",
     "filter-active": "Available for use",
     "filter-inactive": "Unavailable for use",
     "no-data-message": "No promocodes available"
@@ -88,6 +88,8 @@
     "input-lbl": "Number of uses",
     "discount-lbl": "Discount amount (%)",
     "date-lbl": "Due date",
+    "name-lbl": "Promocode name",
+    "name-placeholder": "Leave blank and it will be generated...",
     "cancel-btn-lbl": "Cancel",
     "submit-update-btn-lbl": "Update",
     "submit-create-btn-lbl": "Create",

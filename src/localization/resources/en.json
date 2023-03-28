@@ -9,7 +9,8 @@
     "field-error_minLength": "Length must be at least {min}",
     "field-error_maxLength": "Too long",
     "field-error_alphaNum": "Only Latin characters are supported",
-    "field-error_alphaNumWithSpecialChars": "Only Latin characters and special symbols are supported"
+    "field-error_alphaNumWithSpecialChars": "Only Latin characters and special symbols are supported",
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -76,7 +77,7 @@
     "update-btn-lbl": "UPDATE",
     "delete-success": "Promocode deleted",
     "copy-success": "Promocode copied to clipboard",
-    "filter-all": "All tokens",
+    "filter-all": "All promocodes",
     "filter-active": "Available for use",
     "filter-inactive": "Unavailable for use",
     "no-data-message": "No promocodes available"
@@ -88,6 +89,8 @@
     "input-lbl": "Number of uses",
     "discount-lbl": "Discount amount (%)",
     "date-lbl": "Due date",
+    "name-lbl": "Promocode name",
+    "name-placeholder": "Leave blank and it will be generated...",
     "cancel-btn-lbl": "Cancel",
     "submit-update-btn-lbl": "Update",
     "submit-create-btn-lbl": "Create",

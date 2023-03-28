@@ -8,6 +8,14 @@
         {{ $t('promocode-form.update-subtitle') }}
       </p>
     </div>
+    <input-field
+      v-model="form.promocode"
+      :error-message="getFieldErrorMessage('promocode')"
+      :disabled="isFormDisabled"
+      :label="$t('promocode-form.name-lbl')"
+      :placeholder="$t('promocode-form.name-placeholder')"
+      @blur="touchField('promocode')"
+    />
     <date-field
       v-model="form.dueDate"
       :min-date="minDate"
@@ -59,12 +67,25 @@ import { updatePromocode, createPromocode } from '@/api'
 import { AppButton } from '@/common'
 import { InputField, DateField } from '@/fields'
 import { useForm, useFormValidation } from '@/composables'
-import { required, minValue, maxValue, requiredIf } from '@/validators'
+import {
+  required,
+  minValue,
+  maxValue,
+  minLength,
+  maxLength,
+  requiredIf,
+  urlSymbols,
+} from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { Promocode } from '@/types'
 import { DateUtil } from '@/utils/date.util'
 
-import { MAX_DISCOUNT, MAX_PROMOCODE_USES_VALUE } from '@/consts'
+import {
+  MAX_DISCOUNT,
+  MAX_PROMOCODE_LENGTH,
+  MAX_PROMOCODE_USES_VALUE,
+  MIN_PROMOCODE_LENGTH,
+} from '@/consts'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -95,6 +116,7 @@ const form = reactive({
     ? DateUtil.format(props.promocode?.expiration_date, 'YYYY-MM-DD')
     : '',
   discount: '',
+  promocode: props.promocode?.promocode || '',
 })
 
 const minDate = computed(() =>
@@ -110,6 +132,11 @@ const { disableForm, enableForm, isFormDisabled } = useForm()
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
+    promocode: {
+      minLength: minLength(MIN_PROMOCODE_LENGTH),
+      maxLength: maxLength(MAX_PROMOCODE_LENGTH),
+      urlSymbols,
+    },
     numberOfUses: {
       required,
       minValue: minValue(props.promocode?.initial_usages ?? 1),
@@ -136,6 +163,7 @@ const submit = async () => {
         id: props.promocode?.id as string,
         initial_usages: Number(form.numberOfUses),
         expiration_date: DateUtil.toISO(form.dueDate),
+        promocode: form.promocode,
       })
 
       Bus.success(t('promocode-form.success-update-msg'))
@@ -144,6 +172,7 @@ const submit = async () => {
         discount: Number(form.discount) / 100,
         expiration_date: DateUtil.toISO(form.dueDate),
         initial_usages: Number(form.numberOfUses),
+        promocode: form.promocode,
       })
 
       Bus.success(t('promocode-form.success-create-msg'))

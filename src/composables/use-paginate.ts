@@ -62,7 +62,8 @@ export const usePaginate = <T>(
         opts?.pageLimit || response.pageLimit || config.DEFAULT_PAGE_LIMIT
 
       isCollectionFetched.value =
-        ((response.data as unknown as Array<unknown>)?.length || 0) < limit
+        ((response.data as unknown as Array<unknown>)?.length || 0) < limit ||
+        !response.links.next
     } catch (e) {
       isCollectionFetched.value = false
       if (onError) onError(e as Error)

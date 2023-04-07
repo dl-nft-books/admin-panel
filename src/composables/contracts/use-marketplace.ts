@@ -3,13 +3,14 @@ import { computed, ref } from 'vue'
 import { MarketPlace__factory, EthProviderRpcError } from '@/types'
 import { handleEthError, sleep } from '@/helpers'
 
-type TokenParams = {
+export type TokenParams = {
   pricePerOneToken: string
   minNFTFloorPrice: string
   voucherTokensAmount: string
-  isNFTBuyable: boolean
   voucherTokenContract: string
   fundsRecipient: string
+  isNFTBuyable: boolean
+  isDisabled: boolean
 }
 
 export const useMarketplace = (address?: string) => {
@@ -55,9 +56,11 @@ export const useMarketplace = (address?: string) => {
         data,
       })
 
-      await sleep(1000)
+      const txHash = (receipt as { hash: string }).hash
 
-      return receipt
+      const txInfo = await provider.value.getTransactionReceipt(txHash)
+
+      return txInfo
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
@@ -90,11 +93,13 @@ export const useMarketplace = (address?: string) => {
     }
   }
 
-  const getTokenParams = async (tokenContract: string) => {
+  const getTokenParams = async (tokenContracts: string[]) => {
     try {
       if (!contractInstance.value) return
 
-      const data = await contractInstance.value.getTokenParams(tokenContract)
+      const data = await contractInstance.value.getDetailedTokenParams(
+        tokenContracts,
+      )
 
       return data
     } catch (error) {
@@ -106,7 +111,37 @@ export const useMarketplace = (address?: string) => {
     try {
       if (!contractInstance.value) return
 
-      const data = await contractInstance.value.getTokenContractsCount()
+      const data = await contractInstance.value.getActiveTokenContractsCount()
+
+      return data
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const getBooksContracts = async (limit: number, offset: number) => {
+    try {
+      if (!contractInstance.value) return
+
+      const data = await contractInstance.value.getTokenContractsPart(
+        offset,
+        limit,
+      )
+
+      return data
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const getBooksBatch = async (limit: number, offset: number) => {
+    try {
+      if (!contractInstance.value) return
+
+      const data = await contractInstance.value.getBaseTokenParamsPart(
+        offset,
+        limit,
+      )
 
       return data
     } catch (error) {
@@ -120,5 +155,7 @@ export const useMarketplace = (address?: string) => {
     updateAllParams,
     getTokenParams,
     getTokenContractsCount,
+    getBooksContracts,
+    getBooksBatch,
   }
 }

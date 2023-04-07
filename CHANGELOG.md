@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [Unreleased]
+#### Added
+- Deploying/editing on multiple chains at once
+- Contract-based pagination
+
+#### Changed
+- New contracts
+- 1 book on different chains now related as 1 single book
+- Book info now gathering from 2 sources: contracts and backend
+
 ## [1.4.0-rc.1]
 #### Added
 - Floor price for nft books

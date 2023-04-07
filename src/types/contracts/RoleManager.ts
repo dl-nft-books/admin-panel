@@ -33,6 +33,7 @@ export interface RoleManagerInterface extends utils.Interface {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "MARKETPLACE_MANAGER()": FunctionFragment;
     "ROLE_SUPERVISOR()": FunctionFragment;
+    "SIGNATURE_MANAGER()": FunctionFragment;
     "TOKEN_FACTORY_MANAGER()": FunctionFragment;
     "TOKEN_MANAGER()": FunctionFragment;
     "TOKEN_REGISTRY_MANAGER()": FunctionFragment;
@@ -46,9 +47,11 @@ export interface RoleManagerInterface extends utils.Interface {
     "grantRoleBatch(bytes32[],address[])": FunctionFragment;
     "hasAnyRole(address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "hasSpecificOrStrongerRoles(bytes32[],address)": FunctionFragment;
     "isAdmin(address)": FunctionFragment;
     "isMarketplaceManager(address)": FunctionFragment;
     "isRoleSupervisor(address)": FunctionFragment;
+    "isSignatureManager(address)": FunctionFragment;
     "isTokenFactoryManager(address)": FunctionFragment;
     "isTokenManager(address)": FunctionFragment;
     "isTokenRegistryManager(address)": FunctionFragment;
@@ -66,6 +69,7 @@ export interface RoleManagerInterface extends utils.Interface {
       | "DEFAULT_ADMIN_ROLE"
       | "MARKETPLACE_MANAGER"
       | "ROLE_SUPERVISOR"
+      | "SIGNATURE_MANAGER"
       | "TOKEN_FACTORY_MANAGER"
       | "TOKEN_MANAGER"
       | "TOKEN_REGISTRY_MANAGER"
@@ -79,9 +83,11 @@ export interface RoleManagerInterface extends utils.Interface {
       | "grantRoleBatch"
       | "hasAnyRole"
       | "hasRole"
+      | "hasSpecificOrStrongerRoles"
       | "isAdmin"
       | "isMarketplaceManager"
       | "isRoleSupervisor"
+      | "isSignatureManager"
       | "isTokenFactoryManager"
       | "isTokenManager"
       | "isTokenRegistryManager"
@@ -107,6 +113,10 @@ export interface RoleManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "ROLE_SUPERVISOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SIGNATURE_MANAGER",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -162,6 +172,10 @@ export interface RoleManagerInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "hasSpecificOrStrongerRoles",
+    values: [PromiseOrValue<BytesLike>[], PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isAdmin",
     values: [PromiseOrValue<string>]
   ): string;
@@ -171,6 +185,10 @@ export interface RoleManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "isRoleSupervisor",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSignatureManager",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
@@ -227,6 +245,10 @@ export interface RoleManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "SIGNATURE_MANAGER",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "TOKEN_FACTORY_MANAGER",
     data: BytesLike
   ): Result;
@@ -269,6 +291,10 @@ export interface RoleManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "hasAnyRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "hasSpecificOrStrongerRoles",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isMarketplaceManager",
@@ -276,6 +302,10 @@ export interface RoleManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "isRoleSupervisor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isSignatureManager",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -395,6 +425,8 @@ export interface RoleManager extends BaseContract {
 
     ROLE_SUPERVISOR(overrides?: CallOverrides): Promise<[string]>;
 
+    SIGNATURE_MANAGER(overrides?: CallOverrides): Promise<[string]>;
+
     TOKEN_FACTORY_MANAGER(overrides?: CallOverrides): Promise<[string]>;
 
     TOKEN_MANAGER(overrides?: CallOverrides): Promise<[string]>;
@@ -445,8 +477,14 @@ export interface RoleManager extends BaseContract {
     ): Promise<[boolean]>;
 
     hasRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
+      role_: PromiseOrValue<BytesLike>,
+      account_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    hasSpecificOrStrongerRoles(
+      roles_: PromiseOrValue<BytesLike>[],
+      account_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -462,6 +500,11 @@ export interface RoleManager extends BaseContract {
 
     isRoleSupervisor(
       supervisor_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isSignatureManager(
+      manager_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -486,8 +529,8 @@ export interface RoleManager extends BaseContract {
     ): Promise<[boolean]>;
 
     renounceRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
+      role_: PromiseOrValue<BytesLike>,
+      account_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -521,6 +564,8 @@ export interface RoleManager extends BaseContract {
   MARKETPLACE_MANAGER(overrides?: CallOverrides): Promise<string>;
 
   ROLE_SUPERVISOR(overrides?: CallOverrides): Promise<string>;
+
+  SIGNATURE_MANAGER(overrides?: CallOverrides): Promise<string>;
 
   TOKEN_FACTORY_MANAGER(overrides?: CallOverrides): Promise<string>;
 
@@ -570,8 +615,14 @@ export interface RoleManager extends BaseContract {
   ): Promise<boolean>;
 
   hasRole(
-    role: PromiseOrValue<BytesLike>,
-    account: PromiseOrValue<string>,
+    role_: PromiseOrValue<BytesLike>,
+    account_: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  hasSpecificOrStrongerRoles(
+    roles_: PromiseOrValue<BytesLike>[],
+    account_: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -587,6 +638,11 @@ export interface RoleManager extends BaseContract {
 
   isRoleSupervisor(
     supervisor_: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isSignatureManager(
+    manager_: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -611,8 +667,8 @@ export interface RoleManager extends BaseContract {
   ): Promise<boolean>;
 
   renounceRole(
-    role: PromiseOrValue<BytesLike>,
-    account: PromiseOrValue<string>,
+    role_: PromiseOrValue<BytesLike>,
+    account_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -646,6 +702,8 @@ export interface RoleManager extends BaseContract {
     MARKETPLACE_MANAGER(overrides?: CallOverrides): Promise<string>;
 
     ROLE_SUPERVISOR(overrides?: CallOverrides): Promise<string>;
+
+    SIGNATURE_MANAGER(overrides?: CallOverrides): Promise<string>;
 
     TOKEN_FACTORY_MANAGER(overrides?: CallOverrides): Promise<string>;
 
@@ -693,8 +751,14 @@ export interface RoleManager extends BaseContract {
     ): Promise<boolean>;
 
     hasRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
+      role_: PromiseOrValue<BytesLike>,
+      account_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    hasSpecificOrStrongerRoles(
+      roles_: PromiseOrValue<BytesLike>[],
+      account_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -710,6 +774,11 @@ export interface RoleManager extends BaseContract {
 
     isRoleSupervisor(
       supervisor_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isSignatureManager(
+      manager_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -734,8 +803,8 @@ export interface RoleManager extends BaseContract {
     ): Promise<boolean>;
 
     renounceRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
+      role_: PromiseOrValue<BytesLike>,
+      account_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -806,6 +875,8 @@ export interface RoleManager extends BaseContract {
 
     ROLE_SUPERVISOR(overrides?: CallOverrides): Promise<BigNumber>;
 
+    SIGNATURE_MANAGER(overrides?: CallOverrides): Promise<BigNumber>;
+
     TOKEN_FACTORY_MANAGER(overrides?: CallOverrides): Promise<BigNumber>;
 
     TOKEN_MANAGER(overrides?: CallOverrides): Promise<BigNumber>;
@@ -854,8 +925,14 @@ export interface RoleManager extends BaseContract {
     ): Promise<BigNumber>;
 
     hasRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
+      role_: PromiseOrValue<BytesLike>,
+      account_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    hasSpecificOrStrongerRoles(
+      roles_: PromiseOrValue<BytesLike>[],
+      account_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -871,6 +948,11 @@ export interface RoleManager extends BaseContract {
 
     isRoleSupervisor(
       supervisor_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isSignatureManager(
+      manager_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -895,8 +977,8 @@ export interface RoleManager extends BaseContract {
     ): Promise<BigNumber>;
 
     renounceRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
+      role_: PromiseOrValue<BytesLike>,
+      account_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -937,6 +1019,8 @@ export interface RoleManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     ROLE_SUPERVISOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    SIGNATURE_MANAGER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     TOKEN_FACTORY_MANAGER(
       overrides?: CallOverrides
@@ -992,8 +1076,14 @@ export interface RoleManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     hasRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
+      role_: PromiseOrValue<BytesLike>,
+      account_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    hasSpecificOrStrongerRoles(
+      roles_: PromiseOrValue<BytesLike>[],
+      account_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1009,6 +1099,11 @@ export interface RoleManager extends BaseContract {
 
     isRoleSupervisor(
       supervisor_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isSignatureManager(
+      manager_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1033,8 +1128,8 @@ export interface RoleManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     renounceRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
+      role_: PromiseOrValue<BytesLike>,
+      account_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

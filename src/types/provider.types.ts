@@ -41,6 +41,8 @@ export type EthTransactionResponse = ethers.providers.TransactionResponse
 
 export type SolanaTransactionResponse = TransactionSignature
 
+export type TransactionReceipt = ethers.providers.TransactionReceipt
+
 export type TransactionResponse =
   | EthTransactionResponse
   | SolanaTransactionResponse
@@ -76,6 +78,9 @@ export interface ProviderWrapper {
   getAddressUrl: (explorerUrl: string, address: string) => string
   signMessage?: (message: string) => Promise<string | undefined>
   addNetwork?: (chainID: ChainId) => Promise<void>
+  getTransactionReceipt?: (
+    transtactionHash: string,
+  ) => Promise<TransactionReceipt | undefined>
 }
 
 export type { UseProvider } from '@/composables/providers'

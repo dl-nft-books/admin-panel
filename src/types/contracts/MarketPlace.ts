@@ -45,45 +45,87 @@ export declare namespace IMarketplace {
     pricePerOneToken: PromiseOrValue<BigNumberish>;
     minNFTFloorPrice: PromiseOrValue<BigNumberish>;
     voucherTokensAmount: PromiseOrValue<BigNumberish>;
-    isNFTBuyable: PromiseOrValue<boolean>;
     voucherTokenContract: PromiseOrValue<string>;
     fundsRecipient: PromiseOrValue<string>;
+    isNFTBuyable: PromiseOrValue<boolean>;
+    isDisabled: PromiseOrValue<boolean>;
   };
 
   export type TokenParamsStructOutput = [
     BigNumber,
     BigNumber,
     BigNumber,
-    boolean,
     string,
-    string
+    string,
+    boolean,
+    boolean
   ] & {
     pricePerOneToken: BigNumber;
     minNFTFloorPrice: BigNumber;
     voucherTokensAmount: BigNumber;
-    isNFTBuyable: boolean;
     voucherTokenContract: string;
     fundsRecipient: string;
+    isNFTBuyable: boolean;
+    isDisabled: boolean;
+  };
+
+  export type BaseTokenParamsStruct = {
+    tokenContract: PromiseOrValue<string>;
+    pricePerOneToken: PromiseOrValue<BigNumberish>;
+    tokenName: PromiseOrValue<string>;
+  };
+
+  export type BaseTokenParamsStructOutput = [string, BigNumber, string] & {
+    tokenContract: string;
+    pricePerOneToken: BigNumber;
+    tokenName: string;
+  };
+
+  export type DetailedTokenParamsStruct = {
+    tokenContract: PromiseOrValue<string>;
+    tokenParams: IMarketplace.TokenParamsStruct;
+    tokenName: PromiseOrValue<string>;
+    tokenSymbol: PromiseOrValue<string>;
+  };
+
+  export type DetailedTokenParamsStructOutput = [
+    string,
+    IMarketplace.TokenParamsStructOutput,
+    string,
+    string
+  ] & {
+    tokenContract: string;
+    tokenParams: IMarketplace.TokenParamsStructOutput;
+    tokenName: string;
+    tokenSymbol: string;
   };
 }
 
 export interface MarketPlaceInterface extends utils.Interface {
   functions: {
     "__Marketplace_init(string)": FunctionFragment;
-    "addToken(string,string,(uint256,uint256,uint256,bool,address,address))": FunctionFragment;
+    "addToken(string,string,(uint256,uint256,uint256,address,address,bool,bool))": FunctionFragment;
     "baseTokenContractsURI()": FunctionFragment;
     "buyToken(address,uint256,address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
     "buyTokenByNFT(address,uint256,address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
+    "getActiveTokenContractsCount()": FunctionFragment;
+    "getBaseTokenParams(address[])": FunctionFragment;
+    "getBaseTokenParamsPart(uint256,uint256)": FunctionFragment;
+    "getDetailedTokenParams(address[])": FunctionFragment;
+    "getDetailedTokenParamsPart(uint256,uint256)": FunctionFragment;
     "getInjector()": FunctionFragment;
     "getTokenContractsCount()": FunctionFragment;
     "getTokenContractsPart(uint256,uint256)": FunctionFragment;
-    "getTokenParams(address)": FunctionFragment;
     "getUserTokenIDs(address,address)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
+    "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
     "setBaseTokenContractsURI(string)": FunctionFragment;
     "setDependencies(address,bytes)": FunctionFragment;
     "setInjector(address)": FunctionFragment;
-    "updateAllParams(address,string,string,(uint256,uint256,uint256,bool,address,address))": FunctionFragment;
+    "unpause()": FunctionFragment;
+    "updateAllParams(address,string,string,(uint256,uint256,uint256,address,address,bool,bool))": FunctionFragment;
+    "withdrawCurrency(address,address)": FunctionFragment;
   };
 
   getFunction(
@@ -93,16 +135,24 @@ export interface MarketPlaceInterface extends utils.Interface {
       | "baseTokenContractsURI"
       | "buyToken"
       | "buyTokenByNFT"
+      | "getActiveTokenContractsCount"
+      | "getBaseTokenParams"
+      | "getBaseTokenParamsPart"
+      | "getDetailedTokenParams"
+      | "getDetailedTokenParamsPart"
       | "getInjector"
       | "getTokenContractsCount"
       | "getTokenContractsPart"
-      | "getTokenParams"
       | "getUserTokenIDs"
       | "onERC721Received"
+      | "pause"
+      | "paused"
       | "setBaseTokenContractsURI"
       | "setDependencies"
       | "setInjector"
+      | "unpause"
       | "updateAllParams"
+      | "withdrawCurrency"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -152,6 +202,26 @@ export interface MarketPlaceInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "getActiveTokenContractsCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBaseTokenParams",
+    values: [PromiseOrValue<string>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBaseTokenParamsPart",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDetailedTokenParams",
+    values: [PromiseOrValue<string>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDetailedTokenParamsPart",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getInjector",
     values?: undefined
   ): string;
@@ -162,10 +232,6 @@ export interface MarketPlaceInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getTokenContractsPart",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTokenParams",
-    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "getUserTokenIDs",
@@ -180,6 +246,8 @@ export interface MarketPlaceInterface extends utils.Interface {
       PromiseOrValue<BytesLike>
     ]
   ): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setBaseTokenContractsURI",
     values: [PromiseOrValue<string>]
@@ -192,6 +260,7 @@ export interface MarketPlaceInterface extends utils.Interface {
     functionFragment: "setInjector",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateAllParams",
     values: [
@@ -200,6 +269,10 @@ export interface MarketPlaceInterface extends utils.Interface {
       PromiseOrValue<string>,
       IMarketplace.TokenParamsStruct
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawCurrency",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
 
   decodeFunctionResult(
@@ -217,6 +290,26 @@ export interface MarketPlaceInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getActiveTokenContractsCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBaseTokenParams",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBaseTokenParamsPart",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDetailedTokenParams",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDetailedTokenParamsPart",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getInjector",
     data: BytesLike
   ): Result;
@@ -229,10 +322,6 @@ export interface MarketPlaceInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getTokenParams",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getUserTokenIDs",
     data: BytesLike
   ): Result;
@@ -240,6 +329,8 @@ export interface MarketPlaceInterface extends utils.Interface {
     functionFragment: "onERC721Received",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setBaseTokenContractsURI",
     data: BytesLike
@@ -252,28 +343,37 @@ export interface MarketPlaceInterface extends utils.Interface {
     functionFragment: "setInjector",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "updateAllParams",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawCurrency",
     data: BytesLike
   ): Result;
 
   events: {
     "BaseTokenContractsURIUpdated(string)": EventFragment;
-    "PaidTokensWithdrawn(address,address,address,uint256)": EventFragment;
+    "PaidTokensWithdrawn(address,address,uint256)": EventFragment;
+    "Paused(address)": EventFragment;
     "SuccessfullyMinted(address,address,tuple,address,uint256,uint256,uint256,address)": EventFragment;
     "SuccessfullyMintedByNFT(address,address,tuple,address,uint256,uint256,address)": EventFragment;
     "TokenContractDeployed(address,string,string,tuple)": EventFragment;
     "TokenContractParamsUpdated(address,string,string,tuple)": EventFragment;
+    "Unpaused(address)": EventFragment;
   };
 
   getEvent(
     nameOrSignatureOrTopic: "BaseTokenContractsURIUpdated"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaidTokensWithdrawn"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SuccessfullyMinted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SuccessfullyMintedByNFT"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenContractDeployed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenContractParamsUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
 export interface BaseTokenContractsURIUpdatedEventObject {
@@ -288,18 +388,24 @@ export type BaseTokenContractsURIUpdatedEventFilter =
   TypedEventFilter<BaseTokenContractsURIUpdatedEvent>;
 
 export interface PaidTokensWithdrawnEventObject {
-  tokenContract: string;
   tokenAddr: string;
   recipient: string;
   amount: BigNumber;
 }
 export type PaidTokensWithdrawnEvent = TypedEvent<
-  [string, string, string, BigNumber],
+  [string, string, BigNumber],
   PaidTokensWithdrawnEventObject
 >;
 
 export type PaidTokensWithdrawnEventFilter =
   TypedEventFilter<PaidTokensWithdrawnEvent>;
+
+export interface PausedEventObject {
+  account: string;
+}
+export type PausedEvent = TypedEvent<[string], PausedEventObject>;
+
+export type PausedEventFilter = TypedEventFilter<PausedEvent>;
 
 export interface SuccessfullyMintedEventObject {
   tokenContract: string;
@@ -381,6 +487,13 @@ export type TokenContractParamsUpdatedEvent = TypedEvent<
 export type TokenContractParamsUpdatedEventFilter =
   TypedEventFilter<TokenContractParamsUpdatedEvent>;
 
+export interface UnpausedEventObject {
+  account: string;
+}
+export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
+
+export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
+
 export interface MarketPlace extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
@@ -450,6 +563,40 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    getActiveTokenContractsCount(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { count_: BigNumber }>;
+
+    getBaseTokenParams(
+      tokenContract_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<
+      [IMarketplace.BaseTokenParamsStructOutput[]] & {
+        baseTokenParams_: IMarketplace.BaseTokenParamsStructOutput[];
+      }
+    >;
+
+    getBaseTokenParamsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[IMarketplace.BaseTokenParamsStructOutput[]]>;
+
+    getDetailedTokenParams(
+      tokenContracts_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<
+      [IMarketplace.DetailedTokenParamsStructOutput[]] & {
+        detailedTokenParams_: IMarketplace.DetailedTokenParamsStructOutput[];
+      }
+    >;
+
+    getDetailedTokenParamsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[IMarketplace.DetailedTokenParamsStructOutput[]]>;
+
     getInjector(
       overrides?: CallOverrides
     ): Promise<[string] & { injector_: string }>;
@@ -461,11 +608,6 @@ export interface MarketPlace extends BaseContract {
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
-
-    getTokenParams(
-      tokenContract_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[IMarketplace.TokenParamsStructOutput]>;
 
     getUserTokenIDs(
       tokenContract_: PromiseOrValue<string>,
@@ -480,6 +622,12 @@ export interface MarketPlace extends BaseContract {
       arg3: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    pause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     setBaseTokenContractsURI(
       baseTokenContractsURI_: PromiseOrValue<string>,
@@ -497,11 +645,21 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    unpause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     updateAllParams(
       tokenContract_: PromiseOrValue<string>,
       name_: PromiseOrValue<string>,
       symbol_: PromiseOrValue<string>,
       newTokenParams_: IMarketplace.TokenParamsStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    withdrawCurrency(
+      tokenAddr_: PromiseOrValue<string>,
+      recipient_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -548,6 +706,30 @@ export interface MarketPlace extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  getActiveTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getBaseTokenParams(
+    tokenContract_: PromiseOrValue<string>[],
+    overrides?: CallOverrides
+  ): Promise<IMarketplace.BaseTokenParamsStructOutput[]>;
+
+  getBaseTokenParamsPart(
+    offset_: PromiseOrValue<BigNumberish>,
+    limit_: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<IMarketplace.BaseTokenParamsStructOutput[]>;
+
+  getDetailedTokenParams(
+    tokenContracts_: PromiseOrValue<string>[],
+    overrides?: CallOverrides
+  ): Promise<IMarketplace.DetailedTokenParamsStructOutput[]>;
+
+  getDetailedTokenParamsPart(
+    offset_: PromiseOrValue<BigNumberish>,
+    limit_: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<IMarketplace.DetailedTokenParamsStructOutput[]>;
+
   getInjector(overrides?: CallOverrides): Promise<string>;
 
   getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
@@ -557,11 +739,6 @@ export interface MarketPlace extends BaseContract {
     limit_: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string[]>;
-
-  getTokenParams(
-    tokenContract_: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<IMarketplace.TokenParamsStructOutput>;
 
   getUserTokenIDs(
     tokenContract_: PromiseOrValue<string>,
@@ -576,6 +753,12 @@ export interface MarketPlace extends BaseContract {
     arg3: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  pause(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  paused(overrides?: CallOverrides): Promise<boolean>;
 
   setBaseTokenContractsURI(
     baseTokenContractsURI_: PromiseOrValue<string>,
@@ -593,11 +776,21 @@ export interface MarketPlace extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  unpause(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   updateAllParams(
     tokenContract_: PromiseOrValue<string>,
     name_: PromiseOrValue<string>,
     symbol_: PromiseOrValue<string>,
     newTokenParams_: IMarketplace.TokenParamsStruct,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  withdrawCurrency(
+    tokenAddr_: PromiseOrValue<string>,
+    recipient_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -644,6 +837,30 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    getActiveTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBaseTokenParams(
+      tokenContract_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<IMarketplace.BaseTokenParamsStructOutput[]>;
+
+    getBaseTokenParamsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<IMarketplace.BaseTokenParamsStructOutput[]>;
+
+    getDetailedTokenParams(
+      tokenContracts_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<IMarketplace.DetailedTokenParamsStructOutput[]>;
+
+    getDetailedTokenParamsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<IMarketplace.DetailedTokenParamsStructOutput[]>;
+
     getInjector(overrides?: CallOverrides): Promise<string>;
 
     getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
@@ -653,11 +870,6 @@ export interface MarketPlace extends BaseContract {
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string[]>;
-
-    getTokenParams(
-      tokenContract_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<IMarketplace.TokenParamsStructOutput>;
 
     getUserTokenIDs(
       tokenContract_: PromiseOrValue<string>,
@@ -672,6 +884,10 @@ export interface MarketPlace extends BaseContract {
       arg3: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    pause(overrides?: CallOverrides): Promise<void>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
 
     setBaseTokenContractsURI(
       baseTokenContractsURI_: PromiseOrValue<string>,
@@ -689,11 +905,19 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    unpause(overrides?: CallOverrides): Promise<void>;
+
     updateAllParams(
       tokenContract_: PromiseOrValue<string>,
       name_: PromiseOrValue<string>,
       symbol_: PromiseOrValue<string>,
       newTokenParams_: IMarketplace.TokenParamsStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdrawCurrency(
+      tokenAddr_: PromiseOrValue<string>,
+      recipient_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -706,18 +930,19 @@ export interface MarketPlace extends BaseContract {
       newBaseTokenContractsURI?: null
     ): BaseTokenContractsURIUpdatedEventFilter;
 
-    "PaidTokensWithdrawn(address,address,address,uint256)"(
-      tokenContract?: PromiseOrValue<string> | null,
+    "PaidTokensWithdrawn(address,address,uint256)"(
       tokenAddr?: PromiseOrValue<string> | null,
       recipient?: null,
       amount?: null
     ): PaidTokensWithdrawnEventFilter;
     PaidTokensWithdrawn(
-      tokenContract?: PromiseOrValue<string> | null,
       tokenAddr?: PromiseOrValue<string> | null,
       recipient?: null,
       amount?: null
     ): PaidTokensWithdrawnEventFilter;
+
+    "Paused(address)"(account?: null): PausedEventFilter;
+    Paused(account?: null): PausedEventFilter;
 
     "SuccessfullyMinted(address,address,tuple,address,uint256,uint256,uint256,address)"(
       tokenContract?: PromiseOrValue<string> | null,
@@ -784,6 +1009,9 @@ export interface MarketPlace extends BaseContract {
       tokenSymbol?: null,
       tokenParams?: null
     ): TokenContractParamsUpdatedEventFilter;
+
+    "Unpaused(address)"(account?: null): UnpausedEventFilter;
+    Unpaused(account?: null): UnpausedEventFilter;
   };
 
   estimateGas: {
@@ -829,6 +1057,30 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    getActiveTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBaseTokenParams(
+      tokenContract_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getBaseTokenParamsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getDetailedTokenParams(
+      tokenContracts_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getDetailedTokenParamsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getInjector(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
@@ -836,11 +1088,6 @@ export interface MarketPlace extends BaseContract {
     getTokenContractsPart(
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTokenParams(
-      tokenContract_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -858,6 +1105,12 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    pause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
     setBaseTokenContractsURI(
       baseTokenContractsURI_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -874,11 +1127,21 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    unpause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     updateAllParams(
       tokenContract_: PromiseOrValue<string>,
       name_: PromiseOrValue<string>,
       symbol_: PromiseOrValue<string>,
       newTokenParams_: IMarketplace.TokenParamsStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    withdrawCurrency(
+      tokenAddr_: PromiseOrValue<string>,
+      recipient_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -928,6 +1191,32 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    getActiveTokenContractsCount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBaseTokenParams(
+      tokenContract_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBaseTokenParamsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getDetailedTokenParams(
+      tokenContracts_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getDetailedTokenParamsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getInjector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTokenContractsCount(
@@ -937,11 +1226,6 @@ export interface MarketPlace extends BaseContract {
     getTokenContractsPart(
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTokenParams(
-      tokenContract_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -959,6 +1243,12 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    pause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     setBaseTokenContractsURI(
       baseTokenContractsURI_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -975,11 +1265,21 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    unpause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     updateAllParams(
       tokenContract_: PromiseOrValue<string>,
       name_: PromiseOrValue<string>,
       symbol_: PromiseOrValue<string>,
       newTokenParams_: IMarketplace.TokenParamsStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawCurrency(
+      tokenAddr_: PromiseOrValue<string>,
+      recipient_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

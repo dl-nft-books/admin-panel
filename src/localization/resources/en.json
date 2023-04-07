@@ -10,7 +10,8 @@
     "field-error_maxLength": "Too long",
     "field-error_alphaNum": "Only Latin characters are supported",
     "field-error_alphaNumWithSpecialChars": "Only Latin characters and special symbols are supported",
-    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted"
+    "field-error_urlSymbols": "All unsafe and reserved url chars are restricted",
+    "field-error_address": "Field must be valid wallet address"
   },
   "errors": {
     "default": "Oops... Something went wrong",
@@ -103,7 +104,6 @@
     "decline-btn": "Cancel",
     "confirm-btn": "Confirm"
   },
-
   "login-page": {
     "title": "Welcome to distributed store",
     "subtitle": "To log in, please connect to your\n MetaMask wallet"
@@ -138,7 +138,11 @@
     "input-symbol-placeholder": "Enter NFT symbol",
     "input-price-placeholder": "Enter price",
     "input-floor-price-placeholder": "Enter floor price",
+    "input-funds-lbl": "Funds recepient",
+    "input-funds-placeholder": "If blank funds will stay on marketplace",
     "textarea-description-placeholder": "Enter description*",
+    "nft-buyable-checkbox-lbl": "Ability to pay with another NFT",
+    "disabled-checkbox-lbl": "Is disabled",
     "voucher-checkbox-lbl": "Ability to pay with a voucher token",
     "voucher-token-lbl": "Voucher token address",
     "voucher-token-placeholder": "Enter voucher token address",
@@ -192,7 +196,11 @@
     "document-lbl": "Document",
     "description-lbl": "Description",
     "voucher-lbl": "Voucher token address",
-    "voucher-amount-lbl": "Voucher token amount"
+    "voucher-amount-lbl": "Voucher token amount",
+    "funds-recipient": "Funds recipient",
+    "nft-buyable": "NFT buyable",
+    "marketplace-lbl": "Marketplace",
+    "supported-networks": "Supported chains"
   },
   "sale-history": {
     "header": "Sale History",

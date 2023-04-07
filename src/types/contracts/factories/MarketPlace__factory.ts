@@ -26,12 +26,6 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "tokenContract",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
         name: "tokenAddr",
         type: "address",
       },
@@ -49,6 +43,19 @@ const _abi = [
       },
     ],
     name: "PaidTokensWithdrawn",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "Paused",
     type: "event",
   },
   {
@@ -228,11 +235,6 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "bool",
-            name: "isNFTBuyable",
-            type: "bool",
-          },
-          {
             internalType: "address",
             name: "voucherTokenContract",
             type: "address",
@@ -241,6 +243,16 @@ const _abi = [
             internalType: "address",
             name: "fundsRecipient",
             type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "isNFTBuyable",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "isDisabled",
+            type: "bool",
           },
         ],
         indexed: false,
@@ -291,11 +303,6 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "bool",
-            name: "isNFTBuyable",
-            type: "bool",
-          },
-          {
             internalType: "address",
             name: "voucherTokenContract",
             type: "address",
@@ -305,6 +312,16 @@ const _abi = [
             name: "fundsRecipient",
             type: "address",
           },
+          {
+            internalType: "bool",
+            name: "isNFTBuyable",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "isDisabled",
+            type: "bool",
+          },
         ],
         indexed: false,
         internalType: "struct IMarketplace.TokenParams",
@@ -313,6 +330,19 @@ const _abi = [
       },
     ],
     name: "TokenContractParamsUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "Unpaused",
     type: "event",
   },
   {
@@ -358,11 +388,6 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "bool",
-            name: "isNFTBuyable",
-            type: "bool",
-          },
-          {
             internalType: "address",
             name: "voucherTokenContract",
             type: "address",
@@ -371,6 +396,16 @@ const _abi = [
             internalType: "address",
             name: "fundsRecipient",
             type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "isNFTBuyable",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "isDisabled",
+            type: "bool",
           },
         ],
         internalType: "struct IMarketplace.TokenParams",
@@ -520,6 +555,257 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "getActiveTokenContractsCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "count_",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address[]",
+        name: "tokenContract_",
+        type: "address[]",
+      },
+    ],
+    name: "getBaseTokenParams",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "pricePerOneToken",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "tokenName",
+            type: "string",
+          },
+        ],
+        internalType: "struct IMarketplace.BaseTokenParams[]",
+        name: "baseTokenParams_",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "offset_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "limit_",
+        type: "uint256",
+      },
+    ],
+    name: "getBaseTokenParamsPart",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "pricePerOneToken",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "tokenName",
+            type: "string",
+          },
+        ],
+        internalType: "struct IMarketplace.BaseTokenParams[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address[]",
+        name: "tokenContracts_",
+        type: "address[]",
+      },
+    ],
+    name: "getDetailedTokenParams",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "pricePerOneToken",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "minNFTFloorPrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "voucherTokensAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "address",
+                name: "voucherTokenContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "fundsRecipient",
+                type: "address",
+              },
+              {
+                internalType: "bool",
+                name: "isNFTBuyable",
+                type: "bool",
+              },
+              {
+                internalType: "bool",
+                name: "isDisabled",
+                type: "bool",
+              },
+            ],
+            internalType: "struct IMarketplace.TokenParams",
+            name: "tokenParams",
+            type: "tuple",
+          },
+          {
+            internalType: "string",
+            name: "tokenName",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "tokenSymbol",
+            type: "string",
+          },
+        ],
+        internalType: "struct IMarketplace.DetailedTokenParams[]",
+        name: "detailedTokenParams_",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "offset_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "limit_",
+        type: "uint256",
+      },
+    ],
+    name: "getDetailedTokenParamsPart",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "tokenContract",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "pricePerOneToken",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "minNFTFloorPrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "voucherTokensAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "address",
+                name: "voucherTokenContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "fundsRecipient",
+                type: "address",
+              },
+              {
+                internalType: "bool",
+                name: "isNFTBuyable",
+                type: "bool",
+              },
+              {
+                internalType: "bool",
+                name: "isDisabled",
+                type: "bool",
+              },
+            ],
+            internalType: "struct IMarketplace.TokenParams",
+            name: "tokenParams",
+            type: "tuple",
+          },
+          {
+            internalType: "string",
+            name: "tokenName",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "tokenSymbol",
+            type: "string",
+          },
+        ],
+        internalType: "struct IMarketplace.DetailedTokenParams[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getInjector",
     outputs: [
       {
@@ -563,57 +849,6 @@ const _abi = [
         internalType: "address[]",
         name: "",
         type: "address[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "tokenContract_",
-        type: "address",
-      },
-    ],
-    name: "getTokenParams",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "pricePerOneToken",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "minNFTFloorPrice",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "voucherTokensAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "isNFTBuyable",
-            type: "bool",
-          },
-          {
-            internalType: "address",
-            name: "voucherTokenContract",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "fundsRecipient",
-            type: "address",
-          },
-        ],
-        internalType: "struct IMarketplace.TokenParams",
-        name: "",
-        type: "tuple",
       },
     ],
     stateMutability: "view",
@@ -678,6 +913,26 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "pause",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "paused",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "string",
@@ -722,6 +977,13 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "unpause",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -756,11 +1018,6 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "bool",
-            name: "isNFTBuyable",
-            type: "bool",
-          },
-          {
             internalType: "address",
             name: "voucherTokenContract",
             type: "address",
@@ -770,6 +1027,16 @@ const _abi = [
             name: "fundsRecipient",
             type: "address",
           },
+          {
+            internalType: "bool",
+            name: "isNFTBuyable",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "isDisabled",
+            type: "bool",
+          },
         ],
         internalType: "struct IMarketplace.TokenParams",
         name: "newTokenParams_",
@@ -777,6 +1044,24 @@ const _abi = [
       },
     ],
     name: "updateAllParams",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "tokenAddr_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "recipient_",
+        type: "address",
+      },
+    ],
+    name: "withdrawCurrency",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

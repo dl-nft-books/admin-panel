@@ -15,6 +15,7 @@ import { createI18nMessage, MessageProps } from '@vuelidate/validators'
 import { get } from 'lodash-es'
 import { i18n } from '@/localization'
 import { Document } from '@/api'
+import { ethers } from 'ethers'
 
 const { t } = i18n.global || i18n
 
@@ -66,5 +67,13 @@ export const alphaNumWithSpecialChars = <ValidationRule>(
 )
 
 export const urlSymbols = <ValidationRule>(
-  withI18nMessage((value: string) => UrlSymbolsRegex.test(value))
+  withI18nMessage((value: string) =>
+    !value ? true : UrlSymbolsRegex.test(value),
+  )
+)
+
+export const address = <ValidationRule>(
+  withI18nMessage((address: string) =>
+    !address ? true : ethers.utils.isAddress(address),
+  )
 )

@@ -62,6 +62,14 @@
         :disabled="isFormDisabled"
         @blur="touchField('symbol')"
       />
+      <input-field
+        v-model="form.fundsRecipient"
+        :placeholder="$t('nft-form.input-funds-placeholder')"
+        :label="$t('nft-form.input-funds-lbl')"
+        :error-message="getFieldErrorMessage('fundsRecipient')"
+        :disabled="isFormDisabled"
+        @blur="touchField('fundsRecipient')"
+      />
       <textarea-field
         v-model="form.description"
         :max-length="FIELD_LENGTH.description"
@@ -105,6 +113,18 @@
         </section>
       </collapse>
 
+      <checkbox-field
+        v-model="form.isNftBuyable"
+        class="nft-form__checkbox"
+        :label="$t('nft-form.nft-buyable-checkbox-lbl')"
+      />
+
+      <checkbox-field
+        v-if="isUpdateNft"
+        v-model="form.isDisabled"
+        class="nft-form__checkbox"
+        :label="$t('nft-form.disabled-checkbox-lbl')"
+      />
       <div class="nft-form__action-buttons">
         <app-button
           class="nft-form__button"
@@ -150,13 +170,13 @@ import { AppButton, Collapse } from '@/common'
 import { FIELD_LENGTH, ROUTE_NAMES } from '@/enums'
 import { useRouter } from 'vue-router'
 import {
-  useTokenFactory,
   useForm,
   useFormValidation,
-  useNftBookToken,
+  useBooks,
+  FullBookInfo,
 } from '@/composables'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { Document, createBook, updateBook } from '@/api'
+import { Document } from '@/api'
 import {
   required,
   minValue,
@@ -164,10 +184,10 @@ import {
   nonEmptyDocument,
   requiredIf,
   alphaNumWithSpecialChars,
+  address,
 } from '@/validators'
 import { ErrorHandler, Bus, formatAssetFromWei, switchNetwork } from '@/helpers'
 import { BN } from '@/utils/math.util'
-import { BookRecord } from '@/records'
 import { ethers } from 'ethers'
 import {
   MIN_PRICE_VALUE,
@@ -177,19 +197,19 @@ import {
   MAX_BOOK_SIZE,
 } from '@/consts'
 import { useI18n } from 'vue-i18n'
+import { BookFile } from '@/types'
 
 const props = defineProps<{
-  book?: BookRecord
+  book?: FullBookInfo
 }>()
 
 const { t } = useI18n()
 const router = useRouter()
+const { createBook, updateBook } = useBooks()
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
 const networkStore = useNetworksStore()
-
-const bookNft = useNftBookToken()
 
 /* 
   if we CREATING nft - any chain from network list is valid for us
@@ -197,7 +217,8 @@ const bookNft = useNftBookToken()
 */
 const isValidChain = computed(() =>
   isUpdateNft.value
-    ? Number(provider.value.chainId) === props.book.chainID
+    ? Number(provider.value.chainId) ===
+      props.book?.networks[0].attributes.chain_id
     : networkStore.list.find(
         network => network.chain_id === Number(provider.value.chainId),
       ),
@@ -215,48 +236,56 @@ const secondSubtitleText = computed(() =>
     : t('nft-form.details-subtitle'),
 )
 
-const nftPrice = new BN(props.book?.price || 0).fromWei().toString()
-const nftFloorPrice = new BN(props.book?.floorPrice || 0).fromWei().toString()
+const nftPrice = new BN(props.book?.pricePerOneToken || 0).fromWei().toString()
+const nftFloorPrice = new BN(props.book?.minNFTFloorPrice || 0)
+  .fromWei()
+  .toString()
 
-const formatedVoucherTokenAmount = props.book?.voucherTokenAmount
-  ? formatAssetFromWei(props.book?.voucherTokenAmount, 0)
-  : '1'
+const formatedVoucherTokenAmount = props.book?.voucherTokensAmount
+  ? formatAssetFromWei(props.book?.voucherTokensAmount, 0)
+  : '0'
 
 const isContractValuesUpdated = computed(
   () =>
-    form.symbol !== props.book?.contractSymbol ||
+    form.symbol !== props.book?.tokenSymbol ||
     form.price !== nftPrice ||
-    form.name !== props.book?.contractName ||
-    form.floorPrice !== nftFloorPrice,
-)
-
-const isVoucherParamsUpdated = computed(
-  () =>
-    form.voucherTokenAddress !== props.book?.voucherToken ||
+    form.name !== props.book?.tokenName ||
+    form.floorPrice !== nftFloorPrice ||
+    form.fundsRecipient !== props.book?.fundsRecipient ||
+    form.isNftBuyable !== props.book.isNFTBuyable ||
+    form.isDisabled !== props.book?.isDisabled ||
+    form.voucherTokenAddress !== props.book?.voucherTokenContract ||
     form.voucherTokenAmount !== formatedVoucherTokenAmount,
 )
 
 const isApiValuesUpdated = computed(
   () =>
-    isDescriptionUpdated.value ||
-    isTitleUpdated.value ||
-    form.book.key !== props.book?.fileKey ||
-    form.photo.key !== props.book?.bannerKey,
+    form.description !== props.book?.description ||
+    form.book.key !== props.book?.file.attributes.key ||
+    form.photo.key !== props.book?.banner.attributes.key,
 )
 
-const isDescriptionUpdated = computed(
-  () => form.description !== props.book?.description,
+const isFilesUpdated = computed(
+  () =>
+    form.book.key !== props.book?.file.attributes.key ||
+    form.photo.key !== props.book?.banner.attributes.key,
 )
-
-const isTitleUpdated = computed(() => form.name !== props.book?.title)
 
 const isSubmitBtnDisabled = computed(
   () =>
     (!isApiValuesUpdated.value &&
       !isContractValuesUpdated.value &&
-      !isVoucherParamsUpdated.value) ||
+      !isFilesUpdated.value) ||
     isFormDisabled.value,
 )
+
+const toDocument = (file: BookFile) => {
+  return new Document({
+    name: file.attributes.name,
+    mimeType: file.attributes.mime_type,
+    key: file.attributes.key,
+  })
+}
 
 const form = reactive<{
   name: string
@@ -264,24 +293,30 @@ const form = reactive<{
   floorPrice: string
   description: string
   symbol: string
+  fundsRecipient: string
   photo: Document
   book: Document
   isVoucherAllowed: boolean
+  isNftBuyable: boolean
+  isDisabled: boolean
   voucherTokenAddress: string
   voucherTokenAmount: string
 }>({
-  name: props.book?.contractName || '',
+  name: props.book?.tokenName || '',
   price: isUpdateNft.value ? nftPrice : '',
   floorPrice: isUpdateNft.value ? nftFloorPrice : '',
   description: props.book?.description || '',
-  symbol: props.book?.contractSymbol || '',
-  photo: props.book?.banner || new Document(),
-  book: props.book?.file || new Document(),
+  symbol: props.book?.tokenSymbol || '',
+  photo: props.book?.banner ? toDocument(props.book.banner) : new Document(),
+  book: props.book?.file ? toDocument(props.book?.file) : new Document(),
+  isNftBuyable: props.book?.isNFTBuyable ?? true,
+  fundsRecipient: props.book?.fundsRecipient || '',
   isVoucherAllowed:
-    Boolean(props.book?.voucherToken) &&
-    props.book?.voucherToken !== ethers.constants.AddressZero,
-  voucherTokenAddress: props.book?.voucherToken || '',
+    Boolean(props.book?.voucherTokenContract) &&
+    props.book?.voucherTokenContract !== ethers.constants.AddressZero,
+  voucherTokenAddress: props.book?.voucherTokenContract || '',
   voucherTokenAmount: formatedVoucherTokenAmount,
+  isDisabled: props.book?.isDisabled || false,
 })
 
 /* 
@@ -320,6 +355,9 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
       minValue: minValue(minVoucherAmount),
       maxValue: maxValue(MAX_VOUCHER_AMOUNT),
     },
+    fundsRecipient: {
+      address,
+    },
   },
 )
 
@@ -327,14 +365,13 @@ const submit = async () => {
   if (!isFormValid() || !provider.value.selectedAddress) return
   disableForm()
   try {
-    await Document.uploadDocuments([form.book, form.photo])
-
     if (isUpdateNft.value) {
-      await updateNftBook(form.book, form.photo)
+      await updateNftBook()
+      router.push({ name: ROUTE_NAMES.nftItem, params: { id: props.book!.id } })
     } else {
-      await createNftBook(form.book, form.photo)
+      await createNftBook()
+      router.push({ name: ROUTE_NAMES.nfts })
     }
-    router.push({ name: ROUTE_NAMES.nfts })
   } catch (e) {
     ErrorHandler.process(e)
   }
@@ -342,84 +379,69 @@ const submit = async () => {
 }
 
 const handleSwitchNetworkClick = () => {
-  if (!props.book?.chainID) return
+  if (isUpdateNft.value && !props.book?.networks[0].attributes.chain_id) return
 
   switchNetwork(
-    isUpdateNft.value ? props.book.chainID : networkStore.list[0].chain_id,
+    isUpdateNft.value
+      ? props.book?.networks[0].attributes.chain_id!
+      : Number(networkStore.list[0].chain_id),
   )
 }
 
-const updateNftBook = async (book: Document, banner: Document) => {
-  if (isContractValuesUpdated.value) {
-    bookNft.init(props.book?.contractAddress!)
-    await bookNft.updateTokenContractParams(
-      form.price,
-      form.floorPrice,
-      form.name,
-      form.symbol,
-    )
-  }
+const updateNftBook = async () => {
+  if (!props.book) return
 
-  if (isVoucherParamsUpdated.value) {
-    bookNft.init(props.book?.contractAddress)
-    await bookNft.updateVoucherParams(
-      form.voucherTokenAddress,
-      form.voucherTokenAmount,
-    )
-  }
-
-  if (isApiValuesUpdated.value) {
-    await updateBook({
-      bookId: props.book?.id!,
-      book,
-      banner,
-      ...(isDescriptionUpdated.value ? { description: form.description } : {}),
-      ...(isTitleUpdated.value ? { title: form.name } : {}),
-    })
-  }
+  await updateBook(
+    {
+      name: form.name,
+      symbol: form.symbol,
+      contractParams: {
+        pricePerOneToken: form.price,
+        minNFTFloorPrice: form.floorPrice,
+        fundsRecipient: form.fundsRecipient,
+        isDisabled: form.isDisabled,
+        isNFTBuyable: form.isNftBuyable,
+        voucherTokenContract: form.voucherTokenAddress,
+        voucherTokensAmount: form.voucherTokenAmount,
+      },
+      apiParams: {
+        id: props.book.id,
+        description: form.description,
+        file: form.book,
+        banner: form.photo,
+        networks: props.book.networks,
+      },
+    },
+    {
+      apiValuesUpdated: isApiValuesUpdated.value,
+      filesUpdated: isFilesUpdated.value,
+      contractValuesUpdate: isContractValuesUpdated.value,
+    },
+  )
   Bus.success(t('nft-form.edit-success-msg'))
 }
 
-const createNftBook = async (book: Document, banner: Document) => {
-  const weiPrice = new BN(form.price).toWei().toString()
-  const weiFloorPrice = new BN(form.floorPrice).toWei().toString()
-  const weiTokenAmount = new BN(form.voucherTokenAmount).toWei().toString()
-
+const createNftBook = async () => {
   const currentNetwork = networkStore.list.find(
     network => network.chain_id === Number(provider.value.chainId),
   )
 
   if (!currentNetwork) return
 
-  const tokenFactory = useTokenFactory(currentNetwork.factory_address)
-
-  const { data: bookSignature } = await createBook({
+  await createBook({
     tokenName: form.name,
     tokenSymbol: form.symbol,
     description: form.description,
-    price: weiPrice,
-    book,
-    banner,
-    voucherToken: form.isVoucherAllowed ? form.voucherTokenAddress : undefined,
-    voucherTokenAmount: form.isVoucherAllowed ? weiTokenAmount : undefined,
-    chainID: Number(provider.value.chainId),
-    floorPrice: weiFloorPrice,
+    price: form.price,
+    floorPrice: form.floorPrice,
+    voucherToken: form.voucherTokenAddress,
+    voucherTokenAmount: form.voucherTokenAmount,
+    banner: form.photo,
+    bookFile: form.book,
+    isNftBuyable: form.isNftBuyable,
+    fundsRecipient: form.fundsRecipient,
+    chainIds: [currentNetwork.chain_id],
   })
-
-  await tokenFactory.deployTokenContract(
-    bookSignature.token_id,
-    form.name,
-    form.symbol,
-    weiPrice,
-    form.isVoucherAllowed
-      ? form.voucherTokenAddress
-      : ethers.constants.AddressZero,
-    form.isVoucherAllowed ? weiTokenAmount : '0',
-    weiFloorPrice,
-    bookSignature.signature.r,
-    bookSignature.signature.s,
-    bookSignature.signature.v,
-  )
 
   Bus.success(t('nft-form.create-success-msg'))
 }
@@ -448,6 +470,11 @@ const createNftBook = async (book: Document, banner: Document) => {
 }
 
 .nft-form__collapse-trigger {
+  margin-bottom: toRem(20);
+}
+
+.nft-form__checkbox {
+  align-self: flex-start;
   margin-bottom: toRem(20);
 }
 

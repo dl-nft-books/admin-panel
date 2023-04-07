@@ -136,6 +136,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "SIGNATURE_MANAGER",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "TOKEN_FACTORY_MANAGER",
     outputs: [
       {
@@ -327,16 +340,40 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "role",
+        name: "role_",
         type: "bytes32",
       },
       {
         internalType: "address",
-        name: "account",
+        name: "account_",
         type: "address",
       },
     ],
     name: "hasRole",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32[]",
+        name: "roles_",
+        type: "bytes32[]",
+      },
+      {
+        internalType: "address",
+        name: "account_",
+        type: "address",
+      },
+    ],
+    name: "hasSpecificOrStrongerRoles",
     outputs: [
       {
         internalType: "bool",
@@ -394,6 +431,25 @@ const _abi = [
       },
     ],
     name: "isRoleSupervisor",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "manager_",
+        type: "address",
+      },
+    ],
+    name: "isSignatureManager",
     outputs: [
       {
         internalType: "bool",
@@ -484,12 +540,12 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "role",
+        name: "role_",
         type: "bytes32",
       },
       {
         internalType: "address",
-        name: "account",
+        name: "account_",
         type: "address",
       },
     ],

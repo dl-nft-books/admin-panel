@@ -8,6 +8,7 @@ import {
   handleEthError,
   requestAddEthChain,
   requestSwitchEthChain,
+  getTransactionReceipt as _getTransactionReceipt,
 } from '@/helpers'
 import { computed, ref } from 'vue'
 import {
@@ -148,6 +149,19 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     }
   }
 
+  const getTransactionReceipt = async (transactionHash: string) => {
+    try {
+      const txInfo = await _getTransactionReceipt(
+        currentProvider.value,
+        transactionHash,
+      )
+
+      return txInfo
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   const getHashFromTxResponse = (txResponse: TransactionResponse) => {
     const transactionResponse = txResponse as EthTransactionResponse
 
@@ -190,5 +204,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     getAddressUrl,
     signMessage,
     addNetwork,
+    getTransactionReceipt,
   }
 }

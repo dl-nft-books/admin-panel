@@ -10,14 +10,14 @@
         <div class="nft-item-page__book">
           <div class="nft-item-page__book-cover-wrapper">
             <img
-              :src="book.bannerUrl"
-              :alt="book.title"
+              :src="book.banner.attributes.url"
+              :alt="book.tokenName"
               class="nft-item-page__book-cover"
             />
           </div>
           <div class="nft-item-page__book-details">
             <p class="nft-item-page__book-title">
-              {{ book.title }}
+              {{ book.tokenName }}
             </p>
             <nft-details :book="book" />
           </div>
@@ -49,28 +49,29 @@ import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
 
 import { ErrorHandler } from '@/helpers'
 import { ref, computed } from 'vue'
-import { BookRecord } from '@/records'
+import { FullBookInfo, useBooks } from '@/composables'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
-import { getBookById } from '@/api'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   id: string
 }>()
 
+const { getBookById } = useBooks()
+
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 
-const book = ref<BookRecord | undefined>()
+const book = ref<FullBookInfo | undefined>()
 
 const { width } = useWindowSize()
 const { t } = useI18n()
 
 const init = async () => {
   try {
-    const { data } = await getBookById(props.id)
-    book.value = new BookRecord(data)
+    const data = await getBookById(props.id)
+    book.value = data
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
     isLoadFailed.value = true

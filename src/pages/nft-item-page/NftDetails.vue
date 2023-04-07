@@ -41,9 +41,9 @@ import {
   formatFiatAssetFromWei,
   formatMDY,
 } from '@/helpers'
-import { BookRecord } from '@/records'
 import { CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
+import { FullBookInfo } from '@/composables'
 
 export type NftDetails = {
   label: string
@@ -51,45 +51,62 @@ export type NftDetails = {
   isUrl?: boolean
 }
 
-const props = defineProps<{ book: BookRecord }>()
+const props = defineProps<{ book: FullBookInfo }>()
 
 const { t } = useI18n()
 
 const details: NftDetails[] = [
   {
     label: t('nft-details.creation-date-lbl'),
-    value: formatMDY(props.book.createdAt),
+    value: formatMDY(props.book.created_at),
   },
   {
     label: t('nft-details.price-lbl'),
-    value: formatFiatAssetFromWei(props.book.price, CURRENCIES.USD),
+    value: formatFiatAssetFromWei(props.book.pricePerOneToken, CURRENCIES.USD),
   },
   {
     label: t('nft-details.floor-price-lbl'),
-    value: formatFiatAssetFromWei(props.book.floorPrice, CURRENCIES.USD),
+    value: formatFiatAssetFromWei(props.book.minNFTFloorPrice, CURRENCIES.USD),
+  },
+  {
+    label: t('nft-details.funds-recipient'),
+    value:
+      props.book.fundsRecipient !== ethers.constants.AddressZero
+        ? props.book.fundsRecipient
+        : t('nft-details.marketplace-lbl'),
+  },
+  {
+    label: t('nft-details.nft-buyable'),
+    value: props.book.isNFTBuyable ? 'Yes' : 'No',
   },
   {
     label: t('nft-details.voucher-lbl'),
     value:
-      props.book.voucherToken !== ethers.constants.AddressZero
-        ? props.book.voucherToken
+      props.book.voucherTokenContract !== ethers.constants.AddressZero
+        ? props.book.voucherTokenContract
         : '',
   },
   {
     label: t('nft-details.voucher-amount-lbl'),
     value:
-      props.book.voucherToken !== ethers.constants.AddressZero
-        ? formatAssetFromWei(props.book.voucherTokenAmount, 2)
+      props.book.voucherTokenContract !== ethers.constants.AddressZero
+        ? formatAssetFromWei(props.book.voucherTokensAmount, 2)
         : '',
   },
   {
     label: t('nft-details.document-lbl'),
-    value: props.book.fileUrl,
+    value: props.book.file.attributes.url,
     isUrl: true,
   },
   {
     label: t('nft-details.description-lbl'),
     value: props.book.description,
+  },
+  {
+    label: t('nft-details.supported-networks'),
+    value: props.book.networks
+      .map(({ attributes }) => attributes.chain_id)
+      .join(', '),
   },
 ]
 

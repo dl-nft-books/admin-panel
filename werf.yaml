@@ -24,9 +24,7 @@ shell:
     - yarn build
 ---
 image: web
-from: nginx:stable-alpine
-docker:
-  WORKDIR: /usr/share/nginx
+from: nginx:alpine
 git:
   - add: /nginx.conf
     to: /etc/nginx/nginx.conf

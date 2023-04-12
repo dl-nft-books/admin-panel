@@ -576,6 +576,11 @@
             "type": "address"
           },
           {
+            "internalType": "bool",
+            "name": "isDisabled",
+            "type": "bool"
+          },
+          {
             "internalType": "uint256",
             "name": "pricePerOneToken",
             "type": "uint256"
@@ -615,6 +620,11 @@
             "internalType": "address",
             "name": "tokenContract",
             "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isDisabled",
+            "type": "bool"
           },
           {
             "internalType": "uint256",
@@ -850,21 +860,38 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "tokenContract_",
+        "name": "userAddr_",
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "userAddr_",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "offset_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "limit_",
+        "type": "uint256"
       }
     ],
-    "name": "getUserTokenIDs",
+    "name": "getUserTokensPart",
     "outputs": [
       {
-        "internalType": "uint256[]",
-        "name": "tokenIDs_",
-        "type": "uint256[]"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "tokenContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "tokenIds",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct IMarketplace.UserTokens[]",
+        "name": "userTokens_",
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",

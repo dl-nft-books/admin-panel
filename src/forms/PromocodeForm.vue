@@ -63,10 +63,9 @@
 
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
-import { updatePromocode, createPromocode } from '@/api'
 import { AppButton } from '@/common'
 import { InputField, DateField } from '@/fields'
-import { useForm, useFormValidation } from '@/composables'
+import { useForm, useFormValidation, usePromocodes } from '@/composables'
 import {
   required,
   minValue,
@@ -89,6 +88,7 @@ import {
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const { createPromocode, updatePromocode } = usePromocodes()
 
 const emit = defineEmits<{
   (event: 'close'): void

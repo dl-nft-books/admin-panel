@@ -9,7 +9,7 @@ export function getPayments(opts: {
   pageLimit?: number
   pageOrder?: PageOrder
 }) {
-  return api.get<Payment[]>('/integrations/token-tracker/payments', {
+  return api.get<Payment[]>('/integrations/tracker/payments', {
     page: {
       limit: opts.pageLimit || config.DEFAULT_PAGE_LIMIT,
       order: opts.pageOrder || 'desc',
@@ -31,7 +31,7 @@ export function getNftPayments(opts: {
   pageLimit?: number
   pageOrder?: PageOrder
 }) {
-  return api.get<NftPayment[]>('/integrations/token-tracker/payments/nft', {
+  return api.get<NftPayment[]>('/integrations/tracker/payments/nft', {
     page: {
       limit: opts.pageLimit || config.DEFAULT_PAGE_LIMIT,
       order: opts.pageOrder || 'desc',

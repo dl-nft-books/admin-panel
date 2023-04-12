@@ -3,6 +3,4 @@
 /* eslint-disable */
 export { ContractRegistry__factory } from "./ContractRegistry__factory";
 export { MarketPlace__factory } from "./MarketPlace__factory";
-export { NftBookToken__factory } from "./NftBookToken__factory";
 export { RoleManager__factory } from "./RoleManager__factory";
-export { TokenFactory__factory } from "./TokenFactory__factory";

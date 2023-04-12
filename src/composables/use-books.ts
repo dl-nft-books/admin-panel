@@ -82,6 +82,7 @@ export function useBooks(contractRegistryAddress?: string) {
       pricePerOneToken: new BN(contractData.pricePerOneToken._hex).toString(),
       tokenName: contractData.tokenName,
       tokenContract: contractData.tokenContract,
+      isDisabled: contractData.isDisabled,
     }
   }
 

@@ -71,12 +71,19 @@ export declare namespace IMarketplace {
 
   export type BaseTokenParamsStruct = {
     tokenContract: PromiseOrValue<string>;
+    isDisabled: PromiseOrValue<boolean>;
     pricePerOneToken: PromiseOrValue<BigNumberish>;
     tokenName: PromiseOrValue<string>;
   };
 
-  export type BaseTokenParamsStructOutput = [string, BigNumber, string] & {
+  export type BaseTokenParamsStructOutput = [
+    string,
+    boolean,
+    BigNumber,
+    string
+  ] & {
     tokenContract: string;
+    isDisabled: boolean;
     pricePerOneToken: BigNumber;
     tokenName: string;
   };
@@ -99,6 +106,16 @@ export declare namespace IMarketplace {
     tokenName: string;
     tokenSymbol: string;
   };
+
+  export type UserTokensStruct = {
+    tokenContract: PromiseOrValue<string>;
+    tokenIds: PromiseOrValue<BigNumberish>[];
+  };
+
+  export type UserTokensStructOutput = [string, BigNumber[]] & {
+    tokenContract: string;
+    tokenIds: BigNumber[];
+  };
 }
 
 export interface MarketPlaceInterface extends utils.Interface {
@@ -116,7 +133,7 @@ export interface MarketPlaceInterface extends utils.Interface {
     "getInjector()": FunctionFragment;
     "getTokenContractsCount()": FunctionFragment;
     "getTokenContractsPart(uint256,uint256)": FunctionFragment;
-    "getUserTokenIDs(address,address)": FunctionFragment;
+    "getUserTokensPart(address,uint256,uint256)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
@@ -143,7 +160,7 @@ export interface MarketPlaceInterface extends utils.Interface {
       | "getInjector"
       | "getTokenContractsCount"
       | "getTokenContractsPart"
-      | "getUserTokenIDs"
+      | "getUserTokensPart"
       | "onERC721Received"
       | "pause"
       | "paused"
@@ -234,8 +251,12 @@ export interface MarketPlaceInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getUserTokenIDs",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    functionFragment: "getUserTokensPart",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "onERC721Received",
@@ -322,7 +343,7 @@ export interface MarketPlaceInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUserTokenIDs",
+    functionFragment: "getUserTokensPart",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -609,11 +630,16 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
-    getUserTokenIDs(
-      tokenContract_: PromiseOrValue<string>,
+    getUserTokensPart(
       userAddr_: PromiseOrValue<string>,
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { tokenIDs_: BigNumber[] }>;
+    ): Promise<
+      [IMarketplace.UserTokensStructOutput[]] & {
+        userTokens_: IMarketplace.UserTokensStructOutput[];
+      }
+    >;
 
     onERC721Received(
       arg0: PromiseOrValue<string>,
@@ -740,11 +766,12 @@ export interface MarketPlace extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
-  getUserTokenIDs(
-    tokenContract_: PromiseOrValue<string>,
+  getUserTokensPart(
     userAddr_: PromiseOrValue<string>,
+    offset_: PromiseOrValue<BigNumberish>,
+    limit_: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<IMarketplace.UserTokensStructOutput[]>;
 
   onERC721Received(
     arg0: PromiseOrValue<string>,
@@ -871,11 +898,12 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    getUserTokenIDs(
-      tokenContract_: PromiseOrValue<string>,
+    getUserTokensPart(
       userAddr_: PromiseOrValue<string>,
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<IMarketplace.UserTokensStructOutput[]>;
 
     onERC721Received(
       arg0: PromiseOrValue<string>,
@@ -1091,9 +1119,10 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getUserTokenIDs(
-      tokenContract_: PromiseOrValue<string>,
+    getUserTokensPart(
       userAddr_: PromiseOrValue<string>,
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1229,9 +1258,10 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getUserTokenIDs(
-      tokenContract_: PromiseOrValue<string>,
+    getUserTokensPart(
       userAddr_: PromiseOrValue<string>,
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

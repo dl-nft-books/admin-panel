@@ -97,13 +97,13 @@
 </template>
 
 <script setup lang="ts">
-import { deletePromocode as _deletePromocode } from '@/api'
 import { Collapse, AppButton, Modal, ConfirmationModal, Icon } from '@/common'
 import { Promocode } from '@/types'
 import { PromocodeState } from '@/pages/promocodes-page'
 import { computed, ref } from 'vue'
 import { PROMOCODE_STATUSES } from '@/enums'
 import { PromocodeForm } from '@/forms'
+import { usePromocodes } from '@/composables'
 import { Bus, copyToClipboard, ErrorHandler } from '@/helpers'
 import { useI18n } from 'vue-i18n'
 
@@ -114,6 +114,7 @@ type PromocodeInfo = {
 }
 
 const { t } = useI18n()
+const { deletePromocode: _deletePromocode } = usePromocodes()
 
 const props = defineProps<{
   promocode: Promocode

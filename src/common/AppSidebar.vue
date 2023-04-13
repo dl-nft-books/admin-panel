@@ -19,23 +19,46 @@
             @click="hideSidebar"
           />
         </div>
-        <div class="app-sidebar__links-section">
-          <app-button
-            class="app-sidebar__link"
-            scheme="default"
-            size="default"
-            :icon-left="$icons.photograph"
-            :route="{ name: $routes.nfts }"
-            :text="$t('app-sidebar.nfts-link')"
-            @click="hideSidebar"
+        <loader v-if="rolesStore.isLoadingRoles" />
+        <section
+          v-else-if="rolesStore.hasNoRoles"
+          class="app-sidebar__error-msg"
+        >
+          <error-message
+            :icon-name="$icons.hand"
+            :message="$t('app-sidebar.has-no-roles-lbl')"
           />
+        </section>
+
+        <div v-else class="app-sidebar__links-section">
+          <template v-if="rolesStore.hasAdminRole">
+            <app-button
+              class="app-sidebar__link"
+              scheme="default"
+              size="default"
+              :icon-left="$icons.photograph"
+              :route="{ name: $routes.nfts }"
+              :text="$t('app-sidebar.nfts-link')"
+              @click="hideSidebar"
+            />
+            <app-button
+              class="app-sidebar__link"
+              scheme="default"
+              size="default"
+              :icon-left="$icons.coupon"
+              :route="{ name: $routes.promocodes }"
+              :text="$t('app-sidebar.promocodes-link')"
+              @click="hideSidebar"
+            />
+          </template>
           <app-button
+            v-if="rolesStore.hasRoleManagerRole"
             class="app-sidebar__link"
             scheme="default"
             size="default"
-            :icon-left="$icons.coupon"
-            :route="{ name: $routes.promocodes }"
-            :text="$t('app-sidebar.promocodes-link')"
+            :icon-left="$icons.manager"
+            :route="{ name: $routes.roles }"
+            :text="$t('app-sidebar.roles-link')"
             @click="hideSidebar"
           />
         </div>
@@ -64,10 +87,9 @@
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue'
 import { WINDOW_BREAKPOINTS } from '@/enums'
-import { Bus } from '@/helpers'
-import { AppLogo, AppButton } from '@/common'
-import { logout } from '@/helpers'
-
+import { Bus, logout } from '@/helpers'
+import { AppLogo, AppButton, Loader, ErrorMessage } from '@/common'
+import { useRolesStore } from '@/store'
 import {
   onClickOutside,
   SwipeDirection,
@@ -78,6 +100,8 @@ import {
 const asideElement = ref<HTMLElement | null>(null)
 
 const { width: windowWidth } = useWindowSize()
+const rolesStore = useRolesStore()
+
 const swipe = useSwipe(document.querySelector('#app'))
 
 const isVisible = ref(false)
@@ -160,6 +184,13 @@ $z-local: 5;
   to {
     width: 100%;
   }
+}
+
+.app-sidebar__error-msg {
+  width: toRem(300);
+  margin: toRem(100) auto;
+  text-align: center;
+  padding: 0 toRem(20);
 }
 
 .app-sidebar__aside {

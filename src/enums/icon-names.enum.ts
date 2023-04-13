@@ -134,6 +134,7 @@ export enum ICON_NAMES {
   login = 'login',
   logout = 'logout',
   mailOpen = 'mail-open',
+  manager = 'manager',
   mail = 'mail',
   map = 'map',
   menuAlt1 = 'menu-alt-1',

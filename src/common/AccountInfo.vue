@@ -110,8 +110,9 @@ const copyAddress = async () => {
 }
 
 .account-info__address {
-  font-size: toRem(18);
+  font-size: toRem(16);
   line-height: 160%;
+  font-weight: 500;
   color: var(--text-secondary-main);
   user-select: none;
 

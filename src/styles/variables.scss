@@ -32,6 +32,7 @@
   /* brand colors */
   --primary-light: #{$primary-light};
   --primary-main: #{$primary-main};
+  --primary-main-rgb: #{$primary-main-rgb};
   --primary-dark: #{$primary-dark};
 
   --secondary-light: #{$secondary-light};
@@ -85,7 +86,7 @@
 
   /* App variables */
   --app-txt: #{$text-primary-main};
-  --app-font-family: 'Gilroy', sans-serif;
+  --app-font-family: 'Jakarta', sans-serif;
   --app-padding-right: #{toRem(40)};
   --app-padding-left: #{toRem(40)};
 

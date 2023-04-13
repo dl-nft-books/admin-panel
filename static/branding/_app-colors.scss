@@ -29,6 +29,7 @@ $info-dark: #0094cc;
 
 $primary-light: #d7dadb;
 $primary-main: #4cbecf;
+$primary-main-rgb: hexToRGB($primary-main);
 $primary-dark: #3ba2b1;
 
 $secondary-light: #d7dadb;

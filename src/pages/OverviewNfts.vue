@@ -37,13 +37,26 @@
 
     <mounted-teleport to="#app-navbar__right-buttons">
       <app-button
+        v-if="rolesStore.hasMarkerplaceManagerRole"
         class="overview-nfts__link-button"
         size="small"
         :icon-left="$icons.plus"
         :text="buttonLinkText"
         :route="{ name: $routes.nftsCreate }"
       />
+      <app-button
+        v-if="rolesStore.hasWithdrawalManagerRole"
+        class="overview-nfts__link-button"
+        size="small"
+        :text="$t('overview-nfts.withdraw-lbl')"
+        @click="isWithdrawingFunds = true"
+      />
     </mounted-teleport>
+    <modal v-model:is-shown="isWithdrawingFunds">
+      <template #default="{ modal }">
+        <withdraw-form @close="modal.close" />
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -55,6 +68,7 @@ import {
   ErrorMessage,
   NoDataMessage,
   AppButton,
+  Modal,
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
@@ -62,14 +76,17 @@ import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
 import { useContractPagination, useBooks, BaseBookInfo } from '@/composables'
 import { useI18n } from 'vue-i18n'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useRolesStore } from '@/store'
+import { WithdrawForm } from '@/forms'
 
 const webProvidersStore = useWeb3ProvidersStore()
+const rolesStore = useRolesStore()
 
 const provider = computed(() => webProvidersStore.provider)
 
 const booksList = ref<BaseBookInfo[]>([])
 const isLoadFailed = ref(false)
+const isWithdrawingFunds = ref(false)
 
 const { width } = useWindowSize()
 const { t } = useI18n()
@@ -168,6 +185,7 @@ const buttonLinkText = computed(() =>
   width: toRem(180);
   order: -1;
   font-weight: 700;
+  text-transform: uppercase;
 
   @include respond-to(tablet) {
     width: toRem(54);

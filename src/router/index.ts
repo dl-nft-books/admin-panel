@@ -87,6 +87,15 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/pages/promocodes-page/PromocodesPage.vue'),
       },
+      {
+        path: '/roles',
+        name: ROUTE_NAMES.roles,
+        meta: {
+          [ROUTE_METAS.isRequiredAuth]: true,
+        },
+        component: () =>
+          import('@/pages/roles-manager-page/RolesManagerPage.vue'),
+      },
     ],
   },
 ]

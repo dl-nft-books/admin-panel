@@ -29,18 +29,6 @@ import type {
 } from "./common";
 
 export declare namespace IMarketplace {
-  export type MintedTokenInfoStruct = {
-    tokenId: PromiseOrValue<BigNumberish>;
-    mintedTokenPrice: PromiseOrValue<BigNumberish>;
-    tokenURI: PromiseOrValue<string>;
-  };
-
-  export type MintedTokenInfoStructOutput = [BigNumber, BigNumber, string] & {
-    tokenId: BigNumber;
-    mintedTokenPrice: BigNumber;
-    tokenURI: string;
-  };
-
   export type TokenParamsStruct = {
     pricePerOneToken: PromiseOrValue<BigNumberish>;
     minNFTFloorPrice: PromiseOrValue<BigNumberish>;
@@ -67,6 +55,59 @@ export declare namespace IMarketplace {
     fundsRecipient: string;
     isNFTBuyable: boolean;
     isDisabled: boolean;
+  };
+
+  export type PaymentDetailsStruct = {
+    paymentTokenAddress: PromiseOrValue<string>;
+    paymentTokenPrice: PromiseOrValue<BigNumberish>;
+    discount: PromiseOrValue<BigNumberish>;
+    nftTokenId: PromiseOrValue<BigNumberish>;
+  };
+
+  export type PaymentDetailsStructOutput = [
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    paymentTokenAddress: string;
+    paymentTokenPrice: BigNumber;
+    discount: BigNumber;
+    nftTokenId: BigNumber;
+  };
+
+  export type BuyParamsStruct = {
+    paymentDetails: IMarketplace.PaymentDetailsStruct;
+    tokenContract: PromiseOrValue<string>;
+    futureTokenId: PromiseOrValue<BigNumberish>;
+    endTimestamp: PromiseOrValue<BigNumberish>;
+    tokenURI: PromiseOrValue<string>;
+  };
+
+  export type BuyParamsStructOutput = [
+    IMarketplace.PaymentDetailsStructOutput,
+    string,
+    BigNumber,
+    BigNumber,
+    string
+  ] & {
+    paymentDetails: IMarketplace.PaymentDetailsStructOutput;
+    tokenContract: string;
+    futureTokenId: BigNumber;
+    endTimestamp: BigNumber;
+    tokenURI: string;
+  };
+
+  export type SigStruct = {
+    r: PromiseOrValue<BytesLike>;
+    s: PromiseOrValue<BytesLike>;
+    v: PromiseOrValue<BigNumberish>;
+  };
+
+  export type SigStructOutput = [string, string, number] & {
+    r: string;
+    s: string;
+    v: number;
   };
 
   export type BaseTokenParamsStruct = {
@@ -123,8 +164,10 @@ export interface MarketPlaceInterface extends utils.Interface {
     "__Marketplace_init(string)": FunctionFragment;
     "addToken(string,string,(uint256,uint256,uint256,address,address,bool,bool))": FunctionFragment;
     "baseTokenContractsURI()": FunctionFragment;
-    "buyToken(address,uint256,address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
-    "buyTokenByNFT(address,uint256,address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
+    "buyTokenWithERC20(((address,uint256,uint256,uint256),address,uint256,uint256,string),(bytes32,bytes32,uint8))": FunctionFragment;
+    "buyTokenWithETH(((address,uint256,uint256,uint256),address,uint256,uint256,string),(bytes32,bytes32,uint8))": FunctionFragment;
+    "buyTokenWithNFT(((address,uint256,uint256,uint256),address,uint256,uint256,string),(bytes32,bytes32,uint8))": FunctionFragment;
+    "buyTokenWithVoucher(((address,uint256,uint256,uint256),address,uint256,uint256,string),(bytes32,bytes32,uint8))": FunctionFragment;
     "getActiveTokenContractsCount()": FunctionFragment;
     "getBaseTokenParams(address[])": FunctionFragment;
     "getBaseTokenParamsPart(uint256,uint256)": FunctionFragment;
@@ -150,8 +193,10 @@ export interface MarketPlaceInterface extends utils.Interface {
       | "__Marketplace_init"
       | "addToken"
       | "baseTokenContractsURI"
-      | "buyToken"
-      | "buyTokenByNFT"
+      | "buyTokenWithERC20"
+      | "buyTokenWithETH"
+      | "buyTokenWithNFT"
+      | "buyTokenWithVoucher"
       | "getActiveTokenContractsCount"
       | "getBaseTokenParams"
       | "getBaseTokenParamsPart"
@@ -189,34 +234,20 @@ export interface MarketPlaceInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "buyToken",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
+    functionFragment: "buyTokenWithERC20",
+    values: [IMarketplace.BuyParamsStruct, IMarketplace.SigStruct]
   ): string;
   encodeFunctionData(
-    functionFragment: "buyTokenByNFT",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
+    functionFragment: "buyTokenWithETH",
+    values: [IMarketplace.BuyParamsStruct, IMarketplace.SigStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyTokenWithNFT",
+    values: [IMarketplace.BuyParamsStruct, IMarketplace.SigStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyTokenWithVoucher",
+    values: [IMarketplace.BuyParamsStruct, IMarketplace.SigStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "getActiveTokenContractsCount",
@@ -305,9 +336,20 @@ export interface MarketPlaceInterface extends utils.Interface {
     functionFragment: "baseTokenContractsURI",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "buyToken", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "buyTokenByNFT",
+    functionFragment: "buyTokenWithERC20",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "buyTokenWithETH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "buyTokenWithNFT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "buyTokenWithVoucher",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -378,10 +420,9 @@ export interface MarketPlaceInterface extends utils.Interface {
     "BaseTokenContractsURIUpdated(string)": EventFragment;
     "PaidTokensWithdrawn(address,address,uint256)": EventFragment;
     "Paused(address)": EventFragment;
-    "SuccessfullyMinted(address,address,tuple,address,uint256,uint256,uint256,address)": EventFragment;
-    "SuccessfullyMintedByNFT(address,address,tuple,address,uint256,uint256,address)": EventFragment;
     "TokenContractDeployed(address,string,string,tuple)": EventFragment;
     "TokenContractParamsUpdated(address,string,string,tuple)": EventFragment;
+    "TokenSuccessfullyPurchased(address,uint256,uint256,tuple,uint8)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
 
@@ -390,10 +431,9 @@ export interface MarketPlaceInterface extends utils.Interface {
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaidTokensWithdrawn"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SuccessfullyMinted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SuccessfullyMintedByNFT"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenContractDeployed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenContractParamsUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenSuccessfullyPurchased"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
@@ -428,58 +468,6 @@ export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
 export type PausedEventFilter = TypedEventFilter<PausedEvent>;
 
-export interface SuccessfullyMintedEventObject {
-  tokenContract: string;
-  recipient: string;
-  mintedTokenInfo: IMarketplace.MintedTokenInfoStructOutput;
-  paymentTokenAddress: string;
-  paidTokensAmount: BigNumber;
-  paymentTokenPrice: BigNumber;
-  discount: BigNumber;
-  fundsRecipient: string;
-}
-export type SuccessfullyMintedEvent = TypedEvent<
-  [
-    string,
-    string,
-    IMarketplace.MintedTokenInfoStructOutput,
-    string,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    string
-  ],
-  SuccessfullyMintedEventObject
->;
-
-export type SuccessfullyMintedEventFilter =
-  TypedEventFilter<SuccessfullyMintedEvent>;
-
-export interface SuccessfullyMintedByNFTEventObject {
-  tokenContract: string;
-  recipient: string;
-  mintedTokenInfo: IMarketplace.MintedTokenInfoStructOutput;
-  nftAddress: string;
-  tokenId: BigNumber;
-  nftFloorPrice: BigNumber;
-  fundsRecipient: string;
-}
-export type SuccessfullyMintedByNFTEvent = TypedEvent<
-  [
-    string,
-    string,
-    IMarketplace.MintedTokenInfoStructOutput,
-    string,
-    BigNumber,
-    BigNumber,
-    string
-  ],
-  SuccessfullyMintedByNFTEventObject
->;
-
-export type SuccessfullyMintedByNFTEventFilter =
-  TypedEventFilter<SuccessfullyMintedByNFTEvent>;
-
 export interface TokenContractDeployedEventObject {
   tokenContract: string;
   tokenName: string;
@@ -507,6 +495,21 @@ export type TokenContractParamsUpdatedEvent = TypedEvent<
 
 export type TokenContractParamsUpdatedEventFilter =
   TypedEventFilter<TokenContractParamsUpdatedEvent>;
+
+export interface TokenSuccessfullyPurchasedEventObject {
+  recipient: string;
+  mintedTokenPrice: BigNumber;
+  paidTokensAmount: BigNumber;
+  buyParams: IMarketplace.BuyParamsStructOutput;
+  paymentType: number;
+}
+export type TokenSuccessfullyPurchasedEvent = TypedEvent<
+  [string, BigNumber, BigNumber, IMarketplace.BuyParamsStructOutput, number],
+  TokenSuccessfullyPurchasedEventObject
+>;
+
+export type TokenSuccessfullyPurchasedEventFilter =
+  TypedEventFilter<TokenSuccessfullyPurchasedEvent>;
 
 export interface UnpausedEventObject {
   account: string;
@@ -556,31 +559,27 @@ export interface MarketPlace extends BaseContract {
 
     baseTokenContractsURI(overrides?: CallOverrides): Promise<[string]>;
 
-    buyToken(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithERC20(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    buyTokenWithETH(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    buyTokenByNFT(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithNFT(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    buyTokenWithVoucher(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -704,31 +703,27 @@ export interface MarketPlace extends BaseContract {
 
   baseTokenContractsURI(overrides?: CallOverrides): Promise<string>;
 
-  buyToken(
-    tokenContract_: PromiseOrValue<string>,
-    futureTokenId_: PromiseOrValue<BigNumberish>,
-    paymentTokenAddress_: PromiseOrValue<string>,
-    paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-    discount_: PromiseOrValue<BigNumberish>,
-    endTimestamp_: PromiseOrValue<BigNumberish>,
-    tokenURI_: PromiseOrValue<string>,
-    r_: PromiseOrValue<BytesLike>,
-    s_: PromiseOrValue<BytesLike>,
-    v_: PromiseOrValue<BigNumberish>,
+  buyTokenWithERC20(
+    buyParams_: IMarketplace.BuyParamsStruct,
+    sig_: IMarketplace.SigStruct,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  buyTokenWithETH(
+    buyParams_: IMarketplace.BuyParamsStruct,
+    sig_: IMarketplace.SigStruct,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  buyTokenByNFT(
-    tokenContract_: PromiseOrValue<string>,
-    futureTokenId_: PromiseOrValue<BigNumberish>,
-    nftAddress_: PromiseOrValue<string>,
-    nftFloorPrice_: PromiseOrValue<BigNumberish>,
-    tokenId_: PromiseOrValue<BigNumberish>,
-    endTimestamp_: PromiseOrValue<BigNumberish>,
-    tokenURI_: PromiseOrValue<string>,
-    r_: PromiseOrValue<BytesLike>,
-    s_: PromiseOrValue<BytesLike>,
-    v_: PromiseOrValue<BigNumberish>,
+  buyTokenWithNFT(
+    buyParams_: IMarketplace.BuyParamsStruct,
+    sig_: IMarketplace.SigStruct,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  buyTokenWithVoucher(
+    buyParams_: IMarketplace.BuyParamsStruct,
+    sig_: IMarketplace.SigStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -836,31 +831,27 @@ export interface MarketPlace extends BaseContract {
 
     baseTokenContractsURI(overrides?: CallOverrides): Promise<string>;
 
-    buyToken(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithERC20(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    buyTokenByNFT(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithETH(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    buyTokenWithNFT(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    buyTokenWithVoucher(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -972,46 +963,6 @@ export interface MarketPlace extends BaseContract {
     "Paused(address)"(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
 
-    "SuccessfullyMinted(address,address,tuple,address,uint256,uint256,uint256,address)"(
-      tokenContract?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      mintedTokenInfo?: null,
-      paymentTokenAddress?: PromiseOrValue<string> | null,
-      paidTokensAmount?: null,
-      paymentTokenPrice?: null,
-      discount?: null,
-      fundsRecipient?: null
-    ): SuccessfullyMintedEventFilter;
-    SuccessfullyMinted(
-      tokenContract?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      mintedTokenInfo?: null,
-      paymentTokenAddress?: PromiseOrValue<string> | null,
-      paidTokensAmount?: null,
-      paymentTokenPrice?: null,
-      discount?: null,
-      fundsRecipient?: null
-    ): SuccessfullyMintedEventFilter;
-
-    "SuccessfullyMintedByNFT(address,address,tuple,address,uint256,uint256,address)"(
-      tokenContract?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      mintedTokenInfo?: null,
-      nftAddress?: PromiseOrValue<string> | null,
-      tokenId?: null,
-      nftFloorPrice?: null,
-      fundsRecipient?: null
-    ): SuccessfullyMintedByNFTEventFilter;
-    SuccessfullyMintedByNFT(
-      tokenContract?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      mintedTokenInfo?: null,
-      nftAddress?: PromiseOrValue<string> | null,
-      tokenId?: null,
-      nftFloorPrice?: null,
-      fundsRecipient?: null
-    ): SuccessfullyMintedByNFTEventFilter;
-
     "TokenContractDeployed(address,string,string,tuple)"(
       tokenContract?: PromiseOrValue<string> | null,
       tokenName?: null,
@@ -1038,6 +989,21 @@ export interface MarketPlace extends BaseContract {
       tokenParams?: null
     ): TokenContractParamsUpdatedEventFilter;
 
+    "TokenSuccessfullyPurchased(address,uint256,uint256,tuple,uint8)"(
+      recipient?: PromiseOrValue<string> | null,
+      mintedTokenPrice?: null,
+      paidTokensAmount?: null,
+      buyParams?: null,
+      paymentType?: null
+    ): TokenSuccessfullyPurchasedEventFilter;
+    TokenSuccessfullyPurchased(
+      recipient?: PromiseOrValue<string> | null,
+      mintedTokenPrice?: null,
+      paidTokensAmount?: null,
+      buyParams?: null,
+      paymentType?: null
+    ): TokenSuccessfullyPurchasedEventFilter;
+
     "Unpaused(address)"(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
   };
@@ -1057,31 +1023,27 @@ export interface MarketPlace extends BaseContract {
 
     baseTokenContractsURI(overrides?: CallOverrides): Promise<BigNumber>;
 
-    buyToken(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithERC20(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    buyTokenWithETH(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    buyTokenByNFT(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithNFT(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    buyTokenWithVoucher(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1192,31 +1154,27 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    buyToken(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithERC20(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    buyTokenWithETH(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    buyTokenByNFT(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithNFT(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    buyTokenWithVoucher(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

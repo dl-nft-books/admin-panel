@@ -61,7 +61,9 @@
     "logo-subtitle": "Admin panel",
     "nfts-link": "NFTs",
     "promocodes-link": "Promocodes",
+    "roles-link": "Roles",
     "logout-btn": "Logout",
+    "has-no-roles-lbl": "This account doesn't have any role on that chain",
     "copyright": "{value}© Distributed Lab"
   },
   "promocodes-page": {
@@ -139,6 +141,10 @@
     "input-price-placeholder": "Enter price",
     "input-floor-price-placeholder": "Enter floor price",
     "input-funds-lbl": "Funds recepient",
+    "mainnet-lbl": "Mainnet",
+    "mainnet-placeholder": "Choose Mainnet",
+    "deployed-chain-lbl": "Deployed on",
+    "more-chains-lbl": "Add chain",
     "input-funds-placeholder": "If blank funds will stay on marketplace",
     "textarea-description-placeholder": "Enter description*",
     "nft-buyable-checkbox-lbl": "Ability to pay with another NFT",
@@ -166,6 +172,20 @@
     "title": "Edit NFT",
     "error-msg": "Oops... Something went wrong"
   },
+  "withdraw-form": {
+    "title": "Withdraw Funds",
+    "balance-lbl": "Total Balance",
+    "mainnet-lbl": "Mainnet",
+    "mainnet-placeholder": "Select Mainnet",
+    "amount-lbl": "Amount",
+    "amount-placeholder": "Enter Amount",
+    "recipient-lbl": "Recipient's address",
+    "recipient-placeholder": "Enter Recipient's Address",
+    "submit-btn": "Withdraw",
+    "cancel-btn": "CANCEL",
+    "max-amount-lbl": "Max",
+    "success-msg": "Funds successfuly withdrawed"
+  },
   "overview-nfts": {
     "title": "NFTs",
     "search-placeholder": "Search",
@@ -178,7 +198,9 @@
     "all-networks-filter": "All networks",
     "ethereum-filter": "Ethereum Mainnet",
     "q-filter": "Q Mainnet",
-    "polygon-filter": "Polygon Mainnet"
+    "polygon-filter": "Polygon Mainnet",
+    "has-no-roles-lbl": "Don't have rights to interact with NFTs",
+    "withdraw-lbl": "Withdraw funds"
   },
   "nft-card": {
     "name-description": "Name",

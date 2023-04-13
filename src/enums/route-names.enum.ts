@@ -10,4 +10,5 @@ export enum ROUTE_NAMES {
   nftsCreate = 'nfts-create',
   nftsOverview = 'nfts-overview',
   promocodes = 'promocodes',
+  roles = 'roles',
 }

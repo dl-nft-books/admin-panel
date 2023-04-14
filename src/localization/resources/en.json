@@ -62,6 +62,7 @@
     "nfts-link": "NFTs",
     "promocodes-link": "Promocodes",
     "roles-link": "Roles",
+    "withdrawals-link": "Withdrawals",
     "logout-btn": "Logout",
     "has-no-roles-lbl": "This account doesn't have any role on that chain",
     "copyright": "{value}© Distributed Lab"
@@ -206,6 +207,10 @@
     "name-description": "Name",
     "date-description": "Creation Date",
     "price-description": "Price"
+  },
+  "withdrawal-nft-card": {
+    "name-description": "Name",
+    "money-description": "Money"
   },
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",

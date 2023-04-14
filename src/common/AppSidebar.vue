@@ -61,6 +61,16 @@
             :text="$t('app-sidebar.roles-link')"
             @click="hideSidebar"
           />
+          <app-button
+            v-if="rolesStore.hasWithdrawalManagerRole"
+            class="app-sidebar__link"
+            scheme="default"
+            size="default"
+            :icon-left="$icons.manager"
+            :route="{ name: $routes.withdrawals }"
+            :text="$t('app-sidebar.withdrawals-link')"
+            @click="hideSidebar"
+          />
         </div>
         <app-button
           scheme="default"

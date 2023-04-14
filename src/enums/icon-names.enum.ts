@@ -231,6 +231,7 @@ export enum ICON_NAMES {
   volumeOff = 'volume-off',
   volumeUp = 'volume-up',
   wifi = 'wifi',
+  withdraw = 'withdraw',
   xCircle = 'x-circle',
   x = 'x',
   zoomIn = 'zoom-in',

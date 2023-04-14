@@ -169,6 +169,12 @@
   "create-nft-page": {
     "title": "NFT Creation"
   },
+  "withdrawals-page": {
+    "title": "Withdrawals",
+    "load-more-btn": "Load More",
+    "withdraw-lbl": "Withdraw funds",
+    "no-data-message": "No nfts available"
+  },
   "edit-nft-page": {
     "title": "Edit NFT",
     "error-msg": "Oops... Something went wrong"
@@ -200,8 +206,7 @@
     "ethereum-filter": "Ethereum Mainnet",
     "q-filter": "Q Mainnet",
     "polygon-filter": "Polygon Mainnet",
-    "has-no-roles-lbl": "Don't have rights to interact with NFTs",
-    "withdraw-lbl": "Withdraw funds"
+    "has-no-roles-lbl": "Don't have rights to interact with NFTs"
   },
   "nft-card": {
     "name-description": "Name",
@@ -209,8 +214,9 @@
     "price-description": "Price"
   },
   "withdrawal-nft-card": {
-    "name-description": "Name",
-    "money-description": "Money"
+    "name-lbl": "Name",
+    "price-lbl": "Price",
+    "money-lbl": "Money"
   },
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",

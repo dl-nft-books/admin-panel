@@ -66,7 +66,7 @@
             class="app-sidebar__link"
             scheme="default"
             size="default"
-            :icon-left="$icons.manager"
+            :icon-left="$icons.withdraw"
             :route="{ name: $routes.withdrawals }"
             :text="$t('app-sidebar.withdrawals-link')"
             @click="hideSidebar"

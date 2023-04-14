@@ -6,7 +6,7 @@
     <img
       class="withdrawal-nft-card__img"
       :src="nft.banner.attributes.url"
-      alt="Book image"
+      :alt="nft.tokenName"
     />
 
     <div
@@ -28,11 +28,11 @@
 import { formatFiatAssetFromWei } from '@/helpers'
 import { CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
-import { BaseBookInfo } from '@/composables'
 import { BnLike } from '@/utils/math.util'
+import { BookWithStatistics } from '@/pages/withdrawals-page/WithdrawalsPage.vue'
 
 const props = defineProps<{
-  nft: BaseBookInfo
+  nft: BookWithStatistics
   money: number
 }>()
 
@@ -40,13 +40,20 @@ const { t } = useI18n()
 
 const cardHeader = [
   {
-    label: t('withdrawal-nft-card.name-description'),
+    label: t('withdrawal-nft-card.name-lbl'),
     value: props.nft.tokenName,
   },
   {
-    label: t('withdrawal-nft-card.money-description'),
+    label: t('withdrawal-nft-card.price-lbl'),
     value: formatFiatAssetFromWei(
       props.nft.pricePerOneToken as BnLike,
+      CURRENCIES.USD,
+    ),
+  },
+  {
+    label: t('withdrawal-nft-card.money-lbl'),
+    value: formatFiatAssetFromWei(
+      props.nft.totalMoneySpent as BnLike,
       CURRENCIES.USD,
     ),
   },
@@ -56,7 +63,7 @@ const cardHeader = [
 <style lang="scss" scoped>
 .withdrawal-nft-card {
   display: grid;
-  grid-template-columns: 15% 60% 25%;
+  grid-template-columns: repeat(auto-fit, minmax(toRem(150), 1fr));
   align-items: center;
   width: 100%;
   border: toRem(1) solid var(--border-primary-main);

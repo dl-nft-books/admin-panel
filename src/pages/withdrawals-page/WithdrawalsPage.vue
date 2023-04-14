@@ -1,21 +1,22 @@
 <template>
-  <div class="overview-nfts">
-    <div class="overview-nfts__header">
+  <div class="withdrawals-page">
+    <div class="withdrawals-page__header">
       <h3>
-        {{ $t('overview-nfts.title') }}
+        {{ $t('withdrawals-page.title') }}
       </h3>
     </div>
 
     <error-message
       v-if="isLoadFailed"
-      :message="$t('overview-nfts.error-message')"
-      :title="$t('overview-nfts.error-title')"
+      :message="$t('withdrawals-page.error-message')"
+      :title="$t('withdrawals-page.error-title')"
     />
 
     <template v-else-if="booksList.length || isLoading">
-      <div v-if="booksList.length" class="overview-nfts__content">
+      <div v-if="booksList.length" class="withdrawals-page__content">
         <withdrawal-nft-card
           v-for="nft in booksList"
+          :money="nft.totalMoneySpent"
           :key="nft.tokenContract as string"
           :nft="nft"
         />
@@ -25,30 +26,22 @@
 
       <app-button
         v-if="isLoadMoreBtnShown"
-        class="overview-nfts__load-more-btn"
+        class="withdrawals-page__load-more-btn"
         size="small"
         scheme="flat"
-        :text="$t('overview-nfts.load-more-btn')"
+        :text="$t('withdrawals-page.load-more-btn')"
         @click="loadNextPage"
       />
     </template>
 
-    <no-data-message v-else :message="$t('overview-nfts.no-data-message')" />
+    <no-data-message v-else :message="$t('withdrawals-page.no-data-message')" />
 
     <mounted-teleport to="#app-navbar__right-buttons">
       <app-button
-        v-if="rolesStore.hasMarkerplaceManagerRole"
-        class="overview-nfts__link-button"
-        size="small"
-        :icon-left="$icons.plus"
-        :text="buttonLinkText"
-        :route="{ name: $routes.nftsCreate }"
-      />
-      <app-button
         v-if="rolesStore.hasWithdrawalManagerRole"
-        class="overview-nfts__link-button"
+        class="withdrawals-page__link-button"
         size="small"
-        :text="$t('overview-nfts.withdraw-lbl')"
+        :text="$t('withdrawals-page.withdraw-lbl')"
         @click="isWithdrawingFunds = true"
       />
     </mounted-teleport>
@@ -62,20 +55,17 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import {
-  Loader,
-  WithdrawalNftCard,
-  ErrorMessage,
-  NoDataMessage,
-  AppButton,
-  Modal,
-} from '@/common'
+import { Loader, ErrorMessage, NoDataMessage, AppButton, Modal } from '@/common'
+
+import { WithdrawalNftCard } from '@/pages/withdrawals-page'
 
 import { ErrorHandler } from '@/helpers'
-import { WINDOW_BREAKPOINTS } from '@/enums'
-import { useWindowSize } from '@vueuse/core'
-import { useContractPagination, useBooks, BaseBookInfo } from '@/composables'
-import { useI18n } from 'vue-i18n'
+import {
+  useContractPagination,
+  useBooks,
+  BaseBookInfo,
+  useStatistics,
+} from '@/composables'
 import { useWeb3ProvidersStore, useRolesStore } from '@/store'
 import { WithdrawForm } from '@/forms'
 
@@ -84,25 +74,34 @@ const rolesStore = useRolesStore()
 
 const provider = computed(() => webProvidersStore.provider)
 
-const booksList = ref<BaseBookInfo[]>([])
+export type BookWithStatistics = BaseBookInfo & { totalMoneySpent: number }
+
+const booksList = ref<BookWithStatistics[]>([])
 const isLoadFailed = ref(false)
 const isWithdrawingFunds = ref(false)
 
-const { width } = useWindowSize()
-const { t } = useI18n()
-
 const { getBooksFromContract } = useBooks()
+const { getStatisticByBookId } = useStatistics()
 
-const loadList = computed(
-  () => (limit: number, offset: number) =>
-    getBooksFromContract(limit, offset, provider.value.chainId),
-)
+const loadList = computed(() => async (limit: number, offset: number) => {
+  const data = await getBooksFromContract(limit, offset, provider.value.chainId)
 
-function setList(chunk: BaseBookInfo[]) {
+  data.forEach(async ({ id }, index) => {
+    const statistics = await getStatisticByBookId(id)
+
+    data[index] = Object.assign(data[index], {
+      totalMoneySpent: statistics.data.tokens_histogram.attributes.total,
+    })
+  })
+
+  return data
+})
+
+function setList(chunk: BookWithStatistics[]) {
   booksList.value = chunk ? chunk.filter(book => !book.isDisabled) : []
 }
 
-function concatList(chunk: BaseBookInfo[]) {
+function concatList(chunk: BookWithStatistics[]) {
   booksList.value = booksList.value.concat(
     chunk ? chunk.filter(book => !book.isDisabled) : [],
   )
@@ -119,16 +118,10 @@ const { isLoadMoreBtnShown, isLoading, loadNextPage } = useContractPagination(
   concatList,
   onError,
 )
-
-const buttonLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.tablet
-    ? t('overview-nfts.create-button')
-    : '',
-)
 </script>
 
 <style lang="scss" scoped>
-.overview-nfts__header {
+.withdrawals-page__header {
   display: flex;
   justify-content: space-between;
 
@@ -139,18 +132,18 @@ const buttonLinkText = computed(() =>
   }
 }
 
-.overview-nfts__filter-wrapper {
+.withdrawals-page__filter-wrapper {
   display: flex;
   align-items: center;
   gap: toRem(20);
   min-width: toRem(350);
 }
 
-.overview-nfts__filter {
+.withdrawals-page__filter {
   max-width: toRem(350);
 }
 
-.overview-nfts__search-wrapper {
+.withdrawals-page__search-wrapper {
   position: relative;
   width: toRem(180);
 
@@ -159,14 +152,14 @@ const buttonLinkText = computed(() =>
   }
 }
 
-.overview-nfts__search-icon {
+.withdrawals-page__search-icon {
   --size: #{toRem(20)};
 
   max-width: var(--size);
   height: var(--size);
 }
 
-.overview-nfts__content {
+.withdrawals-page__content {
   display: flex;
   flex-direction: column;
   margin-top: toRem(20);
@@ -181,7 +174,7 @@ const buttonLinkText = computed(() =>
   }
 }
 
-.overview-nfts__link-button {
+.withdrawals-page__link-button {
   width: toRem(180);
   order: -1;
   font-weight: 700;
@@ -194,7 +187,7 @@ const buttonLinkText = computed(() =>
   }
 }
 
-.overview-nfts__load-more-btn {
+.withdrawals-page__load-more-btn {
   margin: toRem(20) auto 0;
 }
 </style>

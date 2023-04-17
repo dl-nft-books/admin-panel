@@ -33,9 +33,7 @@ import { BookWithStatistics } from '@/pages/withdrawals-page/WithdrawalsPage.vue
 
 const props = defineProps<{
   nft: BookWithStatistics
-  money: number
 }>()
-
 const { t } = useI18n()
 
 const cardHeader = [
@@ -52,10 +50,7 @@ const cardHeader = [
   },
   {
     label: t('withdrawal-nft-card.money-lbl'),
-    value: formatFiatAssetFromWei(
-      props.nft.totalMoneySpent as BnLike,
-      CURRENCIES.USD,
-    ),
+    value: formatFiatAssetFromWei(props.nft.totalMoneySpent, CURRENCIES.USD),
   },
 ]
 </script>

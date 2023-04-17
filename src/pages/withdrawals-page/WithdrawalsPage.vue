@@ -16,7 +16,6 @@
       <div v-if="booksList.length" class="withdrawals-page__content">
         <withdrawal-nft-card
           v-for="nft in booksList"
-          :money="nft.totalMoneySpent"
           :key="nft.tokenContract as string"
           :nft="nft"
         />
@@ -41,7 +40,8 @@
         v-if="rolesStore.hasWithdrawalManagerRole"
         class="withdrawals-page__link-button"
         size="small"
-        :text="$t('withdrawals-page.withdraw-lbl')"
+        :icon-right="$icons.withdraw"
+        :text="withdrawTitle"
         @click="isWithdrawingFunds = true"
       />
     </mounted-teleport>
@@ -68,6 +68,12 @@ import {
 } from '@/composables'
 import { useWeb3ProvidersStore, useRolesStore } from '@/store'
 import { WithdrawForm } from '@/forms'
+import { useI18n } from 'vue-i18n'
+import { useWindowSize } from '@vueuse/core'
+import { WINDOW_BREAKPOINTS } from '@/enums'
+
+const { width } = useWindowSize()
+const { t } = useI18n()
 
 const webProvidersStore = useWeb3ProvidersStore()
 const rolesStore = useRolesStore()
@@ -86,13 +92,15 @@ const { getStatisticByBookId } = useStatistics()
 const loadList = computed(() => async (limit: number, offset: number) => {
   const data = await getBooksFromContract(limit, offset, provider.value.chainId)
 
-  data.forEach(async ({ id }, index) => {
+  for (const [index, { id }] of data.entries()) {
     const statistics = await getStatisticByBookId(id)
+
+    // console.log(statistics)
 
     data[index] = Object.assign(data[index], {
       totalMoneySpent: statistics.data.tokens_histogram.attributes.total,
     })
-  })
+  }
 
   return data
 })
@@ -117,6 +125,12 @@ const { isLoadMoreBtnShown, isLoading, loadNextPage } = useContractPagination(
   setList,
   concatList,
   onError,
+)
+
+const withdrawTitle = computed(() =>
+  width.value >= WINDOW_BREAKPOINTS.medium
+    ? t('withdrawals-page.withdraw-lbl')
+    : '',
 )
 </script>
 
@@ -175,14 +189,15 @@ const { isLoadMoreBtnShown, isLoading, loadNextPage } = useContractPagination(
 }
 
 .withdrawals-page__link-button {
-  width: toRem(180);
   order: -1;
   font-weight: 700;
   text-transform: uppercase;
 
-  @include respond-to(tablet) {
-    width: toRem(54);
-    height: toRem(54);
+  @include respond-to(medium) {
+    --mobile-size: #{toRem(60)};
+
+    width: var(--mobile-size);
+    height: var(--mobile-size);
     order: 1;
   }
 }

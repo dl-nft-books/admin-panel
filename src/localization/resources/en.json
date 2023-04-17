@@ -218,6 +218,10 @@
     "price-lbl": "Price",
     "money-lbl": "Money"
   },
+  "funds-info": {
+    "label": "Balance on this chain",
+    "not-available": "Not available"
+  },
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",
     "incorrect-file-type-err": "You cannot upload a {type} file. Allowed types: {allowedTypes}"

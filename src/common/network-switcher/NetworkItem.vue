@@ -12,15 +12,13 @@
 <script setup lang="ts">
 import { Icon } from '@/common'
 import { computed } from 'vue'
-import { NETWORKS, WINDOW_BREAKPOINTS } from '@/enums'
+import { NETWORKS } from '@/enums'
 import { getIconByScheme } from '@/helpers'
 import { useI18n } from 'vue-i18n'
-import { useWindowSize } from '@vueuse/core'
 
 type MODIFICATIONS = 'non-active' | 'dark-mode' | 'default'
 
 const { t } = useI18n()
-const { width } = useWindowSize()
 
 const props = withDefaults(
   defineProps<{
@@ -41,11 +39,7 @@ const title = computed(() =>
     : t('networks.unsupported'),
 )
 
-const isTitleHidden = computed(
-  () =>
-    width.value <= WINDOW_BREAKPOINTS.small &&
-    props.modification.includes('non-active'),
-)
+const isTitleHidden = computed(() => props.modification.includes('non-active'))
 
 const classes = computed(() => [
   'network-item',

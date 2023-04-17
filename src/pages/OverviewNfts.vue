@@ -106,7 +106,7 @@ const { isLoadMoreBtnShown, isLoading, loadNextPage } = useContractPagination(
 )
 
 const buttonLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.tablet
+  width.value >= WINDOW_BREAKPOINTS.medium
     ? t('overview-nfts.create-button')
     : '',
 )
@@ -152,9 +152,11 @@ const buttonLinkText = computed(() =>
   font-weight: 700;
   text-transform: uppercase;
 
-  @include respond-to(tablet) {
-    width: toRem(54);
-    height: toRem(54);
+  @include respond-to(medium) {
+    --mobile-size: #{toRem(60)};
+
+    width: var(--mobile-size);
+    height: var(--mobile-size);
     order: 1;
   }
 }

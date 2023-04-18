@@ -92,6 +92,8 @@
     "date-lbl": "Due date",
     "name-lbl": "Promocode name",
     "name-placeholder": "Leave blank and it will be generated...",
+    "select-lbl": "Books to apply",
+    "select-placeholder": "Leave blank to apply to all",
     "cancel-btn-lbl": "Cancel",
     "submit-update-btn-lbl": "Update",
     "submit-create-btn-lbl": "Create",

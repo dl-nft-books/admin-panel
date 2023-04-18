@@ -1,12 +1,29 @@
+import { api } from '@/api'
+import { NotFoundError } from '@/api/json-api'
 import {
-  ROLES,
   useContractRegistry,
   useRoleManager as _useRoleManager,
 } from '@/composables'
 import { ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { IRoleManager } from '@/types/contracts/RoleManager'
 
 import { ref, computed, watch } from 'vue'
+
+export type FullUserRoleInfo = UserRoleAdditionalInfo &
+  Omit<RoleBaseInfo, 'members'>
+
+type RoleBaseInfo = {
+  roleName: string
+  role: string
+  members: Array<string>
+}
+
+type UserRoleAdditionalInfo = {
+  address: string
+  name: string
+  created_at: string
+}
 
 export function useRolesManager() {
   const networkStore = useNetworksStore()
@@ -21,6 +38,10 @@ export function useRolesManager() {
     isWithdrawalManager,
     isAdmin,
     grantRole: _grantRole,
+    getRolesDetailedInfoPart,
+    getRolesList: _getRolesList,
+    revokeRole: _revokeRole,
+    getUserRoles: _getUserRoles,
   } = _useRoleManager()
 
   const hasAdminRole = ref(false)
@@ -64,6 +85,33 @@ export function useRolesManager() {
     initRoleManager(address)
   }
 
+  const _formatRoleInfo = (
+    raw: IRoleManager.DetailedRoleInfoStructOutput,
+  ): RoleBaseInfo => {
+    return {
+      roleName: raw.roleName,
+      role: raw.role,
+      members: raw.members,
+    }
+  }
+
+  const _fetchUsersRoleInfo = async (members: string[]) => {
+    try {
+      const { data } = await api.get<UserRoleAdditionalInfo[]>(
+        '/integrations/nonce-auth-svc/users',
+        {
+          filter: {
+            address: members.join(','),
+          },
+        },
+      )
+
+      return data
+    } catch (error) {
+      return [] as UserRoleAdditionalInfo[]
+    }
+  }
+
   const checkAdminRole = async (address: string) => {
     const response = await isAdmin(address)
 
@@ -105,8 +153,100 @@ export function useRolesManager() {
     await checkWithdrawalManagerRole(provider.value.selectedAddress)
   }
 
-  const grantRole = async (role: ROLES, address: string) => {
+  const revokeRole = async (role: string, address: string) => {
+    await _initContractRegistry()
+    await _initRoleManager()
+    await _revokeRole(role, address)
+  }
+
+  const grantRole = async (role: string, address: string, name: string) => {
+    await _initContractRegistry()
+    await _initRoleManager()
     await _grantRole(role, address)
+
+    await api.post('/integrations/nonce-auth-svc/users', {
+      data: {
+        attributes: {
+          name,
+          address,
+        },
+      },
+    })
+  }
+
+  const editUserName = async (name: string, address: string) => {
+    try {
+      await api.patch(`/integrations/nonce-auth-svc/users/${address}`, {
+        data: {
+          attributes: {
+            name,
+          },
+        },
+      })
+    } catch (error) {
+      // in case we editing default role that was set on contract during deploy
+      if (error instanceof NotFoundError) {
+        await api.post('/integrations/nonce-auth-svc/users', {
+          data: {
+            attributes: {
+              name,
+              address,
+            },
+          },
+        })
+      }
+    }
+  }
+
+  const getDetailedRolesList = async (
+    limit: number,
+    offset: number,
+  ): Promise<FullUserRoleInfo[]> => {
+    if (!limit) return []
+
+    await _initContractRegistry()
+    await _initRoleManager()
+
+    const roleRawInfo = await getRolesDetailedInfoPart(limit, offset)
+
+    if (!roleRawInfo) return []
+
+    const formattedInfo = roleRawInfo.map(el => _formatRoleInfo(el))
+
+    const processedInfo: FullUserRoleInfo[] = []
+
+    for (const entry of formattedInfo) {
+      const backendData = await _fetchUsersRoleInfo(entry.members)
+
+      for (const member of entry.members) {
+        const infoFromBackend = backendData.find(el => el.address === member)
+
+        processedInfo.push({
+          roleName: entry.roleName,
+          role: entry.role,
+          address: member,
+          name: infoFromBackend?.name ?? entry.roleName,
+          created_at: infoFromBackend?.created_at ?? '',
+        })
+      }
+    }
+    return processedInfo
+  }
+
+  const getRolesList = async () => {
+    await _initContractRegistry()
+    await _initRoleManager()
+
+    const data = await _getRolesList()
+
+    return data
+  }
+
+  const getUserRoles = async (address: string) => {
+    await _initContractRegistry()
+    await _initRoleManager()
+
+    return _getUserRoles(address)
   }
 
   watch(
@@ -153,5 +293,10 @@ export function useRolesManager() {
     isLoadingFailed,
     hasNoRoles,
     grantRole,
+    getDetailedRolesList,
+    getRolesList,
+    editUserName,
+    getUserRoles,
+    revokeRole,
   }
 }

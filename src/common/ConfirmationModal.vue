@@ -1,10 +1,7 @@
 <template>
   <modal v-model:is-shown="isModalShown">
     <template #default="{ modal }">
-      <form
-        class="confirmation-modal__form"
-        @submit.prevent="onConfirm(modal.close)"
-      >
+      <form class="confirmation-modal__form" @submit.prevent="onConfirm">
         <div class="confirmation-modal__header">
           <h4 class="confirmation-modal__title">
             {{ $t('confirm-modal.title', { entity: entity.toLowerCase() }) }}
@@ -19,6 +16,7 @@
             class="confirmation-modal__button"
             scheme="flat"
             size="medium"
+            :disabled="isDeleting"
             :text="$t('confirm-modal.decline-btn')"
             @click="modal.close"
           />
@@ -26,6 +24,7 @@
             class="confirmation-modal__button"
             size="small"
             type="submit"
+            :disabled="isDeleting"
             :text="$t('confirm-modal.confirm-btn')"
           />
         </section>
@@ -47,6 +46,7 @@ const props = withDefaults(
   defineProps<{
     entity?: string
     isShown: boolean
+    isDeleting?: boolean
   }>(),
   {
     entity: '',
@@ -66,9 +66,8 @@ watch(isModalShown, value => {
   emit('update:is-shown', value)
 })
 
-const onConfirm = async (closeModal: () => void) => {
+const onConfirm = async () => {
   emit('confirm')
-  closeModal()
 }
 </script>
 

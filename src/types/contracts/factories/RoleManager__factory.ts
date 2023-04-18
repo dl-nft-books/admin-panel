@@ -200,10 +200,81 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "bytes32",
+            name: "role",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "roleAdmin",
+            type: "bytes32",
+          },
+          {
+            internalType: "string",
+            name: "roleName",
+            type: "string",
+          },
+        ],
+        internalType: "struct IRoleManager.RoleParams[]",
+        name: "roleInitParams_",
+        type: "tuple[]",
+      },
+    ],
     name: "__RoleManager_init",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllRolesDetailedInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "roleName",
+            type: "string",
+          },
+          {
+            internalType: "bytes32",
+            name: "role",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "roleAdmin",
+            type: "bytes32",
+          },
+          {
+            internalType: "address[]",
+            name: "members",
+            type: "address[]",
+          },
+        ],
+        internalType: "struct IRoleManager.DetailedRoleInfo[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllSupportedRoles",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -242,21 +313,16 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "role",
+        name: "role_",
         type: "bytes32",
       },
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
     ],
-    name: "getRoleMember",
+    name: "getRoleMembers",
     outputs: [
       {
-        internalType: "address",
+        internalType: "address[]",
         name: "",
-        type: "address",
+        type: "address[]",
       },
     ],
     stateMutability: "view",
@@ -266,16 +332,159 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "role",
+        name: "role_",
         type: "bytes32",
       },
     ],
-    name: "getRoleMemberCount",
+    name: "getRoleMembersCount",
     outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32[]",
+        name: "roles_",
+        type: "bytes32[]",
+      },
+    ],
+    name: "getRolesDetailedInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "roleName",
+            type: "string",
+          },
+          {
+            internalType: "bytes32",
+            name: "role",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "roleAdmin",
+            type: "bytes32",
+          },
+          {
+            internalType: "address[]",
+            name: "members",
+            type: "address[]",
+          },
+        ],
+        internalType: "struct IRoleManager.DetailedRoleInfo[]",
+        name: "rolesDetailedInfo_",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "offset_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "limit_",
+        type: "uint256",
+      },
+    ],
+    name: "getRolesDetailedInfoPart",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "roleName",
+            type: "string",
+          },
+          {
+            internalType: "bytes32",
+            name: "role",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "roleAdmin",
+            type: "bytes32",
+          },
+          {
+            internalType: "address[]",
+            name: "members",
+            type: "address[]",
+          },
+        ],
+        internalType: "struct IRoleManager.DetailedRoleInfo[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getSupportedRolesCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "offset_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "limit_",
+        type: "uint256",
+      },
+    ],
+    name: "getSupportedRolesPart",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "userAddr_",
+        type: "address",
+      },
+    ],
+    name: "getUserRoles",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
       },
     ],
     stateMutability: "view",
@@ -302,9 +511,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32[]",
-        name: "roles_",
-        type: "bytes32[]",
+        internalType: "bytes32",
+        name: "role_",
+        type: "bytes32",
       },
       {
         internalType: "address[]",
@@ -312,7 +521,25 @@ const _abi = [
         type: "address[]",
       },
     ],
-    name: "grantRoleBatch",
+    name: "grantRoles",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32[]",
+        name: "roles_",
+        type: "bytes32[]",
+      },
+      {
+        internalType: "address[][]",
+        name: "accounts_",
+        type: "address[][]",
+      },
+    ],
+    name: "grantRolesBatch",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -373,7 +600,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "hasSpecificOrStrongerRoles",
+    name: "hasSpecificRoles",
     outputs: [
       {
         internalType: "bool",
@@ -412,6 +639,25 @@ const _abi = [
       },
     ],
     name: "isMarketplaceManager",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role_",
+        type: "bytes32",
+      },
+    ],
+    name: "isRoleExists",
     outputs: [
       {
         internalType: "bool",
@@ -539,13 +785,26 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32[]",
+        name: "rolesToRemove_",
+        type: "bytes32[]",
+      },
+    ],
+    name: "removeRoles",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes32",
-        name: "role_",
+        name: "role",
         type: "bytes32",
       },
       {
         internalType: "address",
-        name: "account_",
+        name: "account",
         type: "address",
       },
     ],
@@ -558,16 +817,52 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "role_",
+        name: "role",
         type: "bytes32",
       },
       {
         internalType: "address",
-        name: "account_",
+        name: "account",
         type: "address",
       },
     ],
     name: "revokeRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role_",
+        type: "bytes32",
+      },
+      {
+        internalType: "address[]",
+        name: "accounts_",
+        type: "address[]",
+      },
+    ],
+    name: "revokeRoles",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32[]",
+        name: "roles_",
+        type: "bytes32[]",
+      },
+      {
+        internalType: "address[][]",
+        name: "accounts_",
+        type: "address[][]",
+      },
+    ],
+    name: "revokeRolesBatch",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -620,6 +915,36 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "bytes32",
+            name: "role",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "roleAdmin",
+            type: "bytes32",
+          },
+          {
+            internalType: "string",
+            name: "roleName",
+            type: "string",
+          },
+        ],
+        internalType: "struct IRoleManager.RoleParams[]",
+        name: "roleParams_",
+        type: "tuple[]",
+      },
+    ],
+    name: "updateRolesParams",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

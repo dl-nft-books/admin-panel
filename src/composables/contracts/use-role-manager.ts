@@ -1,16 +1,17 @@
 import { useWeb3ProvidersStore } from '@/store'
 import { computed, ref } from 'vue'
 import { RoleManager__factory, EthProviderRpcError } from '@/types'
-import { handleEthError, sleep } from '@/helpers'
+import { handleEthError } from '@/helpers'
 
 export enum ROLES {
-  admin = 'e5a0b4d50f56047f84728557fedbda92f956391bc9d5c762e8461996dd8e7ad7',
-  tokenFactoryManager = '9b3077845551d13315ea3fdea4fe39ce79a7046bbe3a9a3e08358c080c7e19a6',
-  tokenRegistryManager = '4564dc68c6f36c264e1671b056a553d485b86dc9e2e186ca7ab933dbedf609fd',
-  tokenManager = '593fb413ec9f9ad9f53f309300b515310ff474591268ca3cbe9752fd88eb76a0',
-  roleSupervisor = '0c7ade2c7c08453ea605b4a8f3fb0e03e3ffcffbfa41ca8ee543d0fd74cada38',
-  withdrawalManager = '8c2448210e908fe94c15d486079b8c1daacbaa9169018ef9ea35bf02aeeb558d',
-  marketPlaceManager = '222f64fc3b8eb8a095e07f1e2e07b8043e0434ea0260bed1f246981164619676',
+  admin = '0xe5a0b4d50f56047f84728557fedbda92f956391bc9d5c762e8461996dd8e7ad7',
+  tokenFactoryManager = '0x9b3077845551d13315ea3fdea4fe39ce79a7046bbe3a9a3e08358c080c7e19a6',
+  tokenRegistryManager = '0x4564dc68c6f36c264e1671b056a553d485b86dc9e2e186ca7ab933dbedf609fd',
+  tokenManager = '0x593fb413ec9f9ad9f53f309300b515310ff474591268ca3cbe9752fd88eb76a0',
+  roleSupervisor = '0x0c7ade2c7c08453ea605b4a8f3fb0e03e3ffcffbfa41ca8ee543d0fd74cada38',
+  withdrawalManager = '0x8c2448210e908fe94c15d486079b8c1daacbaa9169018ef9ea35bf02aeeb558d',
+  marketPlaceManager = '0x222f64fc3b8eb8a095e07f1e2e07b8043e0434ea0260bed1f246981164619676',
+  signatureManager = '0x19ba3f3de64825cc833b0769b9c93a3eec261d38a326692c7588705c0a5a2bf4',
 }
 
 export const useRoleManager = (address?: string) => {
@@ -135,7 +136,7 @@ export const useRoleManager = (address?: string) => {
     }
   }
 
-  const grantRole = async (role: ROLES, address: string) => {
+  const grantRole = async (role: string, address: string) => {
     try {
       const data = contractInterface.encodeFunctionData('grantRole', [
         role,
@@ -147,22 +148,17 @@ export const useRoleManager = (address?: string) => {
         data,
       })
 
-      await sleep(1000)
-
       return receipt
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
   }
 
-  const grantRoleBatch = async (
-    roles: Array<ROLES>,
-    accounts: Array<string>,
-  ) => {
+  const revokeRole = async (role: string, address: string) => {
     try {
-      const data = contractInterface.encodeFunctionData('grantRoleBatch', [
-        roles,
-        accounts,
+      const data = contractInterface.encodeFunctionData('revokeRole', [
+        role,
+        address,
       ])
 
       const receipt = await provider.value.signAndSendTx({
@@ -170,9 +166,44 @@ export const useRoleManager = (address?: string) => {
         data,
       })
 
-      await sleep(1000)
-
       return receipt
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const getRolesDetailedInfoPart = async (limit: number, offset: number) => {
+    if (!contractInstance.value) return
+    try {
+      const data = await contractInstance.value.getRolesDetailedInfoPart(
+        offset,
+        limit,
+      )
+
+      return data
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const getRolesList = async () => {
+    if (!contractInstance.value) return
+    try {
+      const data = await contractInstance.value.getAllSupportedRoles()
+
+      return data
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const getUserRoles = async (address: string) => {
+    if (!contractInstance.value) return
+
+    try {
+      const data = await contractInstance.value.getUserRoles(address)
+
+      return data
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
@@ -189,6 +220,9 @@ export const useRoleManager = (address?: string) => {
     isMarketplaceManager,
     hasAnyRole,
     grantRole,
-    grantRoleBatch,
+    revokeRole,
+    getRolesDetailedInfoPart,
+    getRolesList,
+    getUserRoles,
   }
 }

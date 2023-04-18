@@ -172,6 +172,49 @@
     "title": "Edit NFT",
     "error-msg": "Oops... Something went wrong"
   },
+  "roles": {
+    "admin": "Administrator",
+    "role-supervisor": "Role Supervisor",
+    "factory-manager": "Token Factory Manager",
+    "registry-manager": "Token Registry Manager",
+    "token-manager": "Token Manager",
+    "withdrawal-manager": "Withdrawal Manager",
+    "marketplace-manager": "Marketplace Manager",
+    "singature-manager": "Signature Manager"
+  },
+  "roles-manager-page": {
+    "title": "Roles",
+    "new-role": "New role",
+    "load-more-btn": "Load More"
+  },
+  "roles-info-card": {
+    "name": "User's Name",
+    "address": "Adress",
+    "date": "Entry Date",
+    "date-unknown": "Unknown",
+    "role": "Role",
+    "edit-btn": "Edit",
+    "copy-success": "User address copied to clipboard",
+    "delete-success": "Role was revoked from this user",
+    "delete-lbl": "role from user"
+  },
+  "role-form": {
+    "create-title": "Create Role",
+    "edit-title": "Edit Role",
+    "name-lbl": "Name",
+    "name-placeholder": "Enter Name",
+    "address-lbl": "Address",
+    "address-placeholder": "Enter Address",
+    "roles-lbl": "Roles",
+    "role-lbl": "Role",
+    "roles-placeholder": "Select Role",
+    "date-lbl": "Entry Date",
+    "date-placeholder": "Pick date",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Save",
+    "success-msg": "New role was granted",
+    "success-edit-msg": "Role edited"
+  },
   "withdraw-form": {
     "title": "Withdraw Funds",
     "balance-lbl": "Total Balance",

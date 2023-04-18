@@ -28,31 +28,30 @@ import type {
 } from "./common";
 
 export declare namespace IRoleManager {
-  export type RoleParamsStruct = {
+  export type BaseRoleDataStruct = {
     role: PromiseOrValue<BytesLike>;
     roleAdmin: PromiseOrValue<BytesLike>;
     roleName: PromiseOrValue<string>;
   };
 
-  export type RoleParamsStructOutput = [string, string, string] & {
+  export type BaseRoleDataStructOutput = [string, string, string] & {
     role: string;
     roleAdmin: string;
     roleName: string;
   };
 
   export type DetailedRoleInfoStruct = {
-    roleName: PromiseOrValue<string>;
-    role: PromiseOrValue<BytesLike>;
-    roleAdmin: PromiseOrValue<BytesLike>;
+    baseRoleData: IRoleManager.BaseRoleDataStruct;
     members: PromiseOrValue<string>[];
   };
 
   export type DetailedRoleInfoStructOutput = [
-    string,
-    string,
-    string,
+    IRoleManager.BaseRoleDataStructOutput,
     string[]
-  ] & { roleName: string; role: string; roleAdmin: string; members: string[] };
+  ] & {
+    baseRoleData: IRoleManager.BaseRoleDataStructOutput;
+    members: string[];
+  };
 }
 
 export interface RoleManagerInterface extends utils.Interface {
@@ -67,12 +66,15 @@ export interface RoleManagerInterface extends utils.Interface {
     "TOKEN_REGISTRY_MANAGER()": FunctionFragment;
     "WITHDRAWAL_MANAGER()": FunctionFragment;
     "__RoleManager_init((bytes32,bytes32,string)[])": FunctionFragment;
+    "getAllRolesBaseInfo()": FunctionFragment;
     "getAllRolesDetailedInfo()": FunctionFragment;
     "getAllSupportedRoles()": FunctionFragment;
     "getInjector()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMembers(bytes32)": FunctionFragment;
     "getRoleMembersCount(bytes32)": FunctionFragment;
+    "getRolesBaseInfo(bytes32[])": FunctionFragment;
+    "getRolesBaseInfoPart(uint256,uint256)": FunctionFragment;
     "getRolesDetailedInfo(bytes32[])": FunctionFragment;
     "getRolesDetailedInfoPart(uint256,uint256)": FunctionFragment;
     "getSupportedRolesCount()": FunctionFragment;
@@ -116,12 +118,15 @@ export interface RoleManagerInterface extends utils.Interface {
       | "TOKEN_REGISTRY_MANAGER"
       | "WITHDRAWAL_MANAGER"
       | "__RoleManager_init"
+      | "getAllRolesBaseInfo"
       | "getAllRolesDetailedInfo"
       | "getAllSupportedRoles"
       | "getInjector"
       | "getRoleAdmin"
       | "getRoleMembers"
       | "getRoleMembersCount"
+      | "getRolesBaseInfo"
+      | "getRolesBaseInfoPart"
       | "getRolesDetailedInfo"
       | "getRolesDetailedInfoPart"
       | "getSupportedRolesCount"
@@ -191,7 +196,11 @@ export interface RoleManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "__RoleManager_init",
-    values: [IRoleManager.RoleParamsStruct[]]
+    values: [IRoleManager.BaseRoleDataStruct[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAllRolesBaseInfo",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getAllRolesDetailedInfo",
@@ -216,6 +225,14 @@ export interface RoleManagerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getRoleMembersCount",
     values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRolesBaseInfo",
+    values: [PromiseOrValue<BytesLike>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRolesBaseInfoPart",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "getRolesDetailedInfo",
@@ -331,7 +348,7 @@ export interface RoleManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "updateRolesParams",
-    values: [IRoleManager.RoleParamsStruct[]]
+    values: [IRoleManager.BaseRoleDataStruct[]]
   ): string;
 
   decodeFunctionResult(
@@ -375,6 +392,10 @@ export interface RoleManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getAllRolesBaseInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getAllRolesDetailedInfo",
     data: BytesLike
   ): Result;
@@ -396,6 +417,14 @@ export interface RoleManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getRoleMembersCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRolesBaseInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRolesBaseInfoPart",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -591,9 +620,13 @@ export interface RoleManager extends BaseContract {
     WITHDRAWAL_MANAGER(overrides?: CallOverrides): Promise<[string]>;
 
     __RoleManager_init(
-      roleInitParams_: IRoleManager.RoleParamsStruct[],
+      rolesInitData_: IRoleManager.BaseRoleDataStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    getAllRolesBaseInfo(
+      overrides?: CallOverrides
+    ): Promise<[IRoleManager.BaseRoleDataStructOutput[]]>;
 
     getAllRolesDetailedInfo(
       overrides?: CallOverrides
@@ -619,6 +652,21 @@ export interface RoleManager extends BaseContract {
       role_: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    getRolesBaseInfo(
+      roles_: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<
+      [IRoleManager.BaseRoleDataStructOutput[]] & {
+        rolesBaseInfo_: IRoleManager.BaseRoleDataStructOutput[];
+      }
+    >;
+
+    getRolesBaseInfoPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[IRoleManager.BaseRoleDataStructOutput[]]>;
 
     getRolesDetailedInfo(
       roles_: PromiseOrValue<BytesLike>[],
@@ -774,7 +822,7 @@ export interface RoleManager extends BaseContract {
     ): Promise<[boolean]>;
 
     updateRolesParams(
-      roleParams_: IRoleManager.RoleParamsStruct[],
+      rolesData_: IRoleManager.BaseRoleDataStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -798,9 +846,13 @@ export interface RoleManager extends BaseContract {
   WITHDRAWAL_MANAGER(overrides?: CallOverrides): Promise<string>;
 
   __RoleManager_init(
-    roleInitParams_: IRoleManager.RoleParamsStruct[],
+    rolesInitData_: IRoleManager.BaseRoleDataStruct[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  getAllRolesBaseInfo(
+    overrides?: CallOverrides
+  ): Promise<IRoleManager.BaseRoleDataStructOutput[]>;
 
   getAllRolesDetailedInfo(
     overrides?: CallOverrides
@@ -824,6 +876,17 @@ export interface RoleManager extends BaseContract {
     role_: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  getRolesBaseInfo(
+    roles_: PromiseOrValue<BytesLike>[],
+    overrides?: CallOverrides
+  ): Promise<IRoleManager.BaseRoleDataStructOutput[]>;
+
+  getRolesBaseInfoPart(
+    offset_: PromiseOrValue<BigNumberish>,
+    limit_: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<IRoleManager.BaseRoleDataStructOutput[]>;
 
   getRolesDetailedInfo(
     roles_: PromiseOrValue<BytesLike>[],
@@ -975,7 +1038,7 @@ export interface RoleManager extends BaseContract {
   ): Promise<boolean>;
 
   updateRolesParams(
-    roleParams_: IRoleManager.RoleParamsStruct[],
+    rolesData_: IRoleManager.BaseRoleDataStruct[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -999,9 +1062,13 @@ export interface RoleManager extends BaseContract {
     WITHDRAWAL_MANAGER(overrides?: CallOverrides): Promise<string>;
 
     __RoleManager_init(
-      roleInitParams_: IRoleManager.RoleParamsStruct[],
+      rolesInitData_: IRoleManager.BaseRoleDataStruct[],
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getAllRolesBaseInfo(
+      overrides?: CallOverrides
+    ): Promise<IRoleManager.BaseRoleDataStructOutput[]>;
 
     getAllRolesDetailedInfo(
       overrides?: CallOverrides
@@ -1025,6 +1092,17 @@ export interface RoleManager extends BaseContract {
       role_: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getRolesBaseInfo(
+      roles_: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<IRoleManager.BaseRoleDataStructOutput[]>;
+
+    getRolesBaseInfoPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<IRoleManager.BaseRoleDataStructOutput[]>;
 
     getRolesDetailedInfo(
       roles_: PromiseOrValue<BytesLike>[],
@@ -1176,7 +1254,7 @@ export interface RoleManager extends BaseContract {
     ): Promise<boolean>;
 
     updateRolesParams(
-      roleParams_: IRoleManager.RoleParamsStruct[],
+      rolesData_: IRoleManager.BaseRoleDataStruct[],
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -1236,9 +1314,11 @@ export interface RoleManager extends BaseContract {
     WITHDRAWAL_MANAGER(overrides?: CallOverrides): Promise<BigNumber>;
 
     __RoleManager_init(
-      roleInitParams_: IRoleManager.RoleParamsStruct[],
+      rolesInitData_: IRoleManager.BaseRoleDataStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    getAllRolesBaseInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
     getAllRolesDetailedInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1258,6 +1338,17 @@ export interface RoleManager extends BaseContract {
 
     getRoleMembersCount(
       role_: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRolesBaseInfo(
+      roles_: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRolesBaseInfoPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1411,7 +1502,7 @@ export interface RoleManager extends BaseContract {
     ): Promise<BigNumber>;
 
     updateRolesParams(
-      roleParams_: IRoleManager.RoleParamsStruct[],
+      rolesData_: IRoleManager.BaseRoleDataStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -1448,8 +1539,12 @@ export interface RoleManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     __RoleManager_init(
-      roleInitParams_: IRoleManager.RoleParamsStruct[],
+      rolesInitData_: IRoleManager.BaseRoleDataStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getAllRolesBaseInfo(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAllRolesDetailedInfo(
@@ -1474,6 +1569,17 @@ export interface RoleManager extends BaseContract {
 
     getRoleMembersCount(
       role_: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRolesBaseInfo(
+      roles_: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRolesBaseInfoPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1629,7 +1735,7 @@ export interface RoleManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     updateRolesParams(
-      roleParams_: IRoleManager.RoleParamsStruct[],
+      rolesData_: IRoleManager.BaseRoleDataStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

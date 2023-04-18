@@ -13,7 +13,7 @@ import { ref, computed, watch } from 'vue'
 export type FullUserRoleInfo = UserRoleAdditionalInfo &
   Omit<RoleBaseInfo, 'members'>
 
-type RoleBaseInfo = {
+export type RoleBaseInfo = {
   roleName: string
   role: string
   members: Array<string>
@@ -89,8 +89,8 @@ export function useRolesManager() {
     raw: IRoleManager.DetailedRoleInfoStructOutput,
   ): RoleBaseInfo => {
     return {
-      roleName: raw.roleName,
-      role: raw.role,
+      roleName: raw.baseRoleData.roleName,
+      role: raw.baseRoleData.role,
       members: raw.members,
     }
   }
@@ -164,6 +164,12 @@ export function useRolesManager() {
     await _initRoleManager()
     await _grantRole(role, address)
 
+    const alreadyExist = await api.get(
+      `/integrations/nonce-auth-svc/users/${address}`,
+    )
+
+    if (alreadyExist) return
+
     await api.post('/integrations/nonce-auth-svc/users', {
       data: {
         attributes: {
@@ -233,13 +239,23 @@ export function useRolesManager() {
     return processedInfo
   }
 
-  const getRolesList = async () => {
+  const getRolesList = async (): Promise<
+    Omit<RoleBaseInfo, 'members'>[] | null
+  > => {
     await _initContractRegistry()
     await _initRoleManager()
 
     const data = await _getRolesList()
 
+    if (!data) return null
+
     return data
+      .map(role => ({
+        roleName: role.roleName,
+        role: role.role,
+        roleAdmin: role.roleAdmin,
+      }))
+      .filter(el => el.roleName !== 'Default admin')
   }
 
   const getUserRoles = async (address: string) => {

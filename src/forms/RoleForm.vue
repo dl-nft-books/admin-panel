@@ -71,9 +71,10 @@ import {
   useFormValidation,
   useRolesManager,
   FullUserRoleInfo,
+  RoleBaseInfo,
 } from '@/composables'
 import { required, address } from '@/validators'
-import { Bus, cropAddress, ErrorHandler } from '@/helpers'
+import { Bus, ErrorHandler } from '@/helpers'
 
 import { useI18n } from 'vue-i18n'
 
@@ -87,17 +88,15 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
-const { getRolesList, grantRole, editUserName, getUserRoles } =
-  useRolesManager()
+const { getRolesList, grantRole, editUserName } = useRolesManager()
 
-const rolesList = ref<string[]>([])
-const userRoles = ref<string[]>([])
+const rolesList = ref<Omit<RoleBaseInfo, 'members'>[]>([])
 const isLoading = ref(false)
 
 const selectOptions = computed(() =>
   rolesList.value.map(el => ({
-    label: cropAddress(el),
-    value: el,
+    label: el.roleName,
+    value: el.role,
   })),
 )
 
@@ -168,19 +167,6 @@ onMounted(async () => {
     }
 
     rolesList.value = roles
-
-    if (!props.role) {
-      isLoading.value = false
-      return
-    }
-    const _userRoles = await getUserRoles(props.role.address)
-
-    if (!_userRoles) {
-      isLoading.value = false
-      return
-    }
-
-    userRoles.value = _userRoles
   } catch (error) {
     ErrorHandler.process(error)
   }

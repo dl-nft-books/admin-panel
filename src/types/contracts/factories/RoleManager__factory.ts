@@ -219,8 +219,8 @@ const _abi = [
             type: "string",
           },
         ],
-        internalType: "struct IRoleManager.RoleParams[]",
-        name: "roleInitParams_",
+        internalType: "struct IRoleManager.BaseRoleData[]",
+        name: "rolesInitData_",
         type: "tuple[]",
       },
     ],
@@ -231,15 +231,10 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getAllRolesDetailedInfo",
+    name: "getAllRolesBaseInfo",
     outputs: [
       {
         components: [
-          {
-            internalType: "string",
-            name: "roleName",
-            type: "string",
-          },
           {
             internalType: "bytes32",
             name: "role",
@@ -249,6 +244,48 @@ const _abi = [
             internalType: "bytes32",
             name: "roleAdmin",
             type: "bytes32",
+          },
+          {
+            internalType: "string",
+            name: "roleName",
+            type: "string",
+          },
+        ],
+        internalType: "struct IRoleManager.BaseRoleData[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAllRolesDetailedInfo",
+    outputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "bytes32",
+                name: "role",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "roleAdmin",
+                type: "bytes32",
+              },
+              {
+                internalType: "string",
+                name: "roleName",
+                type: "string",
+              },
+            ],
+            internalType: "struct IRoleManager.BaseRoleData",
+            name: "baseRoleData",
+            type: "tuple",
           },
           {
             internalType: "address[]",
@@ -355,15 +392,10 @@ const _abi = [
         type: "bytes32[]",
       },
     ],
-    name: "getRolesDetailedInfo",
+    name: "getRolesBaseInfo",
     outputs: [
       {
         components: [
-          {
-            internalType: "string",
-            name: "roleName",
-            type: "string",
-          },
           {
             internalType: "bytes32",
             name: "role",
@@ -373,6 +405,95 @@ const _abi = [
             internalType: "bytes32",
             name: "roleAdmin",
             type: "bytes32",
+          },
+          {
+            internalType: "string",
+            name: "roleName",
+            type: "string",
+          },
+        ],
+        internalType: "struct IRoleManager.BaseRoleData[]",
+        name: "rolesBaseInfo_",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "offset_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "limit_",
+        type: "uint256",
+      },
+    ],
+    name: "getRolesBaseInfoPart",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "bytes32",
+            name: "role",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "roleAdmin",
+            type: "bytes32",
+          },
+          {
+            internalType: "string",
+            name: "roleName",
+            type: "string",
+          },
+        ],
+        internalType: "struct IRoleManager.BaseRoleData[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32[]",
+        name: "roles_",
+        type: "bytes32[]",
+      },
+    ],
+    name: "getRolesDetailedInfo",
+    outputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "bytes32",
+                name: "role",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "roleAdmin",
+                type: "bytes32",
+              },
+              {
+                internalType: "string",
+                name: "roleName",
+                type: "string",
+              },
+            ],
+            internalType: "struct IRoleManager.BaseRoleData",
+            name: "baseRoleData",
+            type: "tuple",
           },
           {
             internalType: "address[]",
@@ -406,19 +527,26 @@ const _abi = [
       {
         components: [
           {
-            internalType: "string",
-            name: "roleName",
-            type: "string",
-          },
-          {
-            internalType: "bytes32",
-            name: "role",
-            type: "bytes32",
-          },
-          {
-            internalType: "bytes32",
-            name: "roleAdmin",
-            type: "bytes32",
+            components: [
+              {
+                internalType: "bytes32",
+                name: "role",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "roleAdmin",
+                type: "bytes32",
+              },
+              {
+                internalType: "string",
+                name: "roleName",
+                type: "string",
+              },
+            ],
+            internalType: "struct IRoleManager.BaseRoleData",
+            name: "baseRoleData",
+            type: "tuple",
           },
           {
             internalType: "address[]",
@@ -937,8 +1065,8 @@ const _abi = [
             type: "string",
           },
         ],
-        internalType: "struct IRoleManager.RoleParams[]",
-        name: "roleParams_",
+        internalType: "struct IRoleManager.BaseRoleData[]",
+        name: "rolesData_",
         type: "tuple[]",
       },
     ],

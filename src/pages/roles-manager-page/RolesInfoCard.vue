@@ -21,7 +21,7 @@
           }
         "
       >
-        {{ item.value }}
+        {{ item.isCropped ? cropAddress(item.value) : item.value }}
         <icon
           class="roles-info-card__icon"
           v-if="item.isCopyable"
@@ -48,7 +48,7 @@
         <role-form
           :role="role"
           @close="modal.close"
-          @reload-page="$emit('reload-page')"
+          @reload-page="emit('reload-page')"
         />
       </template>
     </modal>
@@ -99,8 +99,9 @@ const cardHeader = [
   },
   {
     label: t('roles-info-card.address'),
-    value: cropAddress(props.role.address),
+    value: props.role.address,
     isCopyable: true,
+    isCropped: true,
   },
   {
     label: t('roles-info-card.date'),

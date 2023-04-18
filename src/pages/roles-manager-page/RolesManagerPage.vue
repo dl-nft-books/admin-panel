@@ -8,8 +8,8 @@
 
     <main v-if="rolesList.length" class="roles-manager-page__content">
       <roles-info-card
-        v-for="role in rolesList"
-        :key="role.address + role.name"
+        v-for="(role, idx) in rolesList"
+        :key="idx + role.name + role.address"
         :role="role"
         @reload-page="loadFirstPage"
       />

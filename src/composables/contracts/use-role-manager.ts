@@ -189,7 +189,7 @@ export const useRoleManager = (address?: string) => {
   const getRolesList = async () => {
     if (!contractInstance.value) return
     try {
-      const data = await contractInstance.value.getAllSupportedRoles()
+      const data = await contractInstance.value.getAllRolesBaseInfo()
 
       return data
     } catch (error) {

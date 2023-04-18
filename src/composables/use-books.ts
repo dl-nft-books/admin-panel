@@ -135,17 +135,19 @@ export function useBooks(contractRegistryAddress?: string) {
     backendInfoPart: Book[],
     contractInfoPart: IMarketplace.BaseTokenParamsStructOutput[],
   ): BaseBookInfo[] => {
-    return contractInfoPart.map(book => {
+    const formattedArray = contractInfoPart.map(book => {
       const matchingInfo = backendInfoPart.find(el =>
         el.networks.find(
           network => network.attributes.contract_address === book.tokenContract,
         ),
       )
 
-      if (!matchingInfo) throw new Error('Info parts does not match')
+      if (!matchingInfo) return null
 
       return _formatBaseParams(matchingInfo, book)
     })
+
+    return formattedArray.filter(book => Boolean(book)) as BaseBookInfo[]
   }
 
   const getBooksFromContract = async (
@@ -202,6 +204,9 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const getBookById = async (id: number | string): Promise<FullBookInfo> => {
+    await _initContractRegistry(Number(provider.value.chainId))
+    await _initMarketPlace()
+
     const { data } = await api.get<Book>(`/integrations/books/${id}`)
 
     const bookData = await _gatherDetailedBookData(data)
@@ -215,6 +220,7 @@ export function useBooks(contractRegistryAddress?: string) {
     await Document.uploadDocuments(bookMedia)
   }
 
+  // creates record in db about book
   const _createBook = (opts: {
     description: string
     banner: Document
@@ -412,6 +418,7 @@ export function useBooks(contractRegistryAddress?: string) {
     }
   }
 
+  // deploys existing book to another chain/chains
   const addNetworks = async (
     opts: Omit<CreateBookOpts, 'description' | 'banner' | 'bookFile'> & {
       id: string

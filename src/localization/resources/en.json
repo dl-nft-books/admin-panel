@@ -219,7 +219,8 @@
     "book-link-lbl": "Link to the book",
     "nft-address": "NFT Adress",
     "nft-id": "NFT ID",
-    "floor-price": "Floor Price"
+    "floor-price": "Floor Price",
+    "type-lbl": "Payment type"
   },
   "api-errors": {
     "session-expired-title": "Session expired",

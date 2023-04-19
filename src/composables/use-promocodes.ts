@@ -25,6 +25,7 @@ export function usePromocodes() {
     initial_usages: number
     expiration_date: string
     promocode?: string
+    booksIds?: Array<number>
   }) => {
     return api.patch(`/integrations/core/promocodes/${opts.id}`, {
       data: {
@@ -32,6 +33,7 @@ export function usePromocodes() {
           initial_usages: opts.initial_usages,
           expiration_date: opts.expiration_date,
           promocode: opts.promocode,
+          books: opts.booksIds ?? [],
         },
       },
     })

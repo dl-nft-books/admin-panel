@@ -140,7 +140,7 @@ const form = reactive({
     : '',
   discount: '',
   promocode: props.promocode?.promocode || '',
-  bookIds: [],
+  bookIds: !props.promocode ? [] : props.promocode.books,
 })
 
 const minDate = computed(() =>
@@ -188,6 +188,7 @@ const submit = async () => {
         initial_usages: Number(form.numberOfUses),
         expiration_date: DateUtil.toISO(form.dueDate),
         promocode: form.promocode,
+        booksIds: form.bookIds,
       })
 
       Bus.success(t('promocode-form.success-update-msg'))

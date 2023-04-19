@@ -193,6 +193,7 @@
     "submit-btn": "Withdraw",
     "cancel-btn": "CANCEL",
     "max-amount-lbl": "Max",
+    "token-amount-lbl": "Amount of token",
     "success-msg": "Funds successfuly withdrawed"
   },
   "overview-nfts": {

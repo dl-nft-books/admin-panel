@@ -40,12 +40,16 @@ export function useWithdrawalManager() {
   const withdrawCurrency = async (
     chainId: number,
     recipient: string,
+    amount: string,
+    isMax: boolean,
     tokenAddress = ethers.constants.AddressZero,
   ) => {
     await _initContractRegistry(chainId)
     await _initMarketPlace()
 
-    await withdrawFunds(tokenAddress, recipient)
+    const weiAmount = amount ? new BN(amount).toWei().toString() : '0'
+
+    await withdrawFunds(tokenAddress, recipient, weiAmount, isMax)
   }
 
   const getBalance = async (chainId: number) => {

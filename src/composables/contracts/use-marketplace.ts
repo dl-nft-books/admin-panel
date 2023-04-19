@@ -149,13 +149,20 @@ export const useMarketplace = (address?: string) => {
     }
   }
 
-  const withdrawFunds = async (tokenAddress: string, recipient: string) => {
+  const withdrawFunds = async (
+    tokenAddress: string,
+    recipient: string,
+    amount: string,
+    isMax: boolean,
+  ) => {
     if (!provider.value) return
 
     try {
       const data = contractInterface.encodeFunctionData('withdrawCurrency', [
         tokenAddress,
         recipient,
+        amount,
+        isMax,
       ])
 
       const receipt = await provider.value.signAndSendTx({

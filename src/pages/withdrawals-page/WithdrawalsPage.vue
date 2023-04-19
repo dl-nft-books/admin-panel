@@ -93,12 +93,12 @@ const loadList = computed(() => async (limit: number, offset: number) => {
   const data = await getBooksFromContract(limit, offset, provider.value.chainId)
 
   for (const [index, { id }] of data.entries()) {
-    const statistics = await getStatisticByBookId(id)
+    const { data: statistics } = await getStatisticByBookId(id)
 
     // console.log(statistics)
 
     data[index] = Object.assign(data[index], {
-      totalMoneySpent: statistics.data.tokens_histogram.attributes.total,
+      totalMoneySpent: statistics.tokens_histogram.attributes.total,
     })
   }
 

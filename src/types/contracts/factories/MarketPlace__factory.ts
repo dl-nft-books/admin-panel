@@ -1255,6 +1255,16 @@ const _abi = [
         name: "recipient_",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "desiredAmount_",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "withdrawAll_",
+        type: "bool",
+      },
     ],
     name: "withdrawCurrency",
     outputs: [],

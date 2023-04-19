@@ -185,7 +185,7 @@ export interface MarketPlaceInterface extends utils.Interface {
     "setInjector(address)": FunctionFragment;
     "unpause()": FunctionFragment;
     "updateAllParams(address,string,string,(uint256,uint256,uint256,address,address,bool,bool))": FunctionFragment;
-    "withdrawCurrency(address,address)": FunctionFragment;
+    "withdrawCurrency(address,address,uint256,bool)": FunctionFragment;
   };
 
   getFunction(
@@ -324,7 +324,12 @@ export interface MarketPlaceInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawCurrency",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<boolean>
+    ]
   ): string;
 
   decodeFunctionResult(
@@ -685,6 +690,8 @@ export interface MarketPlace extends BaseContract {
     withdrawCurrency(
       tokenAddr_: PromiseOrValue<string>,
       recipient_: PromiseOrValue<string>,
+      desiredAmount_: PromiseOrValue<BigNumberish>,
+      withdrawAll_: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -813,6 +820,8 @@ export interface MarketPlace extends BaseContract {
   withdrawCurrency(
     tokenAddr_: PromiseOrValue<string>,
     recipient_: PromiseOrValue<string>,
+    desiredAmount_: PromiseOrValue<BigNumberish>,
+    withdrawAll_: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -937,6 +946,8 @@ export interface MarketPlace extends BaseContract {
     withdrawCurrency(
       tokenAddr_: PromiseOrValue<string>,
       recipient_: PromiseOrValue<string>,
+      desiredAmount_: PromiseOrValue<BigNumberish>,
+      withdrawAll_: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -1133,6 +1144,8 @@ export interface MarketPlace extends BaseContract {
     withdrawCurrency(
       tokenAddr_: PromiseOrValue<string>,
       recipient_: PromiseOrValue<string>,
+      desiredAmount_: PromiseOrValue<BigNumberish>,
+      withdrawAll_: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -1268,6 +1281,8 @@ export interface MarketPlace extends BaseContract {
     withdrawCurrency(
       tokenAddr_: PromiseOrValue<string>,
       recipient_: PromiseOrValue<string>,
+      desiredAmount_: PromiseOrValue<BigNumberish>,
+      withdrawAll_: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

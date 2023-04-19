@@ -95,6 +95,8 @@
     "date-lbl": "Due date",
     "name-lbl": "Promocode name",
     "name-placeholder": "Leave blank and it will be generated...",
+    "select-lbl": "Books to apply",
+    "select-placeholder": "Leave blank to apply to all",
     "cancel-btn-lbl": "Cancel",
     "submit-update-btn-lbl": "Update",
     "submit-create-btn-lbl": "Create",
@@ -256,7 +258,8 @@
     "book-link-lbl": "Link to the book",
     "nft-address": "NFT Adress",
     "nft-id": "NFT ID",
-    "floor-price": "Floor Price"
+    "floor-price": "Floor Price",
+    "type-lbl": "Payment type"
   },
   "api-errors": {
     "session-expired-title": "Session expired",

@@ -114,8 +114,6 @@ export function useBooks(contractRegistryAddress?: string) {
       el => el.attributes.chain_id === Number(provider.value.chainId),
     )
 
-    // console.log(bookNetwork, provider.value.chainId)
-
     if (!bookNetwork) throw new Error('failed to get appropriate info source')
 
     _initContractRegistry(bookNetwork.attributes.chain_id)
@@ -133,17 +131,19 @@ export function useBooks(contractRegistryAddress?: string) {
     backendInfoPart: Book[],
     contractInfoPart: IMarketplace.BaseTokenParamsStructOutput[],
   ): BaseBookInfo[] => {
-    return contractInfoPart.map(book => {
+    const formattedArray = contractInfoPart.map(book => {
       const matchingInfo = backendInfoPart.find(el =>
         el.networks.find(
           network => network.attributes.contract_address === book.tokenContract,
         ),
       )
 
-      if (!matchingInfo) throw new Error('Info parts does not match')
+      if (!matchingInfo) return null
 
       return _formatBaseParams(matchingInfo, book)
     })
+
+    return formattedArray.filter(book => Boolean(book)) as BaseBookInfo[]
   }
 
   const getBooksFromContract = async (
@@ -152,8 +152,6 @@ export function useBooks(contractRegistryAddress?: string) {
     chainId: ChainId,
   ) => {
     if (!limit) return []
-
-    // console.log(limit, offset, chainId)
 
     if (!networkStore.list.length) {
       await networkStore.loadNetworks()
@@ -171,8 +169,6 @@ export function useBooks(contractRegistryAddress?: string) {
 
     const bookContractsList = await getBooksBatch(limit, offset)
 
-    // console.log(bookContractsList)
-
     if (!bookContractsList?.length) return []
 
     const { data: booksFromBackend } = await api.get<Book[]>(
@@ -188,23 +184,21 @@ export function useBooks(contractRegistryAddress?: string) {
       },
     )
 
-    // console.log(booksFromBackend)
-
     const formattedBooks = _gatherBaseBookData(
       booksFromBackend,
       bookContractsList,
     )
-    // console.log(formattedBooks)
 
     return formattedBooks
   }
 
   const getBookById = async (id: number | string): Promise<FullBookInfo> => {
+    await _initContractRegistry(Number(provider.value.chainId))
+    await _initMarketPlace()
+
     const { data } = await api.get<Book>(`/integrations/books/${id}`)
 
     const bookData = await _gatherDetailedBookData(data)
-
-    // console.log(bookData)
 
     return bookData
   }
@@ -286,8 +280,6 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const createBook = async (opts: CreateBookOpts) => {
-    // console.log(opts)
-
     const weiPrice = new BN(opts.price).toWei().toString()
     const weiFloorPrice = opts.floorPrice
       ? new BN(opts.floorPrice).toWei().toString()
@@ -312,8 +304,6 @@ export function useBooks(contractRegistryAddress?: string) {
         },
       })),
     })
-
-    // console.log(deployedBookAddressList)
   }
 
   /**
@@ -346,8 +336,6 @@ export function useBooks(contractRegistryAddress?: string) {
       .toString()
 
     if (updateOpts.contractValuesUpdate) {
-      // console.log('contract values updated', opts.apiParams.networks)
-
       for (const {
         attributes: { chain_id, contract_address },
       } of opts.apiParams.networks) {
@@ -370,13 +358,10 @@ export function useBooks(contractRegistryAddress?: string) {
     }
 
     if (updateOpts.filesUpdated) {
-      // console.log('files updated')
       await _uploadBookMedia(opts.apiParams.banner, opts.apiParams.file)
     }
 
     if (updateOpts.apiValuesUpdated) {
-      // console.log('api values updated')
-
       await api.patch(`/integrations/books/${opts.apiParams.id}`, {
         data: {
           type: 'books',

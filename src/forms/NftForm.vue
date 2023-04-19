@@ -267,9 +267,10 @@ const isContractValuesUpdated = computed(
     form.floorPrice !== nftFloorPrice ||
     form.fundsRecipient !== props.book?.fundsRecipient ||
     form.isNftBuyable !== props.book.isNFTBuyable ||
-    form.isDisabled !== props.book?.isDisabled ||
-    form.addMoreChains,
+    form.isDisabled !== props.book?.isDisabled,
 )
+
+const isDeployingOnMoreChains = computed(() => form.addMoreChains)
 
 const isApiValuesUpdated = computed(
   () =>
@@ -288,7 +289,8 @@ const isSubmitBtnDisabled = computed(
   () =>
     (!isApiValuesUpdated.value &&
       !isContractValuesUpdated.value &&
-      !isFilesUpdated.value) ||
+      !isFilesUpdated.value &&
+      !isDeployingOnMoreChains.value) ||
     isFormDisabled.value,
 )
 

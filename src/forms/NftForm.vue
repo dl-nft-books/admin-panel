@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: divide this component somehow - its too large -->
   <form class="nft-form" @submit.prevent="submit">
     <h4 class="nft-form__subtitle">
       {{ $t('nft-form.uploading-subtitle') }}
@@ -45,14 +46,6 @@
         :disabled="isFormDisabled"
         @blur="touchField('price')"
       />
-      <amount-field
-        v-model="form.floorPrice"
-        :placeholder="$t('nft-form.input-floor-price-placeholder')"
-        :label="$t('nft-form.input-floor-price-label')"
-        :error-message="getFieldErrorMessage('floorPrice')"
-        :disabled="isFormDisabled"
-        @blur="touchField('floorPrice')"
-      />
       <input-field
         v-model="form.symbol"
         :max-length="FIELD_LENGTH.tokenSymbol"
@@ -70,6 +63,31 @@
         :disabled="isFormDisabled"
         @blur="touchField('fundsRecipient')"
       />
+
+      <template v-if="book">
+        <read-only-field
+          v-for="(item, idx) in book.networks"
+          :key="idx"
+          :label="$t('nft-form.deployed-chain-lbl')"
+          :value="getNetworkScheme(item.attributes.chain_id).toUpperCase()"
+        />
+      </template>
+
+      <checkbox-field
+        v-if="isUpdateNft"
+        v-model="form.addMoreChains"
+        class="nft-form__checkbox"
+        :label="$t('nft-form.more-chains-lbl')"
+      />
+
+      <multiple-select-field
+        v-if="!isUpdateNft || form.addMoreChains"
+        v-model="networksToDeploy"
+        :value-options="networkList"
+        :label="$t('nft-form.mainnet-lbl')"
+        :placeholder="$t('nft-form.mainnet-placeholder')"
+      />
+
       <textarea-field
         v-model="form.description"
         :max-length="FIELD_LENGTH.description"
@@ -83,41 +101,27 @@
       <collapse
         class="nft-form__collapse"
         :is-close-by-click-outside="false"
-        :is-opened-by-default="form.isVoucherAllowed"
+        :is-opened-by-default="form.isNftBuyable"
       >
         <template #head="{ collapse }">
           <checkbox-field
-            v-model="form.isVoucherAllowed"
-            class="nft-form__collapse-trigger"
-            :label="$t('nft-form.voucher-checkbox-lbl')"
+            v-model="form.isNftBuyable"
+            class="nft-form__checkbox"
+            :label="$t('nft-form.nft-buyable-checkbox-lbl')"
             @click="collapse.toggle"
           />
         </template>
         <section class="nft-form__additional-inputs">
-          <input-field
-            v-model="form.voucherTokenAddress"
-            :placeholder="$t('nft-form.voucher-token-placeholder')"
-            :label="$t('nft-form.voucher-token-lbl')"
-            :error-message="getFieldErrorMessage('voucherTokenAddress')"
-            :disabled="isFormDisabled"
-            @blur="touchField('voucherTokenAddress')"
-          />
           <amount-field
-            v-model="form.voucherTokenAmount"
-            :placeholder="$t('nft-form.voucher-token-amount-placeholder')"
-            :label="$t('nft-form.voucher-token-amount-lbl')"
-            :error-message="getFieldErrorMessage('voucherTokenAmount')"
+            v-model="form.floorPrice"
+            :placeholder="$t('nft-form.input-floor-price-placeholder')"
+            :label="$t('nft-form.input-floor-price-label')"
+            :error-message="getFieldErrorMessage('floorPrice')"
             :disabled="isFormDisabled"
-            @blur="touchField('voucherTokenAmount')"
+            @blur="touchField('floorPrice')"
           />
         </section>
       </collapse>
-
-      <checkbox-field
-        v-model="form.isNftBuyable"
-        class="nft-form__checkbox"
-        :label="$t('nft-form.nft-buyable-checkbox-lbl')"
-      />
 
       <checkbox-field
         v-if="isUpdateNft"
@@ -164,8 +168,10 @@ import {
   AmountField,
   FileField,
   CheckboxField,
+  MultipleSelectField,
+  ReadOnlyField,
 } from '@/fields'
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { AppButton, Collapse } from '@/common'
 import { FIELD_LENGTH, ROUTE_NAMES } from '@/enums'
 import { useRouter } from 'vue-router'
@@ -186,18 +192,12 @@ import {
   alphaNumWithSpecialChars,
   address,
 } from '@/validators'
-import { ErrorHandler, Bus, formatAssetFromWei, switchNetwork } from '@/helpers'
+import { ErrorHandler, Bus, switchNetwork } from '@/helpers'
 import { BN } from '@/utils/math.util'
-import { ethers } from 'ethers'
-import {
-  MIN_PRICE_VALUE,
-  MIN_VOUCHER_AMOUNT,
-  MAX_VOUCHER_AMOUNT,
-  MAX_PRICE_VALUE,
-  MAX_BOOK_SIZE,
-} from '@/consts'
+import { MIN_PRICE_VALUE, MAX_PRICE_VALUE, MAX_BOOK_SIZE } from '@/consts'
 import { useI18n } from 'vue-i18n'
 import { BookFile } from '@/types'
+import { getNetworkScheme } from '@/helpers'
 
 const props = defineProps<{
   book?: FullBookInfo
@@ -205,26 +205,44 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const router = useRouter()
-const { createBook, updateBook } = useBooks()
+const { createBook, updateBook, addNetworks } = useBooks()
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
+const isUpdateNft = computed(() => Boolean(props.book))
+
 const networkStore = useNetworksStore()
+
+// if book already deployed on some chain - filter this chain from list
+const networkList = computed(() => {
+  const candidates = networkStore.list.map(el => ({
+    label: el.name,
+    value: el.chain_id,
+  }))
+
+  return !isUpdateNft.value
+    ? candidates
+    : candidates.filter(
+        el =>
+          !props.book?.networks.some(
+            network => network.attributes.chain_id === el.value,
+          ),
+      )
+})
+const networksToDeploy = ref(
+  networkList.value[0]?.value ? [networkList.value[0].value] : [],
+)
 
 /* 
   if we CREATING nft - any chain from network list is valid for us
   if we EDITING nft - only valid chain is the original book chain
 */
 const isValidChain = computed(() =>
-  isUpdateNft.value
-    ? Number(provider.value.chainId) ===
-      props.book?.networks[0].attributes.chain_id
-    : networkStore.list.find(
-        network => network.chain_id === Number(provider.value.chainId),
-      ),
+  !isUpdateNft.value
+    ? networksToDeploy.value[0] === Number(provider.value.chainId)
+    : props.book?.networks[0].attributes.chain_id ===
+      Number(provider.value.chainId),
 )
-
-const isUpdateNft = computed(() => Boolean(props.book))
 
 const submitButtonText = computed(() =>
   isUpdateNft.value ? t('nft-form.edit-button') : t('nft-form.create-button'),
@@ -241,10 +259,6 @@ const nftFloorPrice = new BN(props.book?.minNFTFloorPrice || 0)
   .fromWei()
   .toString()
 
-const formatedVoucherTokenAmount = props.book?.voucherTokensAmount
-  ? formatAssetFromWei(props.book?.voucherTokensAmount, 0)
-  : '0'
-
 const isContractValuesUpdated = computed(
   () =>
     form.symbol !== props.book?.tokenSymbol ||
@@ -253,10 +267,10 @@ const isContractValuesUpdated = computed(
     form.floorPrice !== nftFloorPrice ||
     form.fundsRecipient !== props.book?.fundsRecipient ||
     form.isNftBuyable !== props.book.isNFTBuyable ||
-    form.isDisabled !== props.book?.isDisabled ||
-    form.voucherTokenAddress !== props.book?.voucherTokenContract ||
-    form.voucherTokenAmount !== formatedVoucherTokenAmount,
+    form.isDisabled !== props.book?.isDisabled,
 )
+
+const isDeployingOnMoreChains = computed(() => form.addMoreChains)
 
 const isApiValuesUpdated = computed(
   () =>
@@ -275,7 +289,8 @@ const isSubmitBtnDisabled = computed(
   () =>
     (!isApiValuesUpdated.value &&
       !isContractValuesUpdated.value &&
-      !isFilesUpdated.value) ||
+      !isFilesUpdated.value &&
+      !isDeployingOnMoreChains.value) ||
     isFormDisabled.value,
 )
 
@@ -296,11 +311,9 @@ const form = reactive<{
   fundsRecipient: string
   photo: Document
   book: Document
-  isVoucherAllowed: boolean
   isNftBuyable: boolean
   isDisabled: boolean
-  voucherTokenAddress: string
-  voucherTokenAmount: string
+  addMoreChains: boolean
 }>({
   name: props.book?.tokenName || '',
   price: isUpdateNft.value ? nftPrice : '',
@@ -311,22 +324,14 @@ const form = reactive<{
   book: props.book?.file ? toDocument(props.book?.file) : new Document(),
   isNftBuyable: props.book?.isNFTBuyable ?? true,
   fundsRecipient: props.book?.fundsRecipient || '',
-  isVoucherAllowed:
-    Boolean(props.book?.voucherTokenContract) &&
-    props.book?.voucherTokenContract !== ethers.constants.AddressZero,
-  voucherTokenAddress: props.book?.voucherTokenContract || '',
-  voucherTokenAmount: formatedVoucherTokenAmount,
   isDisabled: props.book?.isDisabled || false,
+  addMoreChains: false,
 })
-
 /* 
   Reactive value from the form is being converted to plain object, 
   that why we need to use ref value
 */
-const isVoucherAllowed = computed(() => form.isVoucherAllowed)
-const minVoucherAmount = computed(() =>
-  form.isVoucherAllowed ? MIN_VOUCHER_AMOUNT : 0,
-)
+const isNftBuyable = computed(() => form.isNftBuyable)
 
 const { disableForm, enableForm, isFormDisabled } = useForm()
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
@@ -339,7 +344,7 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
       maxValue: maxValue(MAX_PRICE_VALUE),
     },
     floorPrice: {
-      required,
+      requiredIf: requiredIf(isNftBuyable),
       minValue: minValue(MIN_PRICE_VALUE),
       maxValue: maxValue(MAX_PRICE_VALUE),
     },
@@ -347,14 +352,6 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
     symbol: { required, alphaNumWithSpecialChars },
     photo: { nonEmptyDocument },
     book: { nonEmptyDocument },
-    voucherTokenAddress: {
-      requiredIf: requiredIf(isVoucherAllowed),
-    },
-    voucherTokenAmount: {
-      requiredIf: requiredIf(isVoucherAllowed),
-      minValue: minValue(minVoucherAmount),
-      maxValue: maxValue(MAX_VOUCHER_AMOUNT),
-    },
     fundsRecipient: {
       address,
     },
@@ -401,8 +398,8 @@ const updateNftBook = async () => {
         fundsRecipient: form.fundsRecipient,
         isDisabled: form.isDisabled,
         isNFTBuyable: form.isNftBuyable,
-        voucherTokenContract: form.voucherTokenAddress,
-        voucherTokensAmount: form.voucherTokenAmount,
+        voucherTokenContract: props.book.voucherTokenContract,
+        voucherTokensAmount: props.book.voucherTokensAmount,
       },
       apiParams: {
         id: props.book.id,
@@ -418,29 +415,34 @@ const updateNftBook = async () => {
       contractValuesUpdate: isContractValuesUpdated.value,
     },
   )
+
+  if (form.addMoreChains && networksToDeploy.value.length) {
+    await addNetworks({
+      id: props.book.id,
+      tokenName: form.name,
+      tokenSymbol: form.symbol,
+      price: form.price,
+      floorPrice: form.floorPrice,
+      isNftBuyable: form.isNftBuyable,
+      fundsRecipient: form.fundsRecipient,
+      chainIds: networksToDeploy.value,
+    })
+  }
   Bus.success(t('nft-form.edit-success-msg'))
 }
 
 const createNftBook = async () => {
-  const currentNetwork = networkStore.list.find(
-    network => network.chain_id === Number(provider.value.chainId),
-  )
-
-  if (!currentNetwork) return
-
   await createBook({
     tokenName: form.name,
     tokenSymbol: form.symbol,
     description: form.description,
     price: form.price,
     floorPrice: form.floorPrice,
-    voucherToken: form.voucherTokenAddress,
-    voucherTokenAmount: form.voucherTokenAmount,
     banner: form.photo,
     bookFile: form.book,
     isNftBuyable: form.isNftBuyable,
     fundsRecipient: form.fundsRecipient,
-    chainIds: [currentNetwork.chain_id],
+    chainIds: networksToDeploy.value,
   })
 
   Bus.success(t('nft-form.create-success-msg'))
@@ -467,10 +469,6 @@ const createNftBook = async () => {
 
 .nft-form__collapse {
   width: 100%;
-}
-
-.nft-form__collapse-trigger {
-  margin-bottom: toRem(20);
 }
 
 .nft-form__checkbox {

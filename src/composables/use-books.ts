@@ -23,8 +23,6 @@ type CreateBookOpts = {
   tokenSymbol: string
   description: string
   price: string
-  voucherToken: string
-  voucherTokenAmount: string
   banner: Document
   bookFile: Document
   chainIds: Array<number>
@@ -116,8 +114,6 @@ export function useBooks(contractRegistryAddress?: string) {
       el => el.attributes.chain_id === Number(provider.value.chainId),
     )
 
-    // console.log(bookNetwork, provider.value.chainId)
-
     if (!bookNetwork) throw new Error('failed to get appropriate info source')
 
     _initContractRegistry(bookNetwork.attributes.chain_id)
@@ -157,8 +153,6 @@ export function useBooks(contractRegistryAddress?: string) {
   ) => {
     if (!limit) return []
 
-    // console.log(limit, offset, chainId)
-
     if (!networkStore.list.length) {
       await networkStore.loadNetworks()
     }
@@ -175,8 +169,6 @@ export function useBooks(contractRegistryAddress?: string) {
 
     const bookContractsList = await getBooksBatch(limit, offset)
 
-    // console.log(bookContractsList)
-
     if (!bookContractsList?.length) return []
 
     const { data: booksFromBackend } = await api.get<Book[]>(
@@ -192,13 +184,10 @@ export function useBooks(contractRegistryAddress?: string) {
       },
     )
 
-    // console.log(booksFromBackend)
-
     const formattedBooks = _gatherBaseBookData(
       booksFromBackend,
       bookContractsList,
     )
-    // console.log(formattedBooks)
 
     return formattedBooks
   }
@@ -211,8 +200,6 @@ export function useBooks(contractRegistryAddress?: string) {
 
     const bookData = await _gatherDetailedBookData(data)
 
-    // console.log(bookData)
-
     return bookData
   }
 
@@ -220,7 +207,6 @@ export function useBooks(contractRegistryAddress?: string) {
     await Document.uploadDocuments(bookMedia)
   }
 
-  // creates record in db about book
   const _createBook = (opts: {
     description: string
     banner: Document
@@ -276,9 +262,8 @@ export function useBooks(contractRegistryAddress?: string) {
         {
           pricePerOneToken: opts.price,
           minNFTFloorPrice: opts.floorPrice,
-          voucherTokenContract:
-            opts.voucherToken || ethers.constants.AddressZero,
-          voucherTokensAmount: opts.voucherTokenAmount,
+          voucherTokenContract: ethers.constants.AddressZero,
+          voucherTokensAmount: '0',
           isNFTBuyable: opts.isNftBuyable,
           fundsRecipient: opts.fundsRecipient || ethers.constants.AddressZero,
           isDisabled: false,
@@ -295,17 +280,15 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const createBook = async (opts: CreateBookOpts) => {
-    // console.log(opts)
-
     const weiPrice = new BN(opts.price).toWei().toString()
-    const weiFloorPrice = new BN(opts.floorPrice).toWei().toString()
-    const weiTokenAmount = new BN(opts.voucherTokenAmount).toWei().toString()
+    const weiFloorPrice = opts.floorPrice
+      ? new BN(opts.floorPrice).toWei().toString()
+      : '0'
 
     const deployedBookAddressList = await _deployBook({
       ...opts,
       price: weiPrice,
       floorPrice: weiFloorPrice,
-      voucherTokenAmount: weiTokenAmount,
     })
 
     await _uploadBookMedia(opts.banner, opts.bookFile)
@@ -321,8 +304,6 @@ export function useBooks(contractRegistryAddress?: string) {
         },
       })),
     })
-
-    // console.log(deployedBookAddressList)
   }
 
   /**
@@ -353,13 +334,8 @@ export function useBooks(contractRegistryAddress?: string) {
     const weiFloorPrice = new BN(opts.contractParams.minNFTFloorPrice)
       .toWei()
       .toString()
-    const weiTokenAmount = new BN(opts.contractParams.voucherTokensAmount)
-      .toWei()
-      .toString()
 
     if (updateOpts.contractValuesUpdate) {
-      // console.log('contract values updated', opts.apiParams.networks)
-
       for (const {
         attributes: { chain_id, contract_address },
       } of opts.apiParams.networks) {
@@ -373,7 +349,7 @@ export function useBooks(contractRegistryAddress?: string) {
             opts.contractParams.fundsRecipient || ethers.constants.AddressZero,
           pricePerOneToken: weiPrice,
           minNFTFloorPrice: weiFloorPrice,
-          voucherTokensAmount: weiTokenAmount,
+          voucherTokensAmount: opts.contractParams.voucherTokensAmount,
           voucherTokenContract:
             opts.contractParams.voucherTokenContract ||
             ethers.constants.AddressZero,
@@ -382,13 +358,10 @@ export function useBooks(contractRegistryAddress?: string) {
     }
 
     if (updateOpts.filesUpdated) {
-      // console.log('files updated')
       await _uploadBookMedia(opts.apiParams.banner, opts.apiParams.file)
     }
 
     if (updateOpts.apiValuesUpdated) {
-      // console.log('api values updated')
-
       await api.patch(`/integrations/books/${opts.apiParams.id}`, {
         data: {
           type: 'books',
@@ -418,21 +391,20 @@ export function useBooks(contractRegistryAddress?: string) {
     }
   }
 
-  // deploys existing book to another chain/chains
   const addNetworks = async (
     opts: Omit<CreateBookOpts, 'description' | 'banner' | 'bookFile'> & {
       id: string
     },
   ) => {
     const weiPrice = new BN(opts.price).toWei().toString()
-    const weiFloorPrice = new BN(opts.floorPrice).toWei().toString()
-    const weiTokenAmount = new BN(opts.voucherTokenAmount).toWei().toString()
+    const weiFloorPrice = opts.floorPrice
+      ? new BN(opts.floorPrice).toWei().toString()
+      : '0'
 
     const deployedBookAddressList = await _deployBook({
       ...opts,
       price: weiPrice,
       floorPrice: weiFloorPrice,
-      voucherTokenAmount: weiTokenAmount,
     })
 
     await api.post(`/integrations/books/${opts.id}/network`, {

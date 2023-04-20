@@ -1,15 +1,10 @@
-import { ROLES, useRolesManager } from '@/composables'
+import { useRolesManager } from '@/composables'
 import { defineStore } from 'pinia'
 
 export const useRolesStore = defineStore('roles', {
   state: () => ({
     rolesManager: useRolesManager(),
   }),
-  actions: {
-    async grantRole(role: ROLES, address: string) {
-      await this.rolesManager.grantRole(role, address)
-    },
-  },
 
   getters: {
     hasAdminRole: state => state.rolesManager.hasAdminRole,

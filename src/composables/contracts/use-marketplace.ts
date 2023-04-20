@@ -146,6 +146,33 @@ export const useMarketplace = (address?: string) => {
     }
   }
 
+  const withdrawFunds = async (
+    tokenAddress: string,
+    recipient: string,
+    amount: string,
+    isMax: boolean,
+  ) => {
+    if (!provider.value) return
+
+    try {
+      const data = contractInterface.encodeFunctionData('withdrawCurrency', [
+        tokenAddress,
+        recipient,
+        amount,
+        isMax,
+      ])
+
+      const receipt = await provider.value.signAndSendTx({
+        to: contractAddress.value,
+        data,
+      })
+
+      return receipt
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   return {
     init,
     deployTokenContract,
@@ -154,5 +181,6 @@ export const useMarketplace = (address?: string) => {
     getTokenContractsCount,
     getBooksContracts,
     getBooksBatch,
+    withdrawFunds,
   }
 }

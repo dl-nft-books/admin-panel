@@ -47,6 +47,7 @@ export interface UseProvider {
   getTransactionReceipt: (
     transtactionHash: string,
   ) => Promise<TransactionReceipt | undefined>
+  getBalance: (address: string) => Promise<ethers.BigNumber | undefined>
 }
 
 export const useProvider = (): UseProvider => {
@@ -182,6 +183,13 @@ export const useProvider = (): UseProvider => {
     return providerWrp.value.signMessage(message)
   }
 
+  const getBalance = (address: string) => {
+    if (!providerWrp.value?.getBalance)
+      throw new errors.ProviderWrapperMethodNotFoundError()
+
+    return providerWrp.value.getBalance(address)
+  }
+
   return {
     currentProvider,
     currentSigner,
@@ -203,5 +211,6 @@ export const useProvider = (): UseProvider => {
     signMessage,
     addNetwork,
     getTransactionReceipt,
+    getBalance,
   }
 }

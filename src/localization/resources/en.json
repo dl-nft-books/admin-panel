@@ -62,7 +62,10 @@
     "nfts-link": "NFTs",
     "promocodes-link": "Promocodes",
     "vouchers-link": "Vouchers",
+    "roles-link": "Roles",
+    "withdrawals-link": "Withdrawals",
     "logout-btn": "Logout",
+    "has-no-roles-lbl": "This account doesn't have any role on that chain",
     "copyright": "{value}© Distributed Lab"
   },
   "vouchers-page": {
@@ -182,9 +185,30 @@
   "create-nft-page": {
     "title": "NFT Creation"
   },
+  "withdrawals-page": {
+    "title": "Withdrawals",
+    "load-more-btn": "Load More",
+    "withdraw-lbl": "Withdraw funds",
+    "no-data-message": "No nfts available"
+  },
   "edit-nft-page": {
     "title": "Edit NFT",
     "error-msg": "Oops... Something went wrong"
+  },
+  "withdraw-form": {
+    "title": "Withdraw Funds",
+    "balance-lbl": "Total Balance",
+    "mainnet-lbl": "Mainnet",
+    "mainnet-placeholder": "Select Mainnet",
+    "amount-lbl": "Amount",
+    "amount-placeholder": "Enter Amount",
+    "recipient-lbl": "Recipient's address",
+    "recipient-placeholder": "Enter Recipient's Address",
+    "submit-btn": "Withdraw",
+    "cancel-btn": "CANCEL",
+    "max-amount-lbl": "Max",
+    "token-amount-lbl": "Amount of token",
+    "success-msg": "Funds successfuly withdrawed"
   },
   "overview-nfts": {
     "title": "NFTs",
@@ -198,12 +222,22 @@
     "all-networks-filter": "All networks",
     "ethereum-filter": "Ethereum Mainnet",
     "q-filter": "Q Mainnet",
-    "polygon-filter": "Polygon Mainnet"
+    "polygon-filter": "Polygon Mainnet",
+    "has-no-roles-lbl": "Don't have rights to interact with NFTs"
   },
   "nft-card": {
     "name-description": "Name",
     "date-description": "Creation Date",
     "price-description": "Price"
+  },
+  "withdrawal-nft-card": {
+    "name-lbl": "Name",
+    "price-lbl": "Price",
+    "money-lbl": "Money"
+  },
+  "funds-info": {
+    "label": "Balance on this chain",
+    "not-available": "Not available"
   },
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",

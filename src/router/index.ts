@@ -95,6 +95,23 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/pages/vouchers-page/VouchersPage.vue'),
       },
+      {
+        path: '/roles',
+        name: ROUTE_NAMES.roles,
+        meta: {
+          [ROUTE_METAS.isRequiredAuth]: true,
+        },
+        component: () =>
+          import('@/pages/roles-manager-page/RolesManagerPage.vue'),
+      },
+      {
+        path: '/withdrawals',
+        name: ROUTE_NAMES.withdrawals,
+        meta: {
+          [ROUTE_METAS.isRequiredAuth]: true,
+        },
+        component: () => import('@/pages/withdrawals-page/WithdrawalsPage.vue'),
+      },
     ],
   },
 ]

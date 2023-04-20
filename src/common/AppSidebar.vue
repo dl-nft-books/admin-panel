@@ -38,6 +38,15 @@
             :text="$t('app-sidebar.promocodes-link')"
             @click="hideSidebar"
           />
+          <app-button
+            class="app-sidebar__link"
+            scheme="default"
+            size="default"
+            :icon-left="$icons.coupon"
+            :route="{ name: $routes.vouchers }"
+            :text="$t('app-sidebar.vouchers-link')"
+            @click="hideSidebar"
+          />
         </div>
         <app-button
           scheme="default"

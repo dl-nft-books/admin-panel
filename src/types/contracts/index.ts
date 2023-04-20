@@ -4,7 +4,9 @@
 export type { ContractRegistry } from "./ContractRegistry";
 export type { MarketPlace } from "./MarketPlace";
 export type { RoleManager } from "./RoleManager";
+export type { TokenFactory } from "./TokenFactory";
 export * as factories from "./factories";
 export { ContractRegistry__factory } from "./factories/ContractRegistry__factory";
 export { MarketPlace__factory } from "./factories/MarketPlace__factory";
 export { RoleManager__factory } from "./factories/RoleManager__factory";
+export { TokenFactory__factory } from "./factories/TokenFactory__factory";

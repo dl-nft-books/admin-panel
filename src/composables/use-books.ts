@@ -14,9 +14,12 @@ import { switchNetwork } from '@/helpers'
 
 // Info about book gathering partly from backend and partly from contract
 export type FullBookInfo = Book &
-  Omit<IMarketplace.DetailedTokenParamsStruct, 'tokenParams'> &
+  IMarketplace.BaseTokenDataStruct &
   IMarketplace.TokenParamsStruct
-export type BaseBookInfo = Book & IMarketplace.BaseTokenParamsStruct
+
+export type BaseBookInfo = Book &
+  Pick<IMarketplace.BriefTokenInfoStruct, 'pricePerOneToken' | 'isDisabled'> &
+  IMarketplace.BaseTokenDataStruct
 
 type CreateBookOpts = {
   tokenName: string
@@ -29,6 +32,9 @@ type CreateBookOpts = {
   floorPrice: string
   isNftBuyable: boolean
   fundsRecipient: string
+  isVoucherBuyable: boolean
+  voucherTokenAddress: string
+  voucherTokenAmount: string
 }
 
 export function useBooks(contractRegistryAddress?: string) {
@@ -73,20 +79,21 @@ export function useBooks(contractRegistryAddress?: string) {
 
   const _formatBaseParams = (
     backendData: Book,
-    contractData: IMarketplace.BaseTokenParamsStructOutput,
+    contractData: IMarketplace.BriefTokenInfoStructOutput,
   ): BaseBookInfo => {
     return {
       ...backendData,
       pricePerOneToken: new BN(contractData.pricePerOneToken._hex).toString(),
-      tokenName: contractData.tokenName,
-      tokenContract: contractData.tokenContract,
+      tokenName: contractData.baseTokenData.tokenName,
+      tokenContract: contractData.baseTokenData.tokenContract,
       isDisabled: contractData.isDisabled,
+      tokenSymbol: contractData.baseTokenData.tokenSymbol,
     }
   }
 
   const _formatDetailedParams = (
     backendData: Book,
-    contractData: IMarketplace.DetailedTokenParamsStructOutput,
+    contractData: IMarketplace.DetailedTokenInfoStructOutput,
   ): FullBookInfo => {
     return {
       ...backendData,
@@ -103,9 +110,10 @@ export function useBooks(contractRegistryAddress?: string) {
       fundsRecipient: contractData.tokenParams.fundsRecipient,
       isNFTBuyable: contractData.tokenParams.isNFTBuyable,
       isDisabled: contractData.tokenParams.isDisabled,
-      tokenName: contractData.tokenName,
-      tokenSymbol: contractData.tokenSymbol,
-      tokenContract: contractData.tokenContract,
+      tokenName: contractData.baseTokenData.tokenName,
+      tokenSymbol: contractData.baseTokenData.tokenSymbol,
+      tokenContract: contractData.baseTokenData.tokenContract,
+      isVoucherBuyable: contractData.tokenParams.isVoucherBuyable,
     }
   }
 
@@ -129,12 +137,14 @@ export function useBooks(contractRegistryAddress?: string) {
 
   const _gatherBaseBookData = (
     backendInfoPart: Book[],
-    contractInfoPart: IMarketplace.BaseTokenParamsStructOutput[],
+    contractInfoPart: IMarketplace.BriefTokenInfoStructOutput[],
   ): BaseBookInfo[] => {
     const formattedArray = contractInfoPart.map(book => {
       const matchingInfo = backendInfoPart.find(el =>
         el.networks.find(
-          network => network.attributes.contract_address === book.tokenContract,
+          network =>
+            network.attributes.contract_address ===
+            book.baseTokenData.tokenContract,
         ),
       )
 
@@ -175,7 +185,9 @@ export function useBooks(contractRegistryAddress?: string) {
       '/integrations/books',
       {
         filter: {
-          contract: bookContractsList.map(book => book.tokenContract).join(','),
+          contract: bookContractsList
+            .map(book => book.baseTokenData.tokenContract)
+            .join(','),
         },
         page: {
           limit: limit,
@@ -262,11 +274,13 @@ export function useBooks(contractRegistryAddress?: string) {
         {
           pricePerOneToken: opts.price,
           minNFTFloorPrice: opts.floorPrice,
-          voucherTokenContract: ethers.constants.AddressZero,
-          voucherTokensAmount: '0',
+          voucherTokenContract:
+            opts.voucherTokenAddress || ethers.constants.AddressZero,
+          voucherTokensAmount: opts.voucherTokenAmount,
           isNFTBuyable: opts.isNftBuyable,
           fundsRecipient: opts.fundsRecipient || ethers.constants.AddressZero,
           isDisabled: false,
+          isVoucherBuyable: opts.isVoucherBuyable,
         },
       )
 
@@ -284,9 +298,13 @@ export function useBooks(contractRegistryAddress?: string) {
     const weiFloorPrice = opts.floorPrice
       ? new BN(opts.floorPrice).toWei().toString()
       : '0'
+    const weiVoucherTokenAmount = new BN(opts.voucherTokenAmount)
+      .toWei()
+      .toString()
 
     const deployedBookAddressList = await _deployBook({
       ...opts,
+      voucherTokenAmount: weiVoucherTokenAmount,
       price: weiPrice,
       floorPrice: weiFloorPrice,
     })
@@ -343,7 +361,7 @@ export function useBooks(contractRegistryAddress?: string) {
         await switchNetwork(chain_id)
         await _initMarketPlace()
 
-        await updateAllParams(contract_address, opts.name, opts.symbol, {
+        await updateAllParams(contract_address, {
           ...opts.contractParams,
           fundsRecipient:
             opts.contractParams.fundsRecipient || ethers.constants.AddressZero,
@@ -353,6 +371,7 @@ export function useBooks(contractRegistryAddress?: string) {
           voucherTokenContract:
             opts.contractParams.voucherTokenContract ||
             ethers.constants.AddressZero,
+          isVoucherBuyable: opts.contractParams.isVoucherBuyable,
         })
       }
     }

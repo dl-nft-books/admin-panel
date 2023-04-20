@@ -54,9 +54,22 @@ export const useContractRegistry = (address?: string) => {
     }
   }
 
+  const getTokenFactoryAddress = async () => {
+    try {
+      if (!contractInstance.value) return
+
+      const data = await contractInstance.value.getTokenFactoryContract()
+
+      return data
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   return {
     init,
     getMarketPlaceAddress,
     getRoleManagerAddress,
+    getTokenFactoryAddress,
   }
 }

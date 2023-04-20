@@ -87,6 +87,14 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/pages/promocodes-page/PromocodesPage.vue'),
       },
+      {
+        path: '/vouchers',
+        name: ROUTE_NAMES.vouchers,
+        meta: {
+          [ROUTE_METAS.isRequiredAuth]: true,
+        },
+        component: () => import('@/pages/vouchers-page/VouchersPage.vue'),
+      },
     ],
   },
 ]

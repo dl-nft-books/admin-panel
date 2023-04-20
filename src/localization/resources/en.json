@@ -61,8 +61,22 @@
     "logo-subtitle": "Admin panel",
     "nfts-link": "NFTs",
     "promocodes-link": "Promocodes",
+    "vouchers-link": "Vouchers",
     "logout-btn": "Logout",
     "copyright": "{value}© Distributed Lab"
+  },
+  "vouchers-page": {
+    "create-lbl": "New voucher"
+  },
+  "create-voucher-form": {
+    "title": "Create voucher",
+    "name-lbl": "Voucher name",
+    "name-placeholder": "Enter voucher name",
+    "symbol-lbl": "Voucher symbol",
+    "symbol-placeholder": "Enter vouhcer symbol",
+    "submit-btn": "Deploy",
+    "cancel-btn": "Cancel",
+    "success-msg": "Voucher successfuly deployed"
   },
   "promocodes-page": {
     "create-lbl": "New promocode",
@@ -151,7 +165,7 @@
     "disabled-checkbox-lbl": "Is disabled",
     "voucher-checkbox-lbl": "Ability to pay with a voucher token",
     "voucher-token-lbl": "Voucher token address",
-    "voucher-token-placeholder": "Enter voucher token address",
+    "voucher-token-placeholder": "Leave blank to deploy new voucher automatically",
     "voucher-token-amount-lbl": "Voucher token amount",
     "voucher-token-amount-placeholder": "Enter voucher token amount",
     "cancel-button": "cancel",

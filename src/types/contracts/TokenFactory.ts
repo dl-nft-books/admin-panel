@@ -4,12 +4,10 @@
 import type {
   BaseContract,
   BigNumber,
-  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -28,371 +26,79 @@ import type {
   PromiseOrValue,
 } from "./common";
 
-export declare namespace ITokenFactory {
-  export type DeployTokenContractParamsStruct = {
-    tokenContractId: PromiseOrValue<BigNumberish>;
-    tokenName: PromiseOrValue<string>;
-    tokenSymbol: PromiseOrValue<string>;
-    pricePerOneToken: PromiseOrValue<BigNumberish>;
-    voucherTokenContract: PromiseOrValue<string>;
-    voucherTokensAmount: PromiseOrValue<BigNumberish>;
-    minNFTFloorPrice: PromiseOrValue<BigNumberish>;
-  };
-
-  export type DeployTokenContractParamsStructOutput = [
-    BigNumber,
-    string,
-    string,
-    BigNumber,
-    string,
-    BigNumber,
-    BigNumber
-  ] & {
-    tokenContractId: BigNumber;
-    tokenName: string;
-    tokenSymbol: string;
-    pricePerOneToken: BigNumber;
-    voucherTokenContract: string;
-    voucherTokensAmount: BigNumber;
-    minNFTFloorPrice: BigNumber;
-  };
-
-  export type BaseTokenContractInfoStruct = {
-    tokenContractAddr: PromiseOrValue<string>;
-    pricePerOneToken: PromiseOrValue<BigNumberish>;
-  };
-
-  export type BaseTokenContractInfoStructOutput = [string, BigNumber] & {
-    tokenContractAddr: string;
-    pricePerOneToken: BigNumber;
-  };
-
-  export type UserNFTsInfoStruct = {
-    tokenContractAddr: PromiseOrValue<string>;
-    tokenIDs: PromiseOrValue<BigNumberish>[];
-  };
-
-  export type UserNFTsInfoStructOutput = [string, BigNumber[]] & {
-    tokenContractAddr: string;
-    tokenIDs: BigNumber[];
-  };
-}
-
 export interface TokenFactoryInterface extends utils.Interface {
   functions: {
-    "__TokenFactory_init(address[],string,uint8)": FunctionFragment;
-    "baseTokenContractsURI()": FunctionFragment;
-    "deployTokenContract((uint256,string,string,uint256,address,uint256,uint256),bytes32,bytes32,uint8)": FunctionFragment;
-    "getAdmins()": FunctionFragment;
-    "getBaseTokenContractsInfo(address[])": FunctionFragment;
-    "getTokenContractsCount()": FunctionFragment;
-    "getTokenContractsImpl()": FunctionFragment;
-    "getTokenContractsPart(uint256,uint256)": FunctionFragment;
-    "getUserNFTsInfo(address)": FunctionFragment;
-    "isAdmin(address)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "priceDecimals()": FunctionFragment;
-    "proxiableUUID()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "setBaseTokenContractsURI(string)": FunctionFragment;
-    "setNewImplementation(address)": FunctionFragment;
-    "tokenContractByIndex(uint256)": FunctionFragment;
-    "tokenContractsBeacon()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
-    "updateAdmins(address[],bool)": FunctionFragment;
-    "upgradeTo(address)": FunctionFragment;
-    "upgradeToAndCall(address,bytes)": FunctionFragment;
+    "deployToken(string,string)": FunctionFragment;
+    "deployVoucher(string,string)": FunctionFragment;
+    "getInjector()": FunctionFragment;
+    "setDependencies(address,bytes)": FunctionFragment;
+    "setInjector(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "__TokenFactory_init"
-      | "baseTokenContractsURI"
-      | "deployTokenContract"
-      | "getAdmins"
-      | "getBaseTokenContractsInfo"
-      | "getTokenContractsCount"
-      | "getTokenContractsImpl"
-      | "getTokenContractsPart"
-      | "getUserNFTsInfo"
-      | "isAdmin"
-      | "owner"
-      | "priceDecimals"
-      | "proxiableUUID"
-      | "renounceOwnership"
-      | "setBaseTokenContractsURI"
-      | "setNewImplementation"
-      | "tokenContractByIndex"
-      | "tokenContractsBeacon"
-      | "transferOwnership"
-      | "updateAdmins"
-      | "upgradeTo"
-      | "upgradeToAndCall"
+      | "deployToken"
+      | "deployVoucher"
+      | "getInjector"
+      | "setDependencies"
+      | "setInjector"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "__TokenFactory_init",
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    functionFragment: "deployToken",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "baseTokenContractsURI",
+    functionFragment: "deployVoucher",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getInjector",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "deployTokenContract",
-    values: [
-      ITokenFactory.DeployTokenContractParamsStruct,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(functionFragment: "getAdmins", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getBaseTokenContractsInfo",
-    values: [PromiseOrValue<string>[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTokenContractsCount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTokenContractsImpl",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTokenContractsPart",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getUserNFTsInfo",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isAdmin",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "priceDecimals",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "proxiableUUID",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setBaseTokenContractsURI",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setNewImplementation",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenContractByIndex",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenContractsBeacon",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "updateAdmins",
-    values: [PromiseOrValue<string>[], PromiseOrValue<boolean>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "upgradeTo",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "upgradeToAndCall",
+    functionFragment: "setDependencies",
     values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setInjector",
+    values: [PromiseOrValue<string>]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "__TokenFactory_init",
+    functionFragment: "deployToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "baseTokenContractsURI",
+    functionFragment: "deployVoucher",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "deployTokenContract",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "getAdmins", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getBaseTokenContractsInfo",
+    functionFragment: "getInjector",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getTokenContractsCount",
+    functionFragment: "setDependencies",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getTokenContractsImpl",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getTokenContractsPart",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getUserNFTsInfo",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "priceDecimals",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "proxiableUUID",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setBaseTokenContractsURI",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setNewImplementation",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenContractByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenContractsBeacon",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateAdmins",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "upgradeTo", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "upgradeToAndCall",
+    functionFragment: "setInjector",
     data: BytesLike
   ): Result;
 
   events: {
-    "AdminChanged(address,address)": EventFragment;
-    "AdminsUpdated(address[],bool)": EventFragment;
-    "BaseTokenContractsURIUpdated(string)": EventFragment;
-    "BeaconUpgraded(address)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
-    "TokenContractDeployed(address,tuple)": EventFragment;
-    "Upgraded(address)": EventFragment;
+    "TokenDeployed(address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "AdminChanged"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "AdminsUpdated"): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: "BaseTokenContractsURIUpdated"
-  ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "BeaconUpgraded"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TokenContractDeployed"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Upgraded"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenDeployed"): EventFragment;
 }
 
-export interface AdminChangedEventObject {
-  previousAdmin: string;
-  newAdmin: string;
+export interface TokenDeployedEventObject {
+  tokenProxyAddr: string;
 }
-export type AdminChangedEvent = TypedEvent<
-  [string, string],
-  AdminChangedEventObject
->;
+export type TokenDeployedEvent = TypedEvent<[string], TokenDeployedEventObject>;
 
-export type AdminChangedEventFilter = TypedEventFilter<AdminChangedEvent>;
-
-export interface AdminsUpdatedEventObject {
-  adminsToUpdate: string[];
-  isAdding: boolean;
-}
-export type AdminsUpdatedEvent = TypedEvent<
-  [string[], boolean],
-  AdminsUpdatedEventObject
->;
-
-export type AdminsUpdatedEventFilter = TypedEventFilter<AdminsUpdatedEvent>;
-
-export interface BaseTokenContractsURIUpdatedEventObject {
-  newBaseTokenContractsURI: string;
-}
-export type BaseTokenContractsURIUpdatedEvent = TypedEvent<
-  [string],
-  BaseTokenContractsURIUpdatedEventObject
->;
-
-export type BaseTokenContractsURIUpdatedEventFilter =
-  TypedEventFilter<BaseTokenContractsURIUpdatedEvent>;
-
-export interface BeaconUpgradedEventObject {
-  beacon: string;
-}
-export type BeaconUpgradedEvent = TypedEvent<
-  [string],
-  BeaconUpgradedEventObject
->;
-
-export type BeaconUpgradedEventFilter = TypedEventFilter<BeaconUpgradedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
-}
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
-
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface TokenContractDeployedEventObject {
-  newTokenContractAddr: string;
-  tokenContractParams: ITokenFactory.DeployTokenContractParamsStructOutput;
-}
-export type TokenContractDeployedEvent = TypedEvent<
-  [string, ITokenFactory.DeployTokenContractParamsStructOutput],
-  TokenContractDeployedEventObject
->;
-
-export type TokenContractDeployedEventFilter =
-  TypedEventFilter<TokenContractDeployedEvent>;
-
-export interface UpgradedEventObject {
-  implementation: string;
-}
-export type UpgradedEvent = TypedEvent<[string], UpgradedEventObject>;
-
-export type UpgradedEventFilter = TypedEventFilter<UpgradedEvent>;
+export type TokenDeployedEventFilter = TypedEventFilter<TokenDeployedEvent>;
 
 export interface TokenFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -421,548 +127,146 @@ export interface TokenFactory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __TokenFactory_init(
-      adminsArr_: PromiseOrValue<string>[],
-      baseTokenContractsURI_: PromiseOrValue<string>,
-      priceDecimals_: PromiseOrValue<BigNumberish>,
+    deployToken(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    baseTokenContractsURI(overrides?: CallOverrides): Promise<[string]>;
-
-    deployTokenContract(
-      params_: ITokenFactory.DeployTokenContractParamsStruct,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    deployVoucher(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    getAdmins(overrides?: CallOverrides): Promise<[string[]]>;
-
-    getBaseTokenContractsInfo(
-      tokenContractsArr_: PromiseOrValue<string>[],
+    getInjector(
       overrides?: CallOverrides
-    ): Promise<
-      [ITokenFactory.BaseTokenContractInfoStructOutput[]] & {
-        tokenContractsInfoArr_: ITokenFactory.BaseTokenContractInfoStructOutput[];
-      }
-    >;
+    ): Promise<[string] & { injector_: string }>;
 
-    getTokenContractsCount(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getTokenContractsImpl(overrides?: CallOverrides): Promise<[string]>;
-
-    getTokenContractsPart(
-      offset_: PromiseOrValue<BigNumberish>,
-      limit_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string[]]>;
-
-    getUserNFTsInfo(
-      userAddr_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<
-      [ITokenFactory.UserNFTsInfoStructOutput[]] & {
-        userNFTsInfoArr_: ITokenFactory.UserNFTsInfoStructOutput[];
-      }
-    >;
-
-    isAdmin(
-      userAddr_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    priceDecimals(overrides?: CallOverrides): Promise<[number]>;
-
-    proxiableUUID(overrides?: CallOverrides): Promise<[string]>;
-
-    renounceOwnership(
+    setDependencies(
+      contractsRegistry_: PromiseOrValue<string>,
+      data_: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setBaseTokenContractsURI(
-      baseTokenContractsURI_: PromiseOrValue<string>,
+    setInjector(
+      injector_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setNewImplementation(
-      newImplementation_: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    tokenContractByIndex(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    tokenContractsBeacon(overrides?: CallOverrides): Promise<[string]>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateAdmins(
-      adminsToUpdate_: PromiseOrValue<string>[],
-      isAdding_: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    upgradeTo(
-      newImplementation: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    upgradeToAndCall(
-      newImplementation: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
-  __TokenFactory_init(
-    adminsArr_: PromiseOrValue<string>[],
-    baseTokenContractsURI_: PromiseOrValue<string>,
-    priceDecimals_: PromiseOrValue<BigNumberish>,
+  deployToken(
+    name_: PromiseOrValue<string>,
+    symbol_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  baseTokenContractsURI(overrides?: CallOverrides): Promise<string>;
-
-  deployTokenContract(
-    params_: ITokenFactory.DeployTokenContractParamsStruct,
-    r_: PromiseOrValue<BytesLike>,
-    s_: PromiseOrValue<BytesLike>,
-    v_: PromiseOrValue<BigNumberish>,
+  deployVoucher(
+    name_: PromiseOrValue<string>,
+    symbol_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  getAdmins(overrides?: CallOverrides): Promise<string[]>;
+  getInjector(overrides?: CallOverrides): Promise<string>;
 
-  getBaseTokenContractsInfo(
-    tokenContractsArr_: PromiseOrValue<string>[],
-    overrides?: CallOverrides
-  ): Promise<ITokenFactory.BaseTokenContractInfoStructOutput[]>;
-
-  getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getTokenContractsImpl(overrides?: CallOverrides): Promise<string>;
-
-  getTokenContractsPart(
-    offset_: PromiseOrValue<BigNumberish>,
-    limit_: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string[]>;
-
-  getUserNFTsInfo(
-    userAddr_: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<ITokenFactory.UserNFTsInfoStructOutput[]>;
-
-  isAdmin(
-    userAddr_: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  priceDecimals(overrides?: CallOverrides): Promise<number>;
-
-  proxiableUUID(overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
+  setDependencies(
+    contractsRegistry_: PromiseOrValue<string>,
+    data_: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setBaseTokenContractsURI(
-    baseTokenContractsURI_: PromiseOrValue<string>,
+  setInjector(
+    injector_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setNewImplementation(
-    newImplementation_: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  tokenContractByIndex(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  tokenContractsBeacon(overrides?: CallOverrides): Promise<string>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateAdmins(
-    adminsToUpdate_: PromiseOrValue<string>[],
-    isAdding_: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  upgradeTo(
-    newImplementation: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  upgradeToAndCall(
-    newImplementation: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    __TokenFactory_init(
-      adminsArr_: PromiseOrValue<string>[],
-      baseTokenContractsURI_: PromiseOrValue<string>,
-      priceDecimals_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    baseTokenContractsURI(overrides?: CallOverrides): Promise<string>;
-
-    deployTokenContract(
-      params_: ITokenFactory.DeployTokenContractParamsStruct,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    getAdmins(overrides?: CallOverrides): Promise<string[]>;
-
-    getBaseTokenContractsInfo(
-      tokenContractsArr_: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<ITokenFactory.BaseTokenContractInfoStructOutput[]>;
-
-    getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getTokenContractsImpl(overrides?: CallOverrides): Promise<string>;
-
-    getTokenContractsPart(
-      offset_: PromiseOrValue<BigNumberish>,
-      limit_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-
-    getUserNFTsInfo(
-      userAddr_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<ITokenFactory.UserNFTsInfoStructOutput[]>;
-
-    isAdmin(
-      userAddr_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    priceDecimals(overrides?: CallOverrides): Promise<number>;
-
-    proxiableUUID(overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    setBaseTokenContractsURI(
-      baseTokenContractsURI_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setNewImplementation(
-      newImplementation_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    tokenContractByIndex(
-      arg0: PromiseOrValue<BigNumberish>,
+    deployToken(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    tokenContractsBeacon(overrides?: CallOverrides): Promise<string>;
+    deployVoucher(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
+    getInjector(overrides?: CallOverrides): Promise<string>;
+
+    setDependencies(
+      contractsRegistry_: PromiseOrValue<string>,
+      data_: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    updateAdmins(
-      adminsToUpdate_: PromiseOrValue<string>[],
-      isAdding_: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    upgradeTo(
-      newImplementation: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    upgradeToAndCall(
-      newImplementation: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
+    setInjector(
+      injector_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
-    "AdminChanged(address,address)"(
-      previousAdmin?: null,
-      newAdmin?: null
-    ): AdminChangedEventFilter;
-    AdminChanged(
-      previousAdmin?: null,
-      newAdmin?: null
-    ): AdminChangedEventFilter;
-
-    "AdminsUpdated(address[],bool)"(
-      adminsToUpdate?: null,
-      isAdding?: null
-    ): AdminsUpdatedEventFilter;
-    AdminsUpdated(
-      adminsToUpdate?: null,
-      isAdding?: null
-    ): AdminsUpdatedEventFilter;
-
-    "BaseTokenContractsURIUpdated(string)"(
-      newBaseTokenContractsURI?: null
-    ): BaseTokenContractsURIUpdatedEventFilter;
-    BaseTokenContractsURIUpdated(
-      newBaseTokenContractsURI?: null
-    ): BaseTokenContractsURIUpdatedEventFilter;
-
-    "BeaconUpgraded(address)"(
-      beacon?: PromiseOrValue<string> | null
-    ): BeaconUpgradedEventFilter;
-    BeaconUpgraded(
-      beacon?: PromiseOrValue<string> | null
-    ): BeaconUpgradedEventFilter;
-
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-
-    "TokenContractDeployed(address,tuple)"(
-      newTokenContractAddr?: null,
-      tokenContractParams?: null
-    ): TokenContractDeployedEventFilter;
-    TokenContractDeployed(
-      newTokenContractAddr?: null,
-      tokenContractParams?: null
-    ): TokenContractDeployedEventFilter;
-
-    "Upgraded(address)"(
-      implementation?: PromiseOrValue<string> | null
-    ): UpgradedEventFilter;
-    Upgraded(
-      implementation?: PromiseOrValue<string> | null
-    ): UpgradedEventFilter;
+    "TokenDeployed(address)"(
+      tokenProxyAddr?: PromiseOrValue<string> | null
+    ): TokenDeployedEventFilter;
+    TokenDeployed(
+      tokenProxyAddr?: PromiseOrValue<string> | null
+    ): TokenDeployedEventFilter;
   };
 
   estimateGas: {
-    __TokenFactory_init(
-      adminsArr_: PromiseOrValue<string>[],
-      baseTokenContractsURI_: PromiseOrValue<string>,
-      priceDecimals_: PromiseOrValue<BigNumberish>,
+    deployToken(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    baseTokenContractsURI(overrides?: CallOverrides): Promise<BigNumber>;
-
-    deployTokenContract(
-      params_: ITokenFactory.DeployTokenContractParamsStruct,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    deployVoucher(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    getAdmins(overrides?: CallOverrides): Promise<BigNumber>;
+    getInjector(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getBaseTokenContractsInfo(
-      tokenContractsArr_: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getTokenContractsImpl(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getTokenContractsPart(
-      offset_: PromiseOrValue<BigNumberish>,
-      limit_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserNFTsInfo(
-      userAddr_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isAdmin(
-      userAddr_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
-
-    proxiableUUID(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
+    setDependencies(
+      contractsRegistry_: PromiseOrValue<string>,
+      data_: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setBaseTokenContractsURI(
-      baseTokenContractsURI_: PromiseOrValue<string>,
+    setInjector(
+      injector_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setNewImplementation(
-      newImplementation_: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    tokenContractByIndex(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenContractsBeacon(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateAdmins(
-      adminsToUpdate_: PromiseOrValue<string>[],
-      isAdding_: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    upgradeTo(
-      newImplementation: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    upgradeToAndCall(
-      newImplementation: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    __TokenFactory_init(
-      adminsArr_: PromiseOrValue<string>[],
-      baseTokenContractsURI_: PromiseOrValue<string>,
-      priceDecimals_: PromiseOrValue<BigNumberish>,
+    deployToken(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    baseTokenContractsURI(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    deployTokenContract(
-      params_: ITokenFactory.DeployTokenContractParamsStruct,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    deployVoucher(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    getAdmins(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getInjector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getBaseTokenContractsInfo(
-      tokenContractsArr_: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTokenContractsCount(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTokenContractsImpl(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTokenContractsPart(
-      offset_: PromiseOrValue<BigNumberish>,
-      limit_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserNFTsInfo(
-      userAddr_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isAdmin(
-      userAddr_: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    priceDecimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    proxiableUUID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
+    setDependencies(
+      contractsRegistry_: PromiseOrValue<string>,
+      data_: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setBaseTokenContractsURI(
-      baseTokenContractsURI_: PromiseOrValue<string>,
+    setInjector(
+      injector_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setNewImplementation(
-      newImplementation_: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    tokenContractByIndex(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenContractsBeacon(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateAdmins(
-      adminsToUpdate_: PromiseOrValue<string>[],
-      isAdding_: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    upgradeTo(
-      newImplementation: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    upgradeToAndCall(
-      newImplementation: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

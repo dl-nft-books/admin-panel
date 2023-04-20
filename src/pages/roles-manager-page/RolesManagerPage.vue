@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { AppButton, Modal, Loader } from '@/common'
 import { RoleForm } from '@/forms'
 import {
@@ -58,6 +58,10 @@ import { RolesInfoCard } from '@/pages/roles-manager-page'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { WINDOW_BREAKPOINTS } from '@/enums'
+import { useWeb3ProvidersStore } from '@/store'
+
+const web3Store = useWeb3ProvidersStore()
+const provider = computed(() => web3Store.provider)
 
 const { width } = useWindowSize()
 const { t } = useI18n()
@@ -93,6 +97,13 @@ function onError(e: Error) {
 
 const { isLoadMoreBtnShown, isLoading, loadNextPage, loadFirstPage } =
   useContractPagination(loadList, setList, concatList, onError)
+
+watch(
+  () => provider.value.chainId,
+  () => {
+    loadFirstPage()
+  },
+)
 </script>
 
 <style lang="scss" scoped>

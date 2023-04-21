@@ -20,10 +20,6 @@ export const useContractRegistry = (address?: string) => {
         )) ||
       undefined,
   )
-
-  // eslint-disable-next-line
-  const contractInterface = ContractRegistry__factory.createInterface()
-
   const init = (address: string) => {
     if (!address) return
 
@@ -66,10 +62,23 @@ export const useContractRegistry = (address?: string) => {
     }
   }
 
+  const getTokenRegistryAddress = async () => {
+    try {
+      if (!contractInstance.value) return
+
+      const data = await contractInstance.value.getTokenRegistryContract()
+
+      return data
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   return {
     init,
     getMarketPlaceAddress,
     getRoleManagerAddress,
     getTokenFactoryAddress,
+    getTokenRegistryAddress,
   }
 }

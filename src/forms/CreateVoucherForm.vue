@@ -60,6 +60,7 @@ const MAX_NAME_LENGTH = 20
 
 const emit = defineEmits<{
   (event: 'close'): void
+  (event: 'reload-page'): void
 }>()
 
 const { t } = useI18n()
@@ -97,6 +98,7 @@ const submit = async () => {
 
     Bus.success(t('create-voucher-form.success-msg'))
     emit('close')
+    emit('reload-page')
   } catch (error) {
     ErrorHandler.process(error)
   }

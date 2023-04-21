@@ -69,7 +69,26 @@
     "copyright": "{value}© Distributed Lab"
   },
   "vouchers-page": {
-    "create-lbl": "New voucher"
+    "create-lbl": "New voucher",
+    "title": "Vouchers",
+    "load-more-btn": "Load More"
+  },
+  "voucher-card": {
+    "name": "Voucher name",
+    "symbol": "Voucher symbol",
+    "address": "Voucher address",
+    "mint-btn": "Mint",
+    "copy-success": "Voucher copied to clipboard"
+  },
+  "mint-voucher-form": {
+    "title": "Mint voucher",
+    "address-lbl": "User address",
+    "address-placeholder": "Enter user address",
+    "amount-lbl": "Voucher amount",
+    "amount-placeholder": "Enter voucher amount",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Submit",
+    "success-msg": "Voucher minted!"
   },
   "create-voucher-form": {
     "title": "Create voucher",

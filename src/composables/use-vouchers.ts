@@ -1,5 +1,12 @@
-import { useTokenFactory, useContractRegistry } from '@/composables'
+import {
+  useTokenFactory,
+  useContractRegistry,
+  useTokenRegistry,
+  useVoucherContract,
+} from '@/composables'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
+import { IMarketplace } from '@/types/contracts/MarketPlace'
+import { BN } from '@/utils/math.util'
 import { computed } from 'vue'
 
 export function useVouchers() {
@@ -7,8 +14,14 @@ export function useVouchers() {
   const web3Store = useWeb3ProvidersStore()
   const provider = computed(() => web3Store.provider)
 
-  const { getTokenFactoryAddress, init: initRegistry } = useContractRegistry()
+  const {
+    getTokenFactoryAddress,
+    getTokenRegistryAddress,
+    init: initRegistry,
+  } = useContractRegistry()
   const { deployVoucher, init: initTokenFactory } = useTokenFactory()
+  const { getVoucherListPart, init: initTokenRegistry } = useTokenRegistry()
+  const { mintVoucher: _mintVoucher, init: initVoucher } = useVoucherContract()
 
   const _initTokenFactory = async (address?: string) => {
     const factoryAddress = address || (await getTokenFactoryAddress())
@@ -16,6 +29,14 @@ export function useVouchers() {
     if (!factoryAddress) return
 
     initTokenFactory(factoryAddress)
+  }
+
+  const _initTokenRegistry = async (address?: string) => {
+    const registryAddress = address || (await getTokenRegistryAddress())
+
+    if (!registryAddress) return
+
+    initTokenRegistry(registryAddress)
   }
 
   const _initContractRegistry = async () => {
@@ -33,6 +54,16 @@ export function useVouchers() {
     initRegistry(appropriateRegistryAddress)
   }
 
+  const _formatVoucherParams = (
+    raw: IMarketplace.BaseTokenDataStructOutput,
+  ): IMarketplace.BaseTokenDataStruct => {
+    return {
+      tokenContract: raw.tokenContract,
+      tokenName: raw.tokenName,
+      tokenSymbol: raw.tokenSymbol,
+    }
+  }
+
   const createVoucher = async (name: string, symbol: string) => {
     await _initContractRegistry()
     await _initTokenFactory()
@@ -40,7 +71,34 @@ export function useVouchers() {
     await deployVoucher(name, symbol)
   }
 
+  const getVoucherList = async (limit: number, offset: number) => {
+    if (!limit) return []
+
+    await _initContractRegistry()
+    await _initTokenRegistry()
+
+    const data = await getVoucherListPart(limit, offset)
+
+    if (!data) return []
+
+    return data.map(el => _formatVoucherParams(el))
+  }
+
+  const mintVoucher = async (
+    voucherAddress: string,
+    recieverAddress: string,
+    amount: string,
+  ) => {
+    initVoucher(voucherAddress)
+
+    const weiAmount = new BN(amount).toWei().toString()
+
+    await _mintVoucher(recieverAddress, weiAmount)
+  }
+
   return {
     createVoucher,
+    getVoucherList,
+    mintVoucher,
   }
 }

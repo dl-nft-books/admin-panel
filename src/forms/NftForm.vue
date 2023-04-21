@@ -341,10 +341,12 @@ const isContractValuesUpdated = computed(
     form.floorPrice !== nftFloorPrice ||
     form.fundsRecipient !== props.book?.fundsRecipient ||
     form.isNftBuyable !== props.book.isNFTBuyable ||
-    form.isDisabled !== props.book?.isDisabled,
+    form.isDisabled !== props.book?.isDisabled ||
+    form.isVoucherBuyable !== props.book?.isVoucherBuyable ||
+    form.voucherTokenContract !== props.book?.voucherTokenContract ||
+    new BN(form.voucherTokensAmount).toWei().toString() !==
+      props.book.voucherTokensAmount,
 )
-
-const isDeployingOnMoreChains = computed(() => form.addMoreChains)
 
 const isApiValuesUpdated = computed(
   () =>
@@ -363,8 +365,7 @@ const isSubmitBtnDisabled = computed(
   () =>
     (!isApiValuesUpdated.value &&
       !isContractValuesUpdated.value &&
-      !isFilesUpdated.value &&
-      !isDeployingOnMoreChains.value) ||
+      !isFilesUpdated.value) ||
     isFormDisabled.value,
 )
 

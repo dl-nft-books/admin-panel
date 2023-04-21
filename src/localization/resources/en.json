@@ -193,7 +193,7 @@
   },
   "edit-nft-page": {
     "title": "Edit NFT",
-    "error-msg": "Oops... Something went wrong"
+    "error-msg": "Invalid chain"
   },
   "roles": {
     "admin": "Administrator",
@@ -331,6 +331,16 @@
   },
   "nft-item-page": {
     "loading-error-msg": "Error while loading.",
-    "edit-button": "EDIT NFT"
+    "edit-button": "EDIT NFT",
+    "add-networks-btn": "Deploy on another chain"
+  },
+  "add-network-form": {
+    "title": "Add network",
+    "select-lbl": "Network",
+    "select-placeholder": "Choose chain",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Deploy",
+    "success-msg": "Succesfully deployed",
+    "nothing-to-deploy": "No more chains to deploy"
   }
 }

@@ -32,9 +32,11 @@ type CreateBookOpts = {
   floorPrice: string
   isNftBuyable: boolean
   fundsRecipient: string
-  isVoucherBuyable: boolean
-  voucherTokenAddress: string
-  voucherTokenAmount: string
+  vouchers: Array<{
+    isVoucherBuyable: boolean
+    voucherTokenAddress: string
+    voucherTokenAmount: string
+  }>
 }
 
 export function useBooks(contractRegistryAddress?: string) {
@@ -262,6 +264,7 @@ export function useBooks(contractRegistryAddress?: string) {
   ): Promise<string[]> => {
     const deployedBookAddressList: string[] = []
 
+    let counter = 0
     // deploying 1 book on all chains
     for (const chainId of opts.chainIds) {
       _initContractRegistry(chainId)
@@ -275,14 +278,21 @@ export function useBooks(contractRegistryAddress?: string) {
           pricePerOneToken: opts.price,
           minNFTFloorPrice: opts.floorPrice,
           voucherTokenContract:
-            opts.voucherTokenAddress || ethers.constants.AddressZero,
-          voucherTokensAmount: opts.voucherTokenAmount,
+            opts.vouchers[counter].voucherTokenAddress ||
+            ethers.constants.AddressZero,
+          voucherTokensAmount: opts.vouchers[counter].voucherTokenAmount
+            ? new BN(opts.vouchers[counter].voucherTokenAmount)
+                .toWei()
+                .toString()
+            : '0',
           isNFTBuyable: opts.isNftBuyable,
           fundsRecipient: opts.fundsRecipient || ethers.constants.AddressZero,
           isDisabled: false,
-          isVoucherBuyable: opts.isVoucherBuyable,
+          isVoucherBuyable: opts.vouchers[counter].isVoucherBuyable,
         },
       )
+
+      counter++
 
       if (!receipt) throw new Error('Failed to get tx receipt')
 
@@ -298,13 +308,9 @@ export function useBooks(contractRegistryAddress?: string) {
     const weiFloorPrice = opts.floorPrice
       ? new BN(opts.floorPrice).toWei().toString()
       : '0'
-    const weiVoucherTokenAmount = new BN(opts.voucherTokenAmount)
-      .toWei()
-      .toString()
 
     const deployedBookAddressList = await _deployBook({
       ...opts,
-      voucherTokenAmount: weiVoucherTokenAmount,
       price: weiPrice,
       floorPrice: weiFloorPrice,
     })
@@ -367,7 +373,9 @@ export function useBooks(contractRegistryAddress?: string) {
             opts.contractParams.fundsRecipient || ethers.constants.AddressZero,
           pricePerOneToken: weiPrice,
           minNFTFloorPrice: weiFloorPrice,
-          voucherTokensAmount: opts.contractParams.voucherTokensAmount,
+          voucherTokensAmount: opts.contractParams.voucherTokensAmount
+            ? new BN(opts.contractParams.voucherTokensAmount).toWei().toString()
+            : '0',
           voucherTokenContract:
             opts.contractParams.voucherTokenContract ||
             ethers.constants.AddressZero,
@@ -415,16 +423,7 @@ export function useBooks(contractRegistryAddress?: string) {
       id: string
     },
   ) => {
-    const weiPrice = new BN(opts.price).toWei().toString()
-    const weiFloorPrice = opts.floorPrice
-      ? new BN(opts.floorPrice).toWei().toString()
-      : '0'
-
-    const deployedBookAddressList = await _deployBook({
-      ...opts,
-      price: weiPrice,
-      floorPrice: weiFloorPrice,
-    })
+    const deployedBookAddressList = await _deployBook(opts)
 
     await api.post(`/integrations/books/${opts.id}/network`, {
       data: opts.chainIds.map((el, idx) => ({

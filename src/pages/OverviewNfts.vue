@@ -84,13 +84,11 @@ const loadList = computed(
 )
 
 function setList(chunk: BaseBookInfo[]) {
-  booksList.value = chunk ? chunk.filter(book => !book.isDisabled) : []
+  booksList.value = chunk ?? []
 }
 
 function concatList(chunk: BaseBookInfo[]) {
-  booksList.value = booksList.value.concat(
-    chunk ? chunk.filter(book => !book.isDisabled) : [],
-  )
+  booksList.value = booksList.value.concat(chunk ?? [])
 }
 
 function onError(e: Error) {

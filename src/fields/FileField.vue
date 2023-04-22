@@ -206,6 +206,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
 
   &--disabled {
     pointer-events: none;
+    opacity: 0.5;
   }
 }
 

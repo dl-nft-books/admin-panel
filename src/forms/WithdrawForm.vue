@@ -27,7 +27,7 @@
         :label="$t('withdraw-form.token-amount-lbl')"
       />
       <amount-field
-        v-if="!form.isMax"
+        v-show="!form.isMax"
         v-model="form.amount"
         :placeholder="$t('withdraw-form.amount-placeholder')"
         :label="$t('withdraw-form.amount-lbl')"

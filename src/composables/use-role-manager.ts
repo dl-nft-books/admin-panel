@@ -164,20 +164,22 @@ export function useRolesManager() {
     await _initRoleManager()
     await _grantRole(role, address)
 
-    const alreadyExist = await api.get(
-      `/integrations/nonce-auth-svc/users/${address}`,
-    )
+    try {
+      await api.get(`/integrations/nonce-auth-svc/users/${address}`)
+    } catch (error) {
+      ErrorHandler.processWithoutFeedback(error)
 
-    if (alreadyExist) return
-
-    await api.post('/integrations/nonce-auth-svc/users', {
-      data: {
-        attributes: {
-          name,
-          address,
-        },
-      },
-    })
+      if (error instanceof NotFoundError) {
+        await api.post('/integrations/nonce-auth-svc/users', {
+          data: {
+            attributes: {
+              name,
+              address,
+            },
+          },
+        })
+      }
+    }
   }
 
   const editUserName = async (name: string, address: string) => {

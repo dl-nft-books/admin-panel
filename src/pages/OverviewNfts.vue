@@ -64,6 +64,7 @@ import { useWindowSize } from '@vueuse/core'
 import { useContractPagination, useBooks, BaseBookInfo } from '@/composables'
 import { useI18n } from 'vue-i18n'
 import { useWeb3ProvidersStore, useRolesStore } from '@/store'
+import { DateUtil } from '@/utils/date.util'
 
 const webProvidersStore = useWeb3ProvidersStore()
 const rolesStore = useRolesStore()
@@ -83,12 +84,25 @@ const loadList = computed(
     getBooksFromContract(limit, offset, provider.value.chainId),
 )
 
+// filtering disabled books and sorting to show user the newest books first
+const processBookList = (bookList: BaseBookInfo[]) => {
+  return bookList
+    .filter(book => !book.isDisabled)
+    .sort((oneBook, anotherBook) =>
+      DateUtil._instance(oneBook.created_at).isBefore(anotherBook.created_at)
+        ? 1
+        : -1,
+    )
+}
+
 function setList(chunk: BaseBookInfo[]) {
-  booksList.value = chunk ?? []
+  booksList.value = chunk.length ? processBookList(chunk) : []
 }
 
 function concatList(chunk: BaseBookInfo[]) {
-  booksList.value = booksList.value.concat(chunk ?? [])
+  booksList.value = processBookList(
+    booksList.value.concat(chunk.length ? chunk : []),
+  )
 }
 
 function onError(e: Error) {

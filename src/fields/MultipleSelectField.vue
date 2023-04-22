@@ -248,6 +248,7 @@ $z-local-index: 1;
   text-align: left;
   width: 100%;
   height: 100%;
+  word-wrap: break-word;
   font-weight: 400;
 
   @include field-border;
@@ -287,6 +288,7 @@ $z-local-index: 1;
   top: 0;
   right: 0;
   width: 100%;
+  overflow-y: auto;
   max-height: 500%;
   z-index: $z-local-index;
   background: var(--field-bg);

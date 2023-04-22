@@ -70,6 +70,7 @@
         v-if="!isUpdateNft"
         v-model="networksToDeploy"
         :value-options="networkList"
+        :disabled="isFormDisabled"
         :label="$t('nft-form.mainnet-lbl')"
         :placeholder="$t('nft-form.mainnet-placeholder')"
       />
@@ -93,6 +94,7 @@
           <checkbox-field
             v-model="form.isNftBuyable"
             class="nft-form__checkbox"
+            :disabled="isFormDisabled"
             :label="$t('nft-form.nft-buyable-checkbox-lbl')"
             @click="collapse.toggle"
           />
@@ -127,6 +129,7 @@
               <checkbox-field
                 v-model="voucher[`isVoucherBuyable_${idx}`]"
                 class="nft-form__checkbox"
+                :disabled="isFormDisabled"
                 :label="$t('nft-form.voucher-checkbox-lbl')"
                 @click="collapse.toggle"
               />
@@ -160,6 +163,7 @@
           <checkbox-field
             v-model="form.isVoucherBuyable"
             class="nft-form__checkbox"
+            :disabled="isFormDisabled"
             :label="$t('nft-form.voucher-checkbox-lbl')"
             @click="collapse.toggle"
           />
@@ -189,6 +193,7 @@
         v-if="isUpdateNft"
         v-model="form.isDisabled"
         class="nft-form__checkbox"
+        :disabled="isFormDisabled"
         :label="$t('nft-form.disabled-checkbox-lbl')"
       />
       <div class="nft-form__action-buttons">
@@ -215,6 +220,7 @@
           type="button"
           class="nft-form__button"
           size="small"
+          :disabled="isFormDisabled"
           :text="$t('nft-form.switch-chain-button')"
           @click="handleSwitchNetworkClick"
         />
@@ -478,7 +484,7 @@ const handleSwitchNetworkClick = () => {
   switchNetwork(
     isUpdateNft.value
       ? props.book?.networks[0].attributes.chain_id!
-      : Number(networkStore.list[0].chain_id),
+      : networksToDeploy.value[0],
   )
 }
 

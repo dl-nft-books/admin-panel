@@ -15,17 +15,18 @@
 import { AppButton } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
-import { ErrorHandler, getAuthNonce, sleep } from '@/helpers'
-
-import { useRouter } from 'vue-router'
+import {
+  ErrorHandler,
+  getAuthNonce,
+  sleep,
+  redirectByAccessLevel,
+} from '@/helpers'
 import { computed } from 'vue'
-import { ROUTE_NAMES } from '@/enums'
 import { useAuthStore } from '@/store'
 
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
-const router = useRouter()
 const authStore = useAuthStore()
 
 const submit = async () => {
@@ -41,7 +42,7 @@ const submit = async () => {
 
       await authStore.login(provider.value.selectedAddress, signedMessage)
 
-      router.push({ name: ROUTE_NAMES.nfts })
+      redirectByAccessLevel()
     }
   } catch (error) {
     ErrorHandler.process(error)

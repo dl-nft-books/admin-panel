@@ -31,7 +31,7 @@
         </section>
 
         <div v-else class="app-sidebar__links-section">
-          <template v-if="rolesStore.hasAdminRole">
+          <template v-if="rolesStore.hasMarkerplaceManagerRole">
             <app-button
               class="app-sidebar__link"
               scheme="default"
@@ -48,6 +48,15 @@
               :icon-left="$icons.coupon"
               :route="{ name: $routes.promocodes }"
               :text="$t('app-sidebar.promocodes-link')"
+              @click="hideSidebar"
+            />
+            <app-button
+              class="app-sidebar__link"
+              scheme="default"
+              size="default"
+              :icon-left="$icons.coupon"
+              :route="{ name: $routes.vouchers }"
+              :text="$t('app-sidebar.vouchers-link')"
               @click="hideSidebar"
             />
           </template>
@@ -69,15 +78,6 @@
             :icon-left="$icons.withdraw"
             :route="{ name: $routes.withdrawals }"
             :text="$t('app-sidebar.withdrawals-link')"
-            @click="hideSidebar"
-          />
-          <app-button
-            class="app-sidebar__link"
-            scheme="default"
-            size="default"
-            :icon-left="$icons.coupon"
-            :route="{ name: $routes.vouchers }"
-            :text="$t('app-sidebar.vouchers-link')"
             @click="hideSidebar"
           />
         </div>

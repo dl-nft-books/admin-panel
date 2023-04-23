@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import {
   Loader,
   NftCard,
@@ -58,7 +58,7 @@ import {
   AppButton,
 } from '@/common'
 
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
 import { useContractPagination, useBooks, BaseBookInfo } from '@/composables'
@@ -121,6 +121,18 @@ const buttonLinkText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.medium
     ? t('overview-nfts.create-button')
     : '',
+)
+
+watch(
+  () => rolesStore.hasMarkerplaceManagerRole,
+  () => {
+    if (rolesStore.hasMarkerplaceManagerRole) return
+
+    redirectByAccessLevel()
+  },
+  {
+    immediate: true,
+  },
 )
 </script>
 

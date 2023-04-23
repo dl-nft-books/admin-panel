@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Modal, AppButton, Loader } from '@/common'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
@@ -49,8 +49,11 @@ import { WINDOW_BREAKPOINTS } from '@/enums'
 import { CreateVoucherForm } from '@/forms'
 import { useVouchers, useContractPagination } from '@/composables'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import { VoucherCard } from '@/pages/vouchers-page'
+import { useRolesStore } from '@/store'
+
+const rolesStore = useRolesStore()
 
 const { width } = useWindowSize()
 const { t } = useI18n()
@@ -86,6 +89,18 @@ const showCreateModal = () => {
 }
 const buttonText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.tablet ? t('vouchers-page.create-lbl') : '',
+)
+
+watch(
+  () => rolesStore.hasMarkerplaceManagerRole,
+  () => {
+    if (rolesStore.hasMarkerplaceManagerRole) return
+
+    redirectByAccessLevel()
+  },
+  {
+    immediate: true,
+  },
 )
 </script>
 

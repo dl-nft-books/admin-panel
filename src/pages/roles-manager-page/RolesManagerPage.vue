@@ -53,13 +53,14 @@ import {
   useRolesManager,
   FullUserRoleInfo,
 } from '@/composables'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import { RolesInfoCard } from '@/pages/roles-manager-page'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { WINDOW_BREAKPOINTS } from '@/enums'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useRolesStore } from '@/store'
 
+const rolesStore = useRolesStore()
 const web3Store = useWeb3ProvidersStore()
 const provider = computed(() => web3Store.provider)
 
@@ -102,6 +103,18 @@ watch(
   () => provider.value.chainId,
   () => {
     loadFirstPage()
+  },
+)
+
+watch(
+  () => rolesStore.hasRoleManagerRole,
+  () => {
+    if (rolesStore.hasRoleManagerRole) return
+
+    redirectByAccessLevel()
+  },
+  {
+    immediate: true,
   },
 )
 </script>

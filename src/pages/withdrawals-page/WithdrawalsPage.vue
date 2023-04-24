@@ -54,12 +54,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { Loader, ErrorMessage, NoDataMessage, AppButton, Modal } from '@/common'
 
 import { WithdrawalNftCard } from '@/pages/withdrawals-page'
 
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import {
   useContractPagination,
   useBooks,
@@ -100,7 +100,7 @@ const loadList = computed(() => async (limit: number, offset: number) => {
     })
   }
 
-  return data
+  return data as BookWithStatistics[]
 })
 
 function setList(chunk: BookWithStatistics[]) {
@@ -129,6 +129,18 @@ const withdrawTitle = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.medium
     ? t('withdrawals-page.withdraw-lbl')
     : '',
+)
+
+watch(
+  () => rolesStore.hasWithdrawalManagerRole,
+  () => {
+    if (rolesStore.hasWithdrawalManagerRole) return
+
+    redirectByAccessLevel()
+  },
+  {
+    immediate: true,
+  },
 )
 </script>
 

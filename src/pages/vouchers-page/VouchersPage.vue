@@ -51,9 +51,10 @@ import { useVouchers, useContractPagination } from '@/composables'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import { VoucherCard } from '@/pages/vouchers-page'
-import { useRolesStore } from '@/store'
+import { useRolesStore, useWeb3ProvidersStore } from '@/store'
 
 const rolesStore = useRolesStore()
+const web3Store = useWeb3ProvidersStore()
 
 const { width } = useWindowSize()
 const { t } = useI18n()
@@ -100,6 +101,13 @@ watch(
   },
   {
     immediate: true,
+  },
+)
+
+watch(
+  () => web3Store.provider.chainId,
+  () => {
+    loadFirstPage()
   },
 )
 </script>

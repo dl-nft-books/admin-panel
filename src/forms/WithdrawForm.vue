@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, watch, onMounted } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { AppButton } from '@/common'
 import {
   SelectField,
@@ -86,7 +86,6 @@ import {
   useFormValidation,
   useWithdrawalManager,
   usePricer,
-  Platform,
 } from '@/composables'
 import { required, address, maxValue, minValue, requiredIf } from '@/validators'
 import {
@@ -112,7 +111,7 @@ const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
 const { getBalance, withdrawCurrency } = useWithdrawalManager()
-const { getPlatformsList, getPriceByPlatform, formatChain } = usePricer()
+const { getPrice } = usePricer()
 
 const networkList = computed(() =>
   networkStore.list.map(el => ({
@@ -128,20 +127,12 @@ const formattedBalance = computed(
   () => balance.value && formatFiatAsset(balance.value, CURRENCIES.USD),
 )
 const isLoading = ref(false)
-const platformList = ref<Platform[]>()
-
 const form = reactive({
   amount: '',
   recipient: '',
   chain: '',
   isMax: false,
 })
-
-const currentPlatform = computed(() =>
-  platformList.value?.find(
-    platform => platform.chain_identifier === Number(formatChain(form.chain)),
-  ),
-)
 
 const isCertainAmount = computed(() => !form.isMax)
 
@@ -189,24 +180,17 @@ const submit = async () => {
   enableForm()
 }
 
-onMounted(async () => {
-  const { data } = await getPlatformsList()
-  platformList.value = data
-})
-
 watch(
   () => form.chain,
   async () => {
-    if (!form.chain || !currentPlatform.value) return
+    if (!form.chain) return
 
     isLoading.value = true
     try {
       const data = await getBalance(Number(form.chain))
       if (!data) return
 
-      const { data: tokenPrice } = await getPriceByPlatform(
-        currentPlatform.value.id,
-        undefined,
+      const { data: tokenPrice } = await getPrice(
         Number(provider.value.chainId),
       )
 

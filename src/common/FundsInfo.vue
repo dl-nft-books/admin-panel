@@ -23,7 +23,7 @@ import { Icon, Loader } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
 import { ErrorHandler, formatFiatAsset } from '@/helpers'
 
-import { useWithdrawalManager, usePricer, Platform } from '@/composables'
+import { useWithdrawalManager, usePricer } from '@/composables'
 import { CURRENCIES, WINDOW_BREAKPOINTS } from '@/enums'
 import { useI18n } from 'vue-i18n'
 import { useWindowSize } from '@vueuse/core'
@@ -36,11 +36,10 @@ const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
 const { getBalance } = useWithdrawalManager()
-const { getPlatformsList, getPriceByPlatform, formatChain } = usePricer()
+const { getPrice } = usePricer()
 
 const isLoading = ref(false)
 const currentChainFunds = ref('')
-const platformList = ref<Platform[]>()
 
 const balance = computed(() =>
   currentChainFunds.value
@@ -51,25 +50,11 @@ const balance = computed(() =>
 const balanceTitle = computed(() =>
   width.value > WINDOW_BREAKPOINTS.medium ? t('funds-info.label') : '',
 )
-
-const currentPlatform = computed(() =>
-  platformList.value?.find(
-    platform =>
-      platform.chain_identifier === Number(formatChain(provider.value.chainId)),
-  ),
-)
-
 const loadBalance = async () => {
   isLoading.value = true
   currentChainFunds.value = ''
-
-  if (!currentPlatform.value) return
   try {
-    const { data: tokenPrice } = await getPriceByPlatform(
-      currentPlatform.value.id,
-      undefined,
-      Number(provider.value.chainId),
-    )
+    const { data: tokenPrice } = await getPrice(Number(provider.value.chainId))
 
     const funds = await getBalance(Number(provider.value.chainId))
 
@@ -91,9 +76,6 @@ const loadBalance = async () => {
 
 onMounted(async () => {
   if (!provider.value.selectedAddress) return
-
-  const { data } = await getPlatformsList()
-  platformList.value = data
 
   await loadBalance()
 })

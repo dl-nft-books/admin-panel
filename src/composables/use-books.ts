@@ -278,13 +278,17 @@ export function useBooks(contractRegistryAddress?: string) {
           pricePerOneToken: opts.price,
           minNFTFloorPrice: opts.floorPrice,
           voucherTokenContract:
-            opts.vouchers[counter].voucherTokenAddress ||
-            ethers.constants.AddressZero,
-          voucherTokensAmount: opts.vouchers[counter].voucherTokenAmount
-            ? new BN(opts.vouchers[counter].voucherTokenAmount)
-                .toWei()
-                .toString()
-            : '0',
+            opts.vouchers[counter].voucherTokenAddress &&
+            opts.vouchers[counter].isVoucherBuyable
+              ? opts.vouchers[counter].voucherTokenAddress
+              : ethers.constants.AddressZero,
+          voucherTokensAmount:
+            opts.vouchers[counter].voucherTokenAmount &&
+            opts.vouchers[counter].isVoucherBuyable
+              ? new BN(opts.vouchers[counter].voucherTokenAmount)
+                  .toWei()
+                  .toString()
+              : '0',
           isNFTBuyable: opts.isNftBuyable,
           fundsRecipient: opts.fundsRecipient || ethers.constants.AddressZero,
           isDisabled: false,

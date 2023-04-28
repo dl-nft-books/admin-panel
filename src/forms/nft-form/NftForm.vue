@@ -414,12 +414,7 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
 )
 
 const submit = async () => {
-  if (
-    !isFormValid() ||
-    !provider.value.selectedAddress ||
-    !vouchersRef.value?.isFormValid()
-  )
-    return
+  if (!isFormValid() || !provider.value.selectedAddress) return
 
   disableForm()
 
@@ -493,7 +488,7 @@ const updateNftBook = async () => {
 }
 
 const createNftBook = async () => {
-  if (!vouchersRef.value) return
+  if (!vouchersRef.value || !vouchersRef.value?.isFormValid()) return
 
   await createBook({
     tokenName: form.name,

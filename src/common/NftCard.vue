@@ -3,32 +3,36 @@
     class="nft-card"
     :to="{ name: $routes.nftItem, params: { id: nft.id } }"
   >
-    <img class="nft-card__img" :src="nft.bannerUrl" alt="Book image" />
-    <div class="nft-card__content-wrapper">
-      <div
-        v-for="(item, index) in cardHeader"
-        :key="index"
-        class="nft-card__content"
-      >
-        <span class="nft-card__content-label">
-          {{ item.label }}
-        </span>
-        <p class="nft-card__content-value">
-          {{ item.value }}
-        </p>
-      </div>
+    <img
+      class="nft-card__img"
+      :src="nft.banner.attributes.url"
+      alt="Book image"
+    />
+
+    <div
+      v-for="(item, index) in cardHeader"
+      :key="index"
+      class="nft-card__content"
+    >
+      <span class="nft-card__content-label">
+        {{ item.label }}
+      </span>
+      <p class="nft-card__content-value">
+        {{ item.value }}
+      </p>
     </div>
   </router-link>
 </template>
 
 <script lang="ts" setup>
 import { formatFiatAssetFromWei, formatDMY } from '@/helpers'
-import { BookRecord } from '@/records'
 import { CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
+import { BaseBookInfo } from '@/composables'
+import { BnLike } from '@/utils/math.util'
 
 const props = defineProps<{
-  nft: BookRecord
+  nft: BaseBookInfo
 }>()
 
 const { t } = useI18n()
@@ -36,22 +40,26 @@ const { t } = useI18n()
 const cardHeader = [
   {
     label: t('nft-card.name-description'),
-    value: props.nft.title,
+    value: props.nft.tokenName,
   },
   {
     label: t('nft-card.date-description'),
-    value: formatDMY(props.nft.createdAt),
+    value: formatDMY(props.nft.created_at),
   },
   {
     label: t('nft-card.price-description'),
-    value: formatFiatAssetFromWei(props.nft.price, CURRENCIES.USD),
+    value: formatFiatAssetFromWei(
+      props.nft.pricePerOneToken as BnLike,
+      CURRENCIES.USD,
+    ),
   },
 ]
 </script>
 
 <style lang="scss" scoped>
 .nft-card {
-  display: flex;
+  display: grid;
+  grid-template-columns: 15% 35% 25% 25%;
   align-items: center;
   width: 100%;
   border: toRem(1) solid var(--border-primary-main);
@@ -60,6 +68,7 @@ const cardHeader = [
   background: var(--background-tertiary);
 
   @include respond-to(medium) {
+    display: flex;
     flex-direction: column;
   }
 }
@@ -99,7 +108,7 @@ const cardHeader = [
   flex-direction: column;
   justify-content: center;
   row-gap: toRem(10);
-  width: 20%;
+  width: 100%;
   margin: toRem(25) 0;
 
   &:first-child {

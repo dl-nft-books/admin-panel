@@ -1,2 +1,3 @@
-export * from '@/composables/contracts/use-nft-book-token'
-export * from '@/composables/contracts/use-token-factory'
+export * from '@/composables/contracts/use-contract-registry'
+export * from '@/composables/contracts/use-marketplace'
+export * from '@/composables/contracts/use-role-manager'

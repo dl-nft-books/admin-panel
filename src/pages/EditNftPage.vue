@@ -19,23 +19,24 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { NftForm } from '@/forms'
-import { getBookById } from '@/api'
 import { ErrorHandler } from '@/helpers'
-import { BookRecord } from '@/records'
 import { Loader, ErrorMessage } from '@/common'
+import { useBooks, FullBookInfo } from '@/composables'
 
 const props = defineProps<{
   id: string
 }>()
 
-const book = ref<BookRecord>()
+const { getBookById } = useBooks()
+
+const book = ref<FullBookInfo>()
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
 
 const loadBook = async () => {
   try {
-    const { data } = await getBookById(props.id)
-    book.value = new BookRecord(data)
+    const data = await getBookById(props.id)
+    book.value = data
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)

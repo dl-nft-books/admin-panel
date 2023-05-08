@@ -4,24 +4,6 @@
       <h3>
         {{ $t('overview-nfts.title') }}
       </h3>
-      <section class="overview-nfts__filter-wrapper">
-        <select-field
-          v-model="currentChainId"
-          class="overview-nfts__filter"
-          :value-options="filterOptions"
-        />
-        <div class="overview-nfts__search-wrapper">
-          <input-field
-            v-model="searchModel"
-            :placeholder="$t('overview-nfts.search-placeholder')"
-            iconned
-          >
-            <template #nodeLeft>
-              <icon class="overview-nfts__search-icon" :name="$icons.search" />
-            </template>
-          </input-field>
-        </div>
-      </section>
     </div>
 
     <error-message
@@ -32,7 +14,11 @@
 
     <template v-else-if="booksList.length || isLoading">
       <div v-if="booksList.length" class="overview-nfts__content">
-        <nft-card v-for="nft in booksList" :key="nft.id" :nft="nft" />
+        <nft-card
+          v-for="nft in booksList"
+          :key="nft.tokenContract as string"
+          :nft="nft"
+        />
       </div>
 
       <loader v-if="isLoading" />
@@ -62,115 +48,46 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import {
   Loader,
   NftCard,
   ErrorMessage,
   NoDataMessage,
   AppButton,
-  Icon,
 } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
-import { BookRecord } from '@/records'
-import {
-  BOOK_DEPLOY_STATUSES,
-  ETHEREUM_CHAINS,
-  POLYGON_CHAINS,
-  Q_CHAINS,
-  WINDOW_BREAKPOINTS,
-} from '@/enums'
+import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
-import { InputField, SelectField } from '@/fields'
-import { getBooks } from '@/api'
-import { usePaginate } from '@/composables'
-import { Book } from '@/types'
-import { debounce } from 'lodash'
-import { config } from '@/config'
+import { useContractPagination, useBooks, BaseBookInfo } from '@/composables'
 import { useI18n } from 'vue-i18n'
+import { useWeb3ProvidersStore } from '@/store'
 
-const searchByString = ref('')
-const searchModel = ref('')
-const booksList = ref<BookRecord[]>([])
+const webProvidersStore = useWeb3ProvidersStore()
+
+const provider = computed(() => webProvidersStore.provider)
+
+const booksList = ref<BaseBookInfo[]>([])
 const isLoadFailed = ref(false)
 
 const { width } = useWindowSize()
 const { t } = useI18n()
 
-watch(
-  searchModel,
-  debounce(() => {
-    searchByString.value = searchModel.value
-  }, 400),
-)
-
-const currentChainId = ref('0')
-
-const prodOptions = [
-  {
-    label: t('overview-nfts.all-networks-filter'),
-    value: '0',
-  },
-  {
-    label: t('overview-nfts.ethereum-filter'),
-    value: ETHEREUM_CHAINS.ethereum,
-  },
-  {
-    label: t('overview-nfts.polygon-filter'),
-    value: POLYGON_CHAINS.mainnet,
-  },
-  {
-    label: t('overview-nfts.q-filter'),
-    value: Q_CHAINS.mainet,
-  },
-]
-
-const devOptions = [
-  {
-    label: t('overview-nfts.all-networks-filter'),
-    value: '0',
-  },
-  {
-    label: t('overview-nfts.ethereum-filter'),
-    value: ETHEREUM_CHAINS.goerli,
-  },
-  {
-    label: t('overview-nfts.polygon-filter'),
-    value: POLYGON_CHAINS.mumbai,
-  },
-  {
-    label: t('overview-nfts.q-filter'),
-    value: Q_CHAINS.testnet,
-  },
-]
-
-const filterOptions =
-  config.DEPLOY_ENVIRONMENT === 'production' ? prodOptions : devOptions
+const { getBooksFromContract } = useBooks()
 
 const loadList = computed(
-  () => () =>
-    getBooks({
-      deployStatus: [BOOK_DEPLOY_STATUSES.successful],
-      title: searchByString.value,
-      chainId: Number(currentChainId.value),
-    }),
+  () => (limit: number, offset: number) =>
+    getBooksFromContract(limit, offset, provider.value.chainId),
 )
 
-const { loadNextPage, isLoading, isLoadMoreBtnShown } = usePaginate(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
-
-function setList(chunk: Book[]) {
-  booksList.value = chunk.map(book => new BookRecord(book)) ?? []
+function setList(chunk: BaseBookInfo[]) {
+  booksList.value = chunk ? chunk.filter(book => !book.isDisabled) : []
 }
 
-function concatList(chunk: Book[]) {
+function concatList(chunk: BaseBookInfo[]) {
   booksList.value = booksList.value.concat(
-    chunk.map(book => new BookRecord(book)) ?? [],
+    chunk ? chunk.filter(book => !book.isDisabled) : [],
   )
 }
 
@@ -178,6 +95,13 @@ function onError(e: Error) {
   ErrorHandler.processWithoutFeedback(e)
   isLoadFailed.value = true
 }
+
+const { isLoadMoreBtnShown, isLoading, loadNextPage } = useContractPagination(
+  loadList,
+  setList,
+  concatList,
+  onError,
+)
 
 const buttonLinkText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.tablet
@@ -202,7 +126,6 @@ const buttonLinkText = computed(() =>
   display: flex;
   align-items: center;
   gap: toRem(20);
-  width: 40%;
   min-width: toRem(350);
 }
 

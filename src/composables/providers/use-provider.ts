@@ -13,6 +13,7 @@ import {
   TransactionResponse,
   TxRequestBody,
   NativeCurrency,
+  TransactionReceipt,
 } from '@/types'
 import { errors } from '@/errors'
 import { ethers } from 'ethers'
@@ -43,6 +44,9 @@ export interface UseProvider {
   getAddressUrl: (explorerUrl: string, address: string) => string
   signMessage: (message: string) => Promise<string | undefined>
   addNetwork: (chainID: ChainId) => Promise<void>
+  getTransactionReceipt: (
+    transtactionHash: string,
+  ) => Promise<TransactionReceipt | undefined>
 }
 
 export const useProvider = (): UseProvider => {
@@ -150,6 +154,13 @@ export const useProvider = (): UseProvider => {
     return providerWrp.value.getHashFromTxResponse(txResponse)
   }
 
+  const getTransactionReceipt = async (transactionHash: string) => {
+    if (!providerWrp.value || !providerWrp.value.getTransactionReceipt)
+      throw new errors.ProviderWrapperMethodNotFoundError()
+
+    return providerWrp.value.getTransactionReceipt(transactionHash)
+  }
+
   const getTxUrl = (explorerUrl: string, txHash: string): string => {
     if (!providerWrp.value)
       throw new errors.ProviderWrapperMethodNotFoundError()
@@ -191,5 +202,6 @@ export const useProvider = (): UseProvider => {
     getAddressUrl,
     signMessage,
     addNetwork,
+    getTransactionReceipt,
   }
 }

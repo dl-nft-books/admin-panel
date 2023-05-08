@@ -8,6 +8,14 @@
         {{ $t('promocode-form.update-subtitle') }}
       </p>
     </div>
+    <input-field
+      v-model="form.promocode"
+      :error-message="getFieldErrorMessage('promocode')"
+      :disabled="isFormDisabled"
+      :label="$t('promocode-form.name-lbl')"
+      :placeholder="$t('promocode-form.name-placeholder')"
+      @blur="touchField('promocode')"
+    />
     <date-field
       v-model="form.dueDate"
       :min-date="minDate"
@@ -33,6 +41,15 @@
       :label="$t('promocode-form.input-lbl')"
       @blur="touchField('numberOfUses')"
     />
+
+    <multiple-select-field
+      v-model="form.bookIds"
+      :value-options="bookList"
+      :disabled="isFormDisabled"
+      :label="$t('promocode-form.select-lbl')"
+      :placeholder="$t('promocode-form.select-placeholder')"
+    />
+
     <section class="promocode-form__actions">
       <app-button
         class="promocode-form__button"
@@ -54,20 +71,45 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
-import { updatePromocode, createPromocode } from '@/api'
+import { reactive, computed, ref, onMounted } from 'vue'
 import { AppButton } from '@/common'
-import { InputField, DateField } from '@/fields'
-import { useForm, useFormValidation } from '@/composables'
-import { required, minValue, maxValue, requiredIf } from '@/validators'
+import { InputField, DateField, MultipleSelectField } from '@/fields'
+import {
+  useForm,
+  useFormValidation,
+  usePromocodes,
+  useBooks,
+} from '@/composables'
+import {
+  required,
+  minValue,
+  maxValue,
+  minLength,
+  maxLength,
+  requiredIf,
+  urlSymbols,
+} from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { Promocode } from '@/types'
 import { DateUtil } from '@/utils/date.util'
 
-import { MAX_DISCOUNT, MAX_PROMOCODE_USES_VALUE } from '@/consts'
+import {
+  MAX_DISCOUNT,
+  MAX_PROMOCODE_LENGTH,
+  MAX_PROMOCODE_USES_VALUE,
+  MIN_PROMOCODE_LENGTH,
+} from '@/consts'
 import { useI18n } from 'vue-i18n'
+import { useWeb3ProvidersStore } from '@/store'
+
+const BOOKS_LIMIT = 50
+
+const web3Store = useWeb3ProvidersStore()
+const provider = computed(() => web3Store.provider)
 
 const { t } = useI18n()
+const { createPromocode, updatePromocode } = usePromocodes()
+const { getBooksFromContract } = useBooks()
 
 const emit = defineEmits<{
   (event: 'close'): void
@@ -76,6 +118,8 @@ const emit = defineEmits<{
 const props = defineProps<{
   promocode?: Promocode
 }>()
+
+const bookList = ref<{ value: number; label: string }[]>()
 
 const isUpdate = computed(() => Boolean(props.promocode))
 const formTitle = computed(() =>
@@ -95,6 +139,8 @@ const form = reactive({
     ? DateUtil.format(props.promocode?.expiration_date, 'YYYY-MM-DD')
     : '',
   discount: '',
+  promocode: props.promocode?.promocode || '',
+  bookIds: !props.promocode ? [] : props.promocode.books,
 })
 
 const minDate = computed(() =>
@@ -110,6 +156,11 @@ const { disableForm, enableForm, isFormDisabled } = useForm()
 const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
   form,
   {
+    promocode: {
+      minLength: minLength(MIN_PROMOCODE_LENGTH),
+      maxLength: maxLength(MAX_PROMOCODE_LENGTH),
+      urlSymbols,
+    },
     numberOfUses: {
       required,
       minValue: minValue(props.promocode?.initial_usages ?? 1),
@@ -136,6 +187,8 @@ const submit = async () => {
         id: props.promocode?.id as string,
         initial_usages: Number(form.numberOfUses),
         expiration_date: DateUtil.toISO(form.dueDate),
+        promocode: form.promocode,
+        booksIds: form.bookIds,
       })
 
       Bus.success(t('promocode-form.success-update-msg'))
@@ -144,6 +197,8 @@ const submit = async () => {
         discount: Number(form.discount) / 100,
         expiration_date: DateUtil.toISO(form.dueDate),
         initial_usages: Number(form.numberOfUses),
+        promocode: form.promocode,
+        booksIds: form.bookIds,
       })
 
       Bus.success(t('promocode-form.success-create-msg'))
@@ -156,6 +211,26 @@ const submit = async () => {
   }
   enableForm()
 }
+
+onMounted(async () => {
+  disableForm()
+  try {
+    const books = await getBooksFromContract(
+      BOOKS_LIMIT,
+      0,
+      Number(provider.value.chainId),
+    )
+
+    bookList.value = books.map(el => ({
+      label: el.tokenName,
+      value: Number(el.id),
+    }))
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+
+  enableForm()
+})
 </script>
 
 <style lang="scss" scoped>

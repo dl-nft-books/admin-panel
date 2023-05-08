@@ -19,6 +19,13 @@ export async function requestSwitchEthChain(
   ])
 }
 
+export const getTransactionReceipt = async (
+  provider: ethers.providers.Web3Provider,
+  transactionHash: string,
+) => {
+  return provider.getTransactionReceipt(transactionHash)
+}
+
 export async function requestAddEthChain(
   provider: ethers.providers.Web3Provider,
   chainId: number,

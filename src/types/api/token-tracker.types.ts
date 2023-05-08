@@ -1,25 +1,19 @@
+import { TOKEN_TYPES } from '@/enums'
 import { JsonApiRecordBase } from '@/types'
 
-export type Payment = JsonApiRecordBase<'payment'> & {
-  payer_address: string
+export type Payment = JsonApiRecordBase<TOKEN_TYPES> & {
   amount: string
+  book_id: number
+  contract_address: string
   minted_token_price: string
+  payer_address: string
+  payment_token_price: string
   purchase_timestamp: string
-  book_url: string
+  token_id: number
   erc20_data: {
     address: string
     symbol: string
     name: string
     decimals: number
   }
-}
-
-export type NftPayment = JsonApiRecordBase<'payment'> & {
-  payer_address: string
-  minted_token_price: string
-  purchase_timestamp: string
-  book_url: string
-  floor_price: string
-  nft_address: string
-  nft_id: number
 }

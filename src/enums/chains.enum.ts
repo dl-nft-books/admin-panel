@@ -4,6 +4,7 @@ export enum ETHEREUM_CHAINS {
   kovan = '42',
   goerli = '5',
   ethereum = '1',
+  sepolia = '11155111',
 }
 
 export enum POLYGON_CHAINS {

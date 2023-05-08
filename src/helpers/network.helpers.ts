@@ -20,6 +20,7 @@ export function getNetworkScheme(chainID: ChainId) {
   switch (chainID?.toString()) {
     case ETHEREUM_CHAINS.ethereum:
     case ETHEREUM_CHAINS.goerli:
+    case ETHEREUM_CHAINS.sepolia:
       return NETWORKS.ETHEREUM
     case POLYGON_CHAINS.mainnet:
     case POLYGON_CHAINS.mumbai:

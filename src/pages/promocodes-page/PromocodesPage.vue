@@ -60,9 +60,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { AppButton, Loader, ErrorMessage, Modal, NoDataMessage } from '@/common'
-import { usePaginate } from '@/composables'
+import { usePaginate, usePromocodes } from '@/composables'
 import { SelectField } from '@/fields'
-import { getPromocodes } from '@/api'
 import { PROMOCODE_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
 import { Promocode } from '@/types'
 import { Bus, ErrorHandler } from '@/helpers'
@@ -79,6 +78,7 @@ enum PROMOCODES_FILTERS {
 
 const { width } = useWindowSize()
 const { t } = useI18n()
+const { getPromocodes } = usePromocodes()
 
 const buttonText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.tablet

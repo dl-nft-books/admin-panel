@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts" setup>
-import { NftPayment, Payment } from '@/types'
+import { Payment } from '@/types'
 import { Collapse, AppButton } from '@/common'
 import {
   formatFiatAssetFromWei,
@@ -79,67 +79,42 @@ import {
   cropAddress,
   formatDMY,
 } from '@/helpers'
-import { CURRENCIES } from '@/enums'
+import { CURRENCIES, TOKEN_TYPES } from '@/enums'
 import { NftDetails } from '@/pages/nft-item-page/NftDetails.vue'
 import { useI18n } from 'vue-i18n'
 
-const props = defineProps<{ historyItem: Payment | NftPayment }>()
+const props = defineProps<{ historyItem: Payment }>()
 
 const { t } = useI18n()
 
 const getSaleBody = () => {
-  if (props.historyItem.erc20_data) {
-    const historyItem = props.historyItem as Payment
-
-    return [
-      {
-        label: t('sale-history-item.buyer-address-lbl'),
-        value: historyItem.payer_address,
-      },
-      {
-        label: t('sale-history-item.token-lbl'),
-        value: historyItem.erc20_data.symbol,
-      },
-      {
-        label: t('sale-history-item.token-amount-lbl'),
-        value: formatAssetFromWei(
-          historyItem.amount,
-          historyItem.erc20_data.decimals,
-        ),
-      },
-      {
-        label: t('sale-history-item.book-link-lbl'),
-        value: historyItem.book_url,
-        isUrl: true,
-      },
-    ] as NftDetails[]
-  } else {
-    const historyItem = props.historyItem as NftPayment
-
-    return [
-      {
-        label: t('sale-history-item.buyer-address-lbl'),
-        value: historyItem.payer_address,
-      },
-      {
-        label: t('sale-history-item.nft-address'),
-        value: historyItem.nft_address,
-      },
-      {
-        label: t('sale-history-item.nft-id'),
-        value: historyItem.nft_id,
-      },
-      {
-        label: t('sale-history-item.floor-price'),
-        value: formatFiatAssetFromWei(historyItem.floor_price, CURRENCIES.USD),
-      },
-      {
-        label: t('sale-history-item.book-link-lbl'),
-        value: historyItem.book_url,
-        isUrl: true,
-      },
-    ] as NftDetails[]
-  }
+  return [
+    {
+      label: t('sale-history-item.buyer-address-lbl'),
+      value: props.historyItem.payer_address,
+    },
+    {
+      label: t('sale-history-item.token-lbl'),
+      value: props.historyItem.erc20_data.symbol,
+    },
+    {
+      label: t('sale-history-item.token-amount-lbl'),
+      value: props.historyItem.erc20_data.decimals
+        ? formatAssetFromWei(
+            props.historyItem.amount,
+            props.historyItem.erc20_data.decimals,
+          )
+        : props.historyItem.amount,
+    },
+    {
+      label: t('sale-history-item.type-lbl'),
+      value: props.historyItem.type,
+    },
+    props.historyItem.type === TOKEN_TYPES.nft && {
+      label: t('sale-history-item.nft-address'),
+      value: props.historyItem.erc20_data.address,
+    },
+  ] as NftDetails[]
 }
 
 const saleHeader: NftDetails[] = [

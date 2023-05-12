@@ -7,15 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [1.5.0] - 2023-05-12
 #### Added
 - Deploying/editing on multiple chains at once
 - Contract-based pagination
+- Role manager
+- Withdrawals page
+- Vouchers page
 
 #### Changed
 - New contracts
 - 1 book on different chains now related as 1 single book
 - Book info now gathering from 2 sources: contracts and backend
+- Main app font
 
 ## [1.4.0-rc.1]
 #### Added
@@ -87,8 +91,10 @@ for further information about branching and tagging conventions.
 #### Under the hood changes
 - Merged from https://gitlab.com/distributed_lab/frontend/vue-template/-/commit/905e060b66b4fbdfa4bf102ac6c27e8edd11dbc2
 
-[Unreleased]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.3.0...main
-[1.3.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.2.0...v1.3.0
-[1.2.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.1.0...v1.2.0
-[1.1.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/compare/v1.0.0...v1.1.0
-[1.0.0]: https://gitlab.com/tokend/nft-books/admin-panel-nft-books/tags/v1.0.0
+[Unreleased]: https://github.com/dl-nft-books/admin-panel/compare/v1.5.0...main
+[1.5.0]: https://github.com/dl-nft-books/admin-panel/compare/v1.4.0-rc.1...v1.5.0
+[1.4.0-rc.1]: https://github.com/dl-nft-books/admin-panel/compare/v1.3.0...v1.4.0-rc.1
+[1.3.0]: https://github.com/dl-nft-books/admin-panel/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/dl-nft-books/admin-panel/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/dl-nft-books/admin-panel/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/dl-nft-books/admin-panel/tree/v1.0.0

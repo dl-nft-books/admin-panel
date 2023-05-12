@@ -9,11 +9,11 @@
     <collapse
       class="vouchers-template__collapse"
       :is-close-by-click-outside="false"
-      :is-opened-by-default="voucher.isVoucherBuyable"
+      :is-opened-by-default="form.voucherFields[idx].isVoucherBuyable"
     >
       <template #head="{ collapse }">
         <checkbox-field
-          v-model="voucher.isVoucherBuyable"
+          v-model="form.voucherFields[idx].isVoucherBuyable"
           class="vouchers-template__checkbox"
           :disabled="isFormDisabled"
           :label="$t('nft-form.voucher-checkbox-lbl')"
@@ -22,34 +22,25 @@
       </template>
       <section class="vouchers-template__inputs">
         <input-field
-          v-model="voucher.voucherTokenAddress"
+          v-model="form.voucherFields[idx].voucherTokenAddress"
           :placeholder="$t('nft-form.voucher-token-placeholder')"
           :label="$t('nft-form.voucher-token-lbl')"
           :disabled="isFormDisabled"
           :error-message="
-            getFieldArrayErrorMessage(
-              'voucherFields',
-              idx,
-              'voucherTokenAddress',
-            )
+            getFieldErrorMessage(`voucherFields[${idx}].voucherTokenAddress`)
           "
-          @blur="touchField('voucherFields')"
+          @blur="touchField(`voucherFields[${idx}].voucherTokenAddress`)"
         />
 
         <amount-field
-          v-model="voucher.voucherTokenAmount"
+          v-model="form.voucherFields[idx].voucherTokenAmount"
           :placeholder="$t('nft-form.voucher-token-amount-placeholder')"
           :label="$t('nft-form.voucher-token-amount-lbl')"
           :disabled="isFormDisabled"
           :error-message="
-            getFieldArrayErrorMessage(
-              'voucherFields',
-              idx,
-              'voucherTokenAmount',
-            )
+            getFieldErrorMessage(`voucherFields[${idx}].voucherTokenAmount`)
           "
-          :required="voucher.isVoucherBuyable"
-          @blur="touchField('voucherFields')"
+          @blur="touchField(`voucherFields[${idx}].voucherTokenAmount`)"
         />
       </section>
     </collapse>
@@ -57,13 +48,12 @@
 </template>
 
 <script setup lang="ts">
-import { watch, Ref, reactive, toRef } from 'vue'
+import { watch, Ref, reactive, toRef, computed } from 'vue'
 import { Collapse } from '@/common'
 import { InputField, AmountField, CheckboxField } from '@/fields'
 import { useNetworksStore } from '@/store'
 import { useFormValidation } from '@/composables'
-import { minValue, maxValue, address } from '@/validators'
-import { helpers } from '@vuelidate/validators'
+import { minValue, maxValue, address, requiredIf } from '@/validators'
 
 const MIN_VOUCHER_AMOUNT = 1
 const MAX_VOUCHER_AMOUNT = 100
@@ -109,20 +99,34 @@ const form = reactive({
   })),
 })
 
-const { isFormValid, touchField, getFieldArrayErrorMessage } =
-  useFormValidation(form, {
-    voucherFields: {
-      $each: helpers.forEach({
-        voucherTokenAddress: {
-          address,
+const validationRules = {
+  voucherFields: {
+    ...new Array(networkStore.list.length).fill(0).reduce((acc, _, idx) => {
+      const isRequired = computed(() =>
+        Boolean(form.voucherFields[idx]?.isVoucherBuyable),
+      )
+
+      return {
+        ...acc,
+        [idx]: {
+          voucherTokenAddress: {
+            address,
+          },
+          voucherTokenAmount: {
+            minValue: minValue(MIN_VOUCHER_AMOUNT),
+            maxValue: maxValue(MAX_VOUCHER_AMOUNT),
+            requiredIf: requiredIf(isRequired),
+          },
         },
-        voucherTokenAmount: {
-          minValue: minValue(MIN_VOUCHER_AMOUNT),
-          maxValue: maxValue(MAX_VOUCHER_AMOUNT),
-        },
-      }),
-    },
-  })
+      }
+    }, {}),
+  },
+}
+
+const { isFormValid, touchField, getFieldErrorMessage } = useFormValidation(
+  form,
+  validationRules,
+)
 
 defineExpose<ExposedData>({
   vouchers: toRef(form, 'voucherFields'),

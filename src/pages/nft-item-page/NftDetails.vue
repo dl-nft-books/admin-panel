@@ -66,7 +66,9 @@ const details: NftDetails[] = [
   },
   {
     label: t('nft-details.floor-price-lbl'),
-    value: formatFiatAssetFromWei(props.book.minNFTFloorPrice, CURRENCIES.USD),
+    value: props.book.isNFTBuyable
+      ? formatFiatAssetFromWei(props.book.minNFTFloorPrice, CURRENCIES.USD)
+      : '',
   },
   {
     label: t('nft-details.funds-recipient'),

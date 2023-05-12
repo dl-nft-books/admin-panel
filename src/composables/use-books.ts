@@ -14,9 +14,12 @@ import { switchNetwork } from '@/helpers'
 
 // Info about book gathering partly from backend and partly from contract
 export type FullBookInfo = Book &
-  Omit<IMarketplace.DetailedTokenParamsStruct, 'tokenParams'> &
+  IMarketplace.BaseTokenDataStruct &
   IMarketplace.TokenParamsStruct
-export type BaseBookInfo = Book & IMarketplace.BaseTokenParamsStruct
+
+export type BaseBookInfo = Book &
+  Pick<IMarketplace.BriefTokenInfoStruct, 'pricePerOneToken' | 'isDisabled'> &
+  IMarketplace.BaseTokenDataStruct
 
 type CreateBookOpts = {
   tokenName: string
@@ -29,6 +32,11 @@ type CreateBookOpts = {
   floorPrice: string
   isNftBuyable: boolean
   fundsRecipient: string
+  vouchers: Array<{
+    isVoucherBuyable: boolean
+    voucherTokenAddress: string
+    voucherTokenAmount: string
+  }>
 }
 
 export function useBooks(contractRegistryAddress?: string) {
@@ -73,20 +81,21 @@ export function useBooks(contractRegistryAddress?: string) {
 
   const _formatBaseParams = (
     backendData: Book,
-    contractData: IMarketplace.BaseTokenParamsStructOutput,
+    contractData: IMarketplace.BriefTokenInfoStructOutput,
   ): BaseBookInfo => {
     return {
       ...backendData,
       pricePerOneToken: new BN(contractData.pricePerOneToken._hex).toString(),
-      tokenName: contractData.tokenName,
-      tokenContract: contractData.tokenContract,
+      tokenName: contractData.baseTokenData.tokenName,
+      tokenContract: contractData.baseTokenData.tokenContract,
       isDisabled: contractData.isDisabled,
+      tokenSymbol: contractData.baseTokenData.tokenSymbol,
     }
   }
 
   const _formatDetailedParams = (
     backendData: Book,
-    contractData: IMarketplace.DetailedTokenParamsStructOutput,
+    contractData: IMarketplace.DetailedTokenInfoStructOutput,
   ): FullBookInfo => {
     return {
       ...backendData,
@@ -103,9 +112,10 @@ export function useBooks(contractRegistryAddress?: string) {
       fundsRecipient: contractData.tokenParams.fundsRecipient,
       isNFTBuyable: contractData.tokenParams.isNFTBuyable,
       isDisabled: contractData.tokenParams.isDisabled,
-      tokenName: contractData.tokenName,
-      tokenSymbol: contractData.tokenSymbol,
-      tokenContract: contractData.tokenContract,
+      tokenName: contractData.baseTokenData.tokenName,
+      tokenSymbol: contractData.baseTokenData.tokenSymbol,
+      tokenContract: contractData.baseTokenData.tokenContract,
+      isVoucherBuyable: contractData.tokenParams.isVoucherBuyable,
     }
   }
 
@@ -129,12 +139,14 @@ export function useBooks(contractRegistryAddress?: string) {
 
   const _gatherBaseBookData = (
     backendInfoPart: Book[],
-    contractInfoPart: IMarketplace.BaseTokenParamsStructOutput[],
+    contractInfoPart: IMarketplace.BriefTokenInfoStructOutput[],
   ): BaseBookInfo[] => {
     const formattedArray = contractInfoPart.map(book => {
       const matchingInfo = backendInfoPart.find(el =>
         el.networks.find(
-          network => network.attributes.contract_address === book.tokenContract,
+          network =>
+            network.attributes.contract_address ===
+            book.baseTokenData.tokenContract,
         ),
       )
 
@@ -175,7 +187,9 @@ export function useBooks(contractRegistryAddress?: string) {
       '/integrations/books',
       {
         filter: {
-          contract: bookContractsList.map(book => book.tokenContract).join(','),
+          contract: bookContractsList
+            .map(book => book.baseTokenData.tokenContract)
+            .join(','),
         },
         page: {
           limit: limit,
@@ -250,6 +264,7 @@ export function useBooks(contractRegistryAddress?: string) {
   ): Promise<string[]> => {
     const deployedBookAddressList: string[] = []
 
+    let counter = 0
     // deploying 1 book on all chains
     for (const chainId of opts.chainIds) {
       _initContractRegistry(chainId)
@@ -262,13 +277,26 @@ export function useBooks(contractRegistryAddress?: string) {
         {
           pricePerOneToken: opts.price,
           minNFTFloorPrice: opts.floorPrice,
-          voucherTokenContract: ethers.constants.AddressZero,
-          voucherTokensAmount: '0',
+          voucherTokenContract:
+            opts.vouchers[counter].voucherTokenAddress &&
+            opts.vouchers[counter].isVoucherBuyable
+              ? opts.vouchers[counter].voucherTokenAddress
+              : ethers.constants.AddressZero,
+          voucherTokensAmount:
+            opts.vouchers[counter].voucherTokenAmount &&
+            opts.vouchers[counter].isVoucherBuyable
+              ? new BN(opts.vouchers[counter].voucherTokenAmount)
+                  .toWei()
+                  .toString()
+              : '0',
           isNFTBuyable: opts.isNftBuyable,
           fundsRecipient: opts.fundsRecipient || ethers.constants.AddressZero,
           isDisabled: false,
+          isVoucherBuyable: opts.vouchers[counter].isVoucherBuyable,
         },
       )
+
+      counter++
 
       if (!receipt) throw new Error('Failed to get tx receipt')
 
@@ -343,16 +371,19 @@ export function useBooks(contractRegistryAddress?: string) {
         await switchNetwork(chain_id)
         await _initMarketPlace()
 
-        await updateAllParams(contract_address, opts.name, opts.symbol, {
+        await updateAllParams(contract_address, {
           ...opts.contractParams,
           fundsRecipient:
             opts.contractParams.fundsRecipient || ethers.constants.AddressZero,
           pricePerOneToken: weiPrice,
           minNFTFloorPrice: weiFloorPrice,
-          voucherTokensAmount: opts.contractParams.voucherTokensAmount,
+          voucherTokensAmount: opts.contractParams.voucherTokensAmount
+            ? new BN(opts.contractParams.voucherTokensAmount).toWei().toString()
+            : '0',
           voucherTokenContract:
             opts.contractParams.voucherTokenContract ||
             ethers.constants.AddressZero,
+          isVoucherBuyable: opts.contractParams.isVoucherBuyable,
         })
       }
     }
@@ -396,16 +427,7 @@ export function useBooks(contractRegistryAddress?: string) {
       id: string
     },
   ) => {
-    const weiPrice = new BN(opts.price).toWei().toString()
-    const weiFloorPrice = opts.floorPrice
-      ? new BN(opts.floorPrice).toWei().toString()
-      : '0'
-
-    const deployedBookAddressList = await _deployBook({
-      ...opts,
-      price: weiPrice,
-      floorPrice: weiFloorPrice,
-    })
+    const deployedBookAddressList = await _deployBook(opts)
 
     await api.post(`/integrations/books/${opts.id}/network`, {
       data: opts.chainIds.map((el, idx) => ({

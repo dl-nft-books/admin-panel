@@ -81,6 +81,7 @@ export interface ProviderWrapper {
   getTransactionReceipt?: (
     transtactionHash: string,
   ) => Promise<TransactionReceipt | undefined>
+  getBalance?: (address: string) => Promise<ethers.BigNumber | undefined>
 }
 
 export type { UseProvider } from '@/composables/providers'

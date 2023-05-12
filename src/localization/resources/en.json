@@ -61,8 +61,44 @@
     "logo-subtitle": "Admin panel",
     "nfts-link": "NFTs",
     "promocodes-link": "Promocodes",
+    "vouchers-link": "Vouchers",
+    "roles-link": "Roles",
+    "withdrawals-link": "Withdrawals",
     "logout-btn": "Logout",
+    "has-no-roles-lbl": "This account doesn't have any role on that chain",
     "copyright": "{value}© Distributed Lab"
+  },
+  "vouchers-page": {
+    "create-lbl": "New voucher",
+    "title": "Vouchers",
+    "load-more-btn": "Load More"
+  },
+  "voucher-card": {
+    "name": "Voucher name",
+    "symbol": "Voucher symbol",
+    "address": "Voucher address",
+    "mint-btn": "Mint",
+    "copy-success": "Voucher copied to clipboard"
+  },
+  "mint-voucher-form": {
+    "title": "Mint voucher",
+    "address-lbl": "User address",
+    "address-placeholder": "Enter user address",
+    "amount-lbl": "Voucher amount",
+    "amount-placeholder": "Enter voucher amount",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Submit",
+    "success-msg": "Voucher minted!"
+  },
+  "create-voucher-form": {
+    "title": "Create voucher",
+    "name-lbl": "Voucher name",
+    "name-placeholder": "Enter voucher name",
+    "symbol-lbl": "Voucher symbol",
+    "symbol-placeholder": "Enter vouhcer symbol",
+    "submit-btn": "Deploy",
+    "cancel-btn": "Cancel",
+    "success-msg": "Voucher successfuly deployed"
   },
   "promocodes-page": {
     "create-lbl": "New promocode",
@@ -151,7 +187,7 @@
     "disabled-checkbox-lbl": "Is disabled",
     "voucher-checkbox-lbl": "Ability to pay with a voucher token",
     "voucher-token-lbl": "Voucher token address",
-    "voucher-token-placeholder": "Enter voucher token address",
+    "voucher-token-placeholder": "Leave blank to deploy new voucher automatically",
     "voucher-token-amount-lbl": "Voucher token amount",
     "voucher-token-amount-placeholder": "Enter voucher token amount",
     "cancel-button": "cancel",
@@ -168,9 +204,73 @@
   "create-nft-page": {
     "title": "NFT Creation"
   },
+  "withdrawals-page": {
+    "title": "Withdrawals",
+    "load-more-btn": "Load More",
+    "withdraw-lbl": "Withdraw funds",
+    "no-data-message": "No nfts available"
+  },
   "edit-nft-page": {
     "title": "Edit NFT",
-    "error-msg": "Oops... Something went wrong"
+    "error-msg": "Invalid chain"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "role-supervisor": "Role Supervisor",
+    "factory-manager": "Token Factory Manager",
+    "registry-manager": "Token Registry Manager",
+    "token-manager": "Token Manager",
+    "withdrawal-manager": "Withdrawal Manager",
+    "marketplace-manager": "Marketplace Manager",
+    "singature-manager": "Signature Manager"
+  },
+  "roles-manager-page": {
+    "title": "Roles",
+    "new-role": "New role",
+    "load-more-btn": "Load More"
+  },
+  "roles-info-card": {
+    "name": "User's Name",
+    "address": "Adress",
+    "date": "Entry Date",
+    "date-unknown": "Unknown",
+    "role": "Role",
+    "edit-btn": "Edit",
+    "copy-success": "User address copied to clipboard",
+    "delete-success": "Role was revoked from this user",
+    "delete-lbl": "role from user"
+  },
+  "role-form": {
+    "create-title": "Create Role",
+    "edit-title": "Edit Role",
+    "name-lbl": "Name",
+    "name-placeholder": "Enter Name",
+    "address-lbl": "Address",
+    "address-placeholder": "Enter Address",
+    "roles-lbl": "Roles",
+    "role-lbl": "Role",
+    "roles-placeholder": "Select Role",
+    "date-lbl": "Entry Date",
+    "date-placeholder": "Pick date",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Save",
+    "success-msg": "New role was granted",
+    "success-edit-msg": "Role edited"
+  },
+  "withdraw-form": {
+    "title": "Withdraw Funds",
+    "balance-lbl": "Total Balance",
+    "mainnet-lbl": "Mainnet",
+    "mainnet-placeholder": "Select Mainnet",
+    "amount-lbl": "Amount",
+    "amount-placeholder": "Enter Amount",
+    "recipient-lbl": "Recipient's address",
+    "recipient-placeholder": "Enter Recipient's Address",
+    "submit-btn": "Withdraw",
+    "cancel-btn": "CANCEL",
+    "max-amount-lbl": "Max",
+    "token-amount-lbl": "Amount of token",
+    "success-msg": "Funds successfuly withdrawed"
   },
   "overview-nfts": {
     "title": "NFTs",
@@ -184,12 +284,22 @@
     "all-networks-filter": "All networks",
     "ethereum-filter": "Ethereum Mainnet",
     "q-filter": "Q Mainnet",
-    "polygon-filter": "Polygon Mainnet"
+    "polygon-filter": "Polygon Mainnet",
+    "has-no-roles-lbl": "Don't have rights to interact with NFTs"
   },
   "nft-card": {
     "name-description": "Name",
     "date-description": "Creation Date",
     "price-description": "Price"
+  },
+  "withdrawal-nft-card": {
+    "name-lbl": "Name",
+    "price-lbl": "Price",
+    "money-lbl": "Money"
+  },
+  "funds-info": {
+    "label": "Balance on this chain",
+    "not-available": "Not available"
   },
   "file-field": {
     "max-size-exceeded-err": "You cannot upload a file exceeding {maxSize} MB",
@@ -240,6 +350,16 @@
   },
   "nft-item-page": {
     "loading-error-msg": "Error while loading.",
-    "edit-button": "EDIT NFT"
+    "edit-button": "EDIT NFT",
+    "add-networks-btn": "Deploy on another chain"
+  },
+  "add-network-form": {
+    "title": "Add network",
+    "select-lbl": "Network",
+    "select-placeholder": "Choose chain",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Deploy",
+    "success-msg": "Succesfully deployed",
+    "nothing-to-deploy": "No more chains to deploy"
   }
 }

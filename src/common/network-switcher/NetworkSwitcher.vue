@@ -111,7 +111,7 @@ onMounted(() => {
 .network-switcher__wrapper {
   display: flex;
   align-items: center;
-  height: toRem(52);
+  height: toRem(60);
   padding: toRem(12) toRem(16);
   gap: toRem(12);
   border-radius: toRem(8);
@@ -119,15 +119,10 @@ onMounted(() => {
   background-color: var(--background-head-color);
   transition: 0.2s ease-in-out;
   transition-property: background-color;
-  min-width: toRem(210);
 
   &:hover {
     cursor: pointer;
     --background-head-color: var(--background-hover-color);
-  }
-
-  @include respond-to(small) {
-    min-width: unset;
   }
 }
 

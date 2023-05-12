@@ -37,6 +37,7 @@
 
     <mounted-teleport to="#app-navbar__right-buttons">
       <app-button
+        v-if="rolesStore.hasMarkerplaceManagerRole"
         class="overview-nfts__link-button"
         size="small"
         :icon-left="$icons.plus"
@@ -48,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import {
   Loader,
   NftCard,
@@ -57,14 +58,16 @@ import {
   AppButton,
 } from '@/common'
 
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
 import { useContractPagination, useBooks, BaseBookInfo } from '@/composables'
 import { useI18n } from 'vue-i18n'
-import { useWeb3ProvidersStore } from '@/store'
+import { useWeb3ProvidersStore, useRolesStore } from '@/store'
+import { DateUtil } from '@/utils/date.util'
 
 const webProvidersStore = useWeb3ProvidersStore()
+const rolesStore = useRolesStore()
 
 const provider = computed(() => webProvidersStore.provider)
 
@@ -81,13 +84,24 @@ const loadList = computed(
     getBooksFromContract(limit, offset, provider.value.chainId),
 )
 
+// filtering disabled books and sorting to show user the newest books first
+const processBookList = (bookList: BaseBookInfo[]) => {
+  return bookList
+    .filter(book => !book.isDisabled)
+    .sort((oneBook, anotherBook) =>
+      DateUtil._instance(oneBook.created_at).isBefore(anotherBook.created_at)
+        ? 1
+        : -1,
+    )
+}
+
 function setList(chunk: BaseBookInfo[]) {
-  booksList.value = chunk ? chunk.filter(book => !book.isDisabled) : []
+  booksList.value = chunk.length ? processBookList(chunk) : []
 }
 
 function concatList(chunk: BaseBookInfo[]) {
-  booksList.value = booksList.value.concat(
-    chunk ? chunk.filter(book => !book.isDisabled) : [],
+  booksList.value = processBookList(
+    booksList.value.concat(chunk.length ? chunk : []),
   )
 }
 
@@ -104,9 +118,21 @@ const { isLoadMoreBtnShown, isLoading, loadNextPage } = useContractPagination(
 )
 
 const buttonLinkText = computed(() =>
-  width.value >= WINDOW_BREAKPOINTS.tablet
+  width.value >= WINDOW_BREAKPOINTS.medium
     ? t('overview-nfts.create-button')
     : '',
+)
+
+watch(
+  () => rolesStore.hasMarkerplaceManagerRole,
+  () => {
+    if (rolesStore.hasMarkerplaceManagerRole) return
+
+    redirectByAccessLevel()
+  },
+  {
+    immediate: true,
+  },
 )
 </script>
 
@@ -129,26 +155,6 @@ const buttonLinkText = computed(() =>
   min-width: toRem(350);
 }
 
-.overview-nfts__filter {
-  max-width: toRem(350);
-}
-
-.overview-nfts__search-wrapper {
-  position: relative;
-  width: toRem(180);
-
-  @include respond-to(small) {
-    width: 50%;
-  }
-}
-
-.overview-nfts__search-icon {
-  --size: #{toRem(20)};
-
-  max-width: var(--size);
-  height: var(--size);
-}
-
 .overview-nfts__content {
   display: flex;
   flex-direction: column;
@@ -168,10 +174,13 @@ const buttonLinkText = computed(() =>
   width: toRem(180);
   order: -1;
   font-weight: 700;
+  text-transform: uppercase;
 
-  @include respond-to(tablet) {
-    width: toRem(54);
-    height: toRem(54);
+  @include respond-to(medium) {
+    --mobile-size: #{toRem(60)};
+
+    width: var(--mobile-size);
+    height: var(--mobile-size);
     order: 1;
   }
 }

@@ -186,6 +186,16 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     }
   }
 
+  const getBalance = async (address: string) => {
+    try {
+      const balance = await currentProvider.value.getBalance(address)
+
+      return balance
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
   return {
     currentProvider,
     currentSigner,
@@ -205,5 +215,6 @@ export const useMetamask = (provider: ProviderInstance): ProviderWrapper => {
     signMessage,
     addNetwork,
     getTransactionReceipt,
+    getBalance,
   }
 }

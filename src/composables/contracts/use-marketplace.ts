@@ -11,6 +11,7 @@ export type TokenParams = {
   fundsRecipient: string
   isNFTBuyable: boolean
   isDisabled: boolean
+  isVoucherBuyable: boolean
 }
 
 export const useMarketplace = (address?: string) => {
@@ -68,15 +69,11 @@ export const useMarketplace = (address?: string) => {
 
   const updateAllParams = async (
     tokenContract: string,
-    name: string,
-    symbol: string,
     params: TokenParams,
   ) => {
     try {
-      const data = contractInterface.encodeFunctionData('updateAllParams', [
+      const data = contractInterface.encodeFunctionData('updateTokenParams', [
         tokenContract,
-        name,
-        symbol,
         params,
       ])
 
@@ -97,7 +94,7 @@ export const useMarketplace = (address?: string) => {
     try {
       if (!contractInstance.value) return
 
-      const data = await contractInstance.value.getDetailedTokenParams(
+      const data = await contractInstance.value.getDetailedTokenInfo(
         tokenContracts,
       )
 
@@ -138,12 +135,39 @@ export const useMarketplace = (address?: string) => {
     try {
       if (!contractInstance.value) return
 
-      const data = await contractInstance.value.getBaseTokenParamsPart(
+      const data = await contractInstance.value.getBriefTokenInfoPart(
         offset,
         limit,
       )
 
       return data
+    } catch (error) {
+      handleEthError(error as EthProviderRpcError)
+    }
+  }
+
+  const withdrawFunds = async (
+    tokenAddress: string,
+    recipient: string,
+    amount: string,
+    isMax: boolean,
+  ) => {
+    if (!provider.value) return
+
+    try {
+      const data = contractInterface.encodeFunctionData('withdrawCurrency', [
+        tokenAddress,
+        recipient,
+        amount,
+        isMax,
+      ])
+
+      const receipt = await provider.value.signAndSendTx({
+        to: contractAddress.value,
+        data,
+      })
+
+      return receipt
     } catch (error) {
       handleEthError(error as EthProviderRpcError)
     }
@@ -157,5 +181,6 @@ export const useMarketplace = (address?: string) => {
     getTokenContractsCount,
     getBooksContracts,
     getBooksBatch,
+    withdrawFunds,
   }
 }

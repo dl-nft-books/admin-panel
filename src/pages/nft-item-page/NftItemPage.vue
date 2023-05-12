@@ -20,8 +20,14 @@
               {{ book.tokenName }}
             </p>
             <nft-details :book="book" />
+            <app-button
+              class="nft-item-page__deploy-btn"
+              :text="$t('nft-item-page.add-networks-btn')"
+              @click="isAddingMoreNetworks = true"
+            />
           </div>
         </div>
+
         <sale-history :book-id="book.id" />
       </template>
     </template>
@@ -40,19 +46,26 @@
         }"
       />
     </mounted-teleport>
+
+    <modal v-model:is-shown="isAddingMoreNetworks">
+      <template #default="{ modal }">
+        <add-network-form v-if="book" :book="book" @close="modal.close" />
+      </template>
+    </modal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Loader, ErrorMessage, AppButton } from '@/common'
-import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
-
-import { ErrorHandler } from '@/helpers'
 import { ref, computed } from 'vue'
-import { FullBookInfo, useBooks } from '@/composables'
-import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+
+import { Loader, ErrorMessage, AppButton, Modal } from '@/common'
+import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
+import { AddNetworkForm } from '@/forms'
+import { FullBookInfo, useBooks } from '@/composables'
+import { WINDOW_BREAKPOINTS } from '@/enums'
+import { ErrorHandler } from '@/helpers'
 
 const props = defineProps<{
   id: string
@@ -62,6 +75,7 @@ const { getBookById } = useBooks()
 
 const isLoaded = ref(false)
 const isLoadFailed = ref(false)
+const isAddingMoreNetworks = ref(false)
 
 const book = ref<FullBookInfo | undefined>()
 
@@ -159,5 +173,12 @@ init()
     height: toRem(54);
     order: 1;
   }
+}
+
+.nft-item-page__deploy-btn {
+  text-transform: uppercase;
+  margin-top: toRem(20);
+  align-self: center;
+  font-weight: 600;
 }
 </style>

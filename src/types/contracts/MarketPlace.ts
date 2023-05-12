@@ -29,18 +29,6 @@ import type {
 } from "./common";
 
 export declare namespace IMarketplace {
-  export type MintedTokenInfoStruct = {
-    tokenId: PromiseOrValue<BigNumberish>;
-    mintedTokenPrice: PromiseOrValue<BigNumberish>;
-    tokenURI: PromiseOrValue<string>;
-  };
-
-  export type MintedTokenInfoStructOutput = [BigNumber, BigNumber, string] & {
-    tokenId: BigNumber;
-    mintedTokenPrice: BigNumber;
-    tokenURI: string;
-  };
-
   export type TokenParamsStruct = {
     pricePerOneToken: PromiseOrValue<BigNumberish>;
     minNFTFloorPrice: PromiseOrValue<BigNumberish>;
@@ -49,6 +37,7 @@ export declare namespace IMarketplace {
     fundsRecipient: PromiseOrValue<string>;
     isNFTBuyable: PromiseOrValue<boolean>;
     isDisabled: PromiseOrValue<boolean>;
+    isVoucherBuyable: PromiseOrValue<boolean>;
   };
 
   export type TokenParamsStructOutput = [
@@ -57,6 +46,7 @@ export declare namespace IMarketplace {
     BigNumber,
     string,
     string,
+    boolean,
     boolean,
     boolean
   ] & {
@@ -67,44 +57,138 @@ export declare namespace IMarketplace {
     fundsRecipient: string;
     isNFTBuyable: boolean;
     isDisabled: boolean;
+    isVoucherBuyable: boolean;
   };
 
-  export type BaseTokenParamsStruct = {
-    tokenContract: PromiseOrValue<string>;
-    isDisabled: PromiseOrValue<boolean>;
-    pricePerOneToken: PromiseOrValue<BigNumberish>;
-    tokenName: PromiseOrValue<string>;
+  export type AcceptRequestParamsStruct = {
+    requestId: PromiseOrValue<BigNumberish>;
+    recipient: PromiseOrValue<string>;
+    tokenData: IERC721MintableToken.TokenMintDataStruct;
   };
 
-  export type BaseTokenParamsStructOutput = [
-    string,
-    boolean,
+  export type AcceptRequestParamsStructOutput = [
     BigNumber,
-    string
+    string,
+    IERC721MintableToken.TokenMintDataStructOutput
+  ] & {
+    requestId: BigNumber;
+    recipient: string;
+    tokenData: IERC721MintableToken.TokenMintDataStructOutput;
+  };
+
+  export type NFTRequestInfoStruct = {
+    requester: PromiseOrValue<string>;
+    tokenContract: PromiseOrValue<string>;
+    nftContract: PromiseOrValue<string>;
+    nftId: PromiseOrValue<BigNumberish>;
+    status: PromiseOrValue<BigNumberish>;
+  };
+
+  export type NFTRequestInfoStructOutput = [
+    string,
+    string,
+    string,
+    BigNumber,
+    number
+  ] & {
+    requester: string;
+    tokenContract: string;
+    nftContract: string;
+    nftId: BigNumber;
+    status: number;
+  };
+
+  export type PaymentDetailsStruct = {
+    paymentTokenAddress: PromiseOrValue<string>;
+    paymentTokenPrice: PromiseOrValue<BigNumberish>;
+    discount: PromiseOrValue<BigNumberish>;
+    nftTokenId: PromiseOrValue<BigNumberish>;
+  };
+
+  export type PaymentDetailsStructOutput = [
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    paymentTokenAddress: string;
+    paymentTokenPrice: BigNumber;
+    discount: BigNumber;
+    nftTokenId: BigNumber;
+  };
+
+  export type BuyParamsStruct = {
+    tokenContract: PromiseOrValue<string>;
+    recipient: PromiseOrValue<string>;
+    paymentDetails: IMarketplace.PaymentDetailsStruct;
+    tokenData: IERC721MintableToken.TokenMintDataStruct;
+  };
+
+  export type BuyParamsStructOutput = [
+    string,
+    string,
+    IMarketplace.PaymentDetailsStructOutput,
+    IERC721MintableToken.TokenMintDataStructOutput
   ] & {
     tokenContract: string;
-    isDisabled: boolean;
-    pricePerOneToken: BigNumber;
-    tokenName: string;
+    recipient: string;
+    paymentDetails: IMarketplace.PaymentDetailsStructOutput;
+    tokenData: IERC721MintableToken.TokenMintDataStructOutput;
   };
 
-  export type DetailedTokenParamsStruct = {
+  export type SigDataStruct = {
+    endSigTimestamp: PromiseOrValue<BigNumberish>;
+    r: PromiseOrValue<BytesLike>;
+    s: PromiseOrValue<BytesLike>;
+    v: PromiseOrValue<BigNumberish>;
+  };
+
+  export type SigDataStructOutput = [BigNumber, string, string, number] & {
+    endSigTimestamp: BigNumber;
+    r: string;
+    s: string;
+    v: number;
+  };
+
+  export type BaseTokenDataStruct = {
     tokenContract: PromiseOrValue<string>;
-    tokenParams: IMarketplace.TokenParamsStruct;
     tokenName: PromiseOrValue<string>;
     tokenSymbol: PromiseOrValue<string>;
   };
 
-  export type DetailedTokenParamsStructOutput = [
-    string,
-    IMarketplace.TokenParamsStructOutput,
-    string,
-    string
-  ] & {
+  export type BaseTokenDataStructOutput = [string, string, string] & {
     tokenContract: string;
-    tokenParams: IMarketplace.TokenParamsStructOutput;
     tokenName: string;
     tokenSymbol: string;
+  };
+
+  export type BriefTokenInfoStruct = {
+    baseTokenData: IMarketplace.BaseTokenDataStruct;
+    pricePerOneToken: PromiseOrValue<BigNumberish>;
+    isDisabled: PromiseOrValue<boolean>;
+  };
+
+  export type BriefTokenInfoStructOutput = [
+    IMarketplace.BaseTokenDataStructOutput,
+    BigNumber,
+    boolean
+  ] & {
+    baseTokenData: IMarketplace.BaseTokenDataStructOutput;
+    pricePerOneToken: BigNumber;
+    isDisabled: boolean;
+  };
+
+  export type DetailedTokenInfoStruct = {
+    baseTokenData: IMarketplace.BaseTokenDataStruct;
+    tokenParams: IMarketplace.TokenParamsStruct;
+  };
+
+  export type DetailedTokenInfoStructOutput = [
+    IMarketplace.BaseTokenDataStructOutput,
+    IMarketplace.TokenParamsStructOutput
+  ] & {
+    baseTokenData: IMarketplace.BaseTokenDataStructOutput;
+    tokenParams: IMarketplace.TokenParamsStructOutput;
   };
 
   export type UserTokensStruct = {
@@ -118,22 +202,45 @@ export declare namespace IMarketplace {
   };
 }
 
+export declare namespace IERC721MintableToken {
+  export type TokenMintDataStruct = {
+    tokenId: PromiseOrValue<BigNumberish>;
+    tokenURI: PromiseOrValue<string>;
+  };
+
+  export type TokenMintDataStructOutput = [BigNumber, string] & {
+    tokenId: BigNumber;
+    tokenURI: string;
+  };
+}
+
 export interface MarketPlaceInterface extends utils.Interface {
   functions: {
     "__Marketplace_init(string)": FunctionFragment;
-    "addToken(string,string,(uint256,uint256,uint256,address,address,bool,bool))": FunctionFragment;
+    "acceptRequest((uint256,address,(uint256,string)),(uint256,bytes32,bytes32,uint8))": FunctionFragment;
+    "addToken(string,string,(uint256,uint256,uint256,address,address,bool,bool,bool))": FunctionFragment;
     "baseTokenContractsURI()": FunctionFragment;
-    "buyToken(address,uint256,address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
-    "buyTokenByNFT(address,uint256,address,uint256,uint256,uint256,string,bytes32,bytes32,uint8)": FunctionFragment;
+    "buyTokenWithERC20((address,address,(address,uint256,uint256,uint256),(uint256,string)),(uint256,bytes32,bytes32,uint8))": FunctionFragment;
+    "buyTokenWithETH((address,address,(address,uint256,uint256,uint256),(uint256,string)),(uint256,bytes32,bytes32,uint8))": FunctionFragment;
+    "buyTokenWithNFT((address,address,(address,uint256,uint256,uint256),(uint256,string)),(uint256,bytes32,bytes32,uint8))": FunctionFragment;
+    "buyTokenWithVoucher((address,address,(address,uint256,uint256,uint256),(uint256,string)),(uint256,bytes32,bytes32,uint8),(uint256,bytes32,bytes32,uint8))": FunctionFragment;
+    "cancelNFTRequest(uint256)": FunctionFragment;
+    "createNFTRequest(address,address,uint256)": FunctionFragment;
     "getActiveTokenContractsCount()": FunctionFragment;
-    "getBaseTokenParams(address[])": FunctionFragment;
-    "getBaseTokenParamsPart(uint256,uint256)": FunctionFragment;
-    "getDetailedTokenParams(address[])": FunctionFragment;
-    "getDetailedTokenParamsPart(uint256,uint256)": FunctionFragment;
+    "getAllPendingRequestsCount()": FunctionFragment;
+    "getBriefTokenInfo(address[])": FunctionFragment;
+    "getBriefTokenInfoPart(uint256,uint256)": FunctionFragment;
+    "getDetailedTokenInfo(address[])": FunctionFragment;
+    "getDetailedTokenInfoPart(uint256,uint256)": FunctionFragment;
     "getInjector()": FunctionFragment;
+    "getNFTRequestsInfo(uint256[])": FunctionFragment;
+    "getPendingRequestsPart(uint256,uint256)": FunctionFragment;
     "getTokenContractsCount()": FunctionFragment;
     "getTokenContractsPart(uint256,uint256)": FunctionFragment;
+    "getUserPendingRequestsCount(address)": FunctionFragment;
+    "getUserPendingRequestsPart(address,uint256,uint256)": FunctionFragment;
     "getUserTokensPart(address,uint256,uint256)": FunctionFragment;
+    "nextRequestId()": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
@@ -141,26 +248,38 @@ export interface MarketPlaceInterface extends utils.Interface {
     "setDependencies(address,bytes)": FunctionFragment;
     "setInjector(address)": FunctionFragment;
     "unpause()": FunctionFragment;
-    "updateAllParams(address,string,string,(uint256,uint256,uint256,address,address,bool,bool))": FunctionFragment;
-    "withdrawCurrency(address,address)": FunctionFragment;
+    "updateTokenParams(address,(uint256,uint256,uint256,address,address,bool,bool,bool))": FunctionFragment;
+    "withdrawCurrency(address,address,uint256,bool)": FunctionFragment;
+    "withdrawNFTs(address,address,uint256[])": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "__Marketplace_init"
+      | "acceptRequest"
       | "addToken"
       | "baseTokenContractsURI"
-      | "buyToken"
-      | "buyTokenByNFT"
+      | "buyTokenWithERC20"
+      | "buyTokenWithETH"
+      | "buyTokenWithNFT"
+      | "buyTokenWithVoucher"
+      | "cancelNFTRequest"
+      | "createNFTRequest"
       | "getActiveTokenContractsCount"
-      | "getBaseTokenParams"
-      | "getBaseTokenParamsPart"
-      | "getDetailedTokenParams"
-      | "getDetailedTokenParamsPart"
+      | "getAllPendingRequestsCount"
+      | "getBriefTokenInfo"
+      | "getBriefTokenInfoPart"
+      | "getDetailedTokenInfo"
+      | "getDetailedTokenInfoPart"
       | "getInjector"
+      | "getNFTRequestsInfo"
+      | "getPendingRequestsPart"
       | "getTokenContractsCount"
       | "getTokenContractsPart"
+      | "getUserPendingRequestsCount"
+      | "getUserPendingRequestsPart"
       | "getUserTokensPart"
+      | "nextRequestId"
       | "onERC721Received"
       | "pause"
       | "paused"
@@ -168,13 +287,18 @@ export interface MarketPlaceInterface extends utils.Interface {
       | "setDependencies"
       | "setInjector"
       | "unpause"
-      | "updateAllParams"
+      | "updateTokenParams"
       | "withdrawCurrency"
+      | "withdrawNFTs"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "__Marketplace_init",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "acceptRequest",
+    values: [IMarketplace.AcceptRequestParamsStruct, IMarketplace.SigDataStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "addToken",
@@ -189,32 +313,34 @@ export interface MarketPlaceInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "buyToken",
+    functionFragment: "buyTokenWithERC20",
+    values: [IMarketplace.BuyParamsStruct, IMarketplace.SigDataStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyTokenWithETH",
+    values: [IMarketplace.BuyParamsStruct, IMarketplace.SigDataStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyTokenWithNFT",
+    values: [IMarketplace.BuyParamsStruct, IMarketplace.SigDataStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyTokenWithVoucher",
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
+      IMarketplace.BuyParamsStruct,
+      IMarketplace.SigDataStruct,
+      IMarketplace.SigDataStruct
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "buyTokenByNFT",
+    functionFragment: "cancelNFTRequest",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createNFTRequest",
     values: [
       PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
@@ -223,24 +349,36 @@ export interface MarketPlaceInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getBaseTokenParams",
+    functionFragment: "getAllPendingRequestsCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBriefTokenInfo",
     values: [PromiseOrValue<string>[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBaseTokenParamsPart",
+    functionFragment: "getBriefTokenInfoPart",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getDetailedTokenParams",
+    functionFragment: "getDetailedTokenInfo",
     values: [PromiseOrValue<string>[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "getDetailedTokenParamsPart",
+    functionFragment: "getDetailedTokenInfoPart",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "getInjector",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getNFTRequestsInfo",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPendingRequestsPart",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "getTokenContractsCount",
@@ -251,12 +389,28 @@ export interface MarketPlaceInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "getUserPendingRequestsCount",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUserPendingRequestsPart",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getUserTokensPart",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "nextRequestId",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "onERC721Received",
@@ -283,21 +437,33 @@ export interface MarketPlaceInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "updateAllParams",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      IMarketplace.TokenParamsStruct
-    ]
+    functionFragment: "updateTokenParams",
+    values: [PromiseOrValue<string>, IMarketplace.TokenParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawCurrency",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<boolean>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawNFTs",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>[]
+    ]
   ): string;
 
   decodeFunctionResult(
     functionFragment: "__Marketplace_init",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "acceptRequest",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "addToken", data: BytesLike): Result;
@@ -305,9 +471,28 @@ export interface MarketPlaceInterface extends utils.Interface {
     functionFragment: "baseTokenContractsURI",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "buyToken", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "buyTokenByNFT",
+    functionFragment: "buyTokenWithERC20",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "buyTokenWithETH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "buyTokenWithNFT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "buyTokenWithVoucher",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelNFTRequest",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createNFTRequest",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -315,23 +500,35 @@ export interface MarketPlaceInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBaseTokenParams",
+    functionFragment: "getAllPendingRequestsCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBaseTokenParamsPart",
+    functionFragment: "getBriefTokenInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getDetailedTokenParams",
+    functionFragment: "getBriefTokenInfoPart",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getDetailedTokenParamsPart",
+    functionFragment: "getDetailedTokenInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDetailedTokenInfoPart",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getInjector",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getNFTRequestsInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPendingRequestsPart",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -343,7 +540,19 @@ export interface MarketPlaceInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getUserPendingRequestsCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserPendingRequestsPart",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getUserTokensPart",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "nextRequestId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -366,34 +575,44 @@ export interface MarketPlaceInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "updateAllParams",
+    functionFragment: "updateTokenParams",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawCurrency",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawNFTs",
+    data: BytesLike
+  ): Result;
 
   events: {
     "BaseTokenContractsURIUpdated(string)": EventFragment;
+    "NFTRequestCanceled(uint256)": EventFragment;
+    "NFTRequestCreated(uint256,address,address,address,uint256)": EventFragment;
+    "NFTTokensWithdrawn(address,address,uint256[])": EventFragment;
     "PaidTokensWithdrawn(address,address,uint256)": EventFragment;
     "Paused(address)": EventFragment;
-    "SuccessfullyMinted(address,address,tuple,address,uint256,uint256,uint256,address)": EventFragment;
-    "SuccessfullyMintedByNFT(address,address,tuple,address,uint256,uint256,address)": EventFragment;
     "TokenContractDeployed(address,string,string,tuple)": EventFragment;
-    "TokenContractParamsUpdated(address,string,string,tuple)": EventFragment;
+    "TokenParamsUpdated(address,tuple)": EventFragment;
+    "TokenSuccessfullyExchanged(tuple,tuple)": EventFragment;
+    "TokenSuccessfullyPurchased(uint256,uint256,tuple,uint8)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
 
   getEvent(
     nameOrSignatureOrTopic: "BaseTokenContractsURIUpdated"
   ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NFTRequestCanceled"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NFTRequestCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NFTTokensWithdrawn"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaidTokensWithdrawn"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SuccessfullyMinted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SuccessfullyMintedByNFT"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenContractDeployed"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TokenContractParamsUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenParamsUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenSuccessfullyExchanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenSuccessfullyPurchased"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
@@ -407,6 +626,45 @@ export type BaseTokenContractsURIUpdatedEvent = TypedEvent<
 
 export type BaseTokenContractsURIUpdatedEventFilter =
   TypedEventFilter<BaseTokenContractsURIUpdatedEvent>;
+
+export interface NFTRequestCanceledEventObject {
+  requestId: BigNumber;
+}
+export type NFTRequestCanceledEvent = TypedEvent<
+  [BigNumber],
+  NFTRequestCanceledEventObject
+>;
+
+export type NFTRequestCanceledEventFilter =
+  TypedEventFilter<NFTRequestCanceledEvent>;
+
+export interface NFTRequestCreatedEventObject {
+  requestId: BigNumber;
+  requester: string;
+  tokenContract: string;
+  nftContract: string;
+  nftId: BigNumber;
+}
+export type NFTRequestCreatedEvent = TypedEvent<
+  [BigNumber, string, string, string, BigNumber],
+  NFTRequestCreatedEventObject
+>;
+
+export type NFTRequestCreatedEventFilter =
+  TypedEventFilter<NFTRequestCreatedEvent>;
+
+export interface NFTTokensWithdrawnEventObject {
+  nftAddr: string;
+  recipient: string;
+  tokenIDs: BigNumber[];
+}
+export type NFTTokensWithdrawnEvent = TypedEvent<
+  [string, string, BigNumber[]],
+  NFTTokensWithdrawnEventObject
+>;
+
+export type NFTTokensWithdrawnEventFilter =
+  TypedEventFilter<NFTTokensWithdrawnEvent>;
 
 export interface PaidTokensWithdrawnEventObject {
   tokenAddr: string;
@@ -428,58 +686,6 @@ export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
 export type PausedEventFilter = TypedEventFilter<PausedEvent>;
 
-export interface SuccessfullyMintedEventObject {
-  tokenContract: string;
-  recipient: string;
-  mintedTokenInfo: IMarketplace.MintedTokenInfoStructOutput;
-  paymentTokenAddress: string;
-  paidTokensAmount: BigNumber;
-  paymentTokenPrice: BigNumber;
-  discount: BigNumber;
-  fundsRecipient: string;
-}
-export type SuccessfullyMintedEvent = TypedEvent<
-  [
-    string,
-    string,
-    IMarketplace.MintedTokenInfoStructOutput,
-    string,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    string
-  ],
-  SuccessfullyMintedEventObject
->;
-
-export type SuccessfullyMintedEventFilter =
-  TypedEventFilter<SuccessfullyMintedEvent>;
-
-export interface SuccessfullyMintedByNFTEventObject {
-  tokenContract: string;
-  recipient: string;
-  mintedTokenInfo: IMarketplace.MintedTokenInfoStructOutput;
-  nftAddress: string;
-  tokenId: BigNumber;
-  nftFloorPrice: BigNumber;
-  fundsRecipient: string;
-}
-export type SuccessfullyMintedByNFTEvent = TypedEvent<
-  [
-    string,
-    string,
-    IMarketplace.MintedTokenInfoStructOutput,
-    string,
-    BigNumber,
-    BigNumber,
-    string
-  ],
-  SuccessfullyMintedByNFTEventObject
->;
-
-export type SuccessfullyMintedByNFTEventFilter =
-  TypedEventFilter<SuccessfullyMintedByNFTEvent>;
-
 export interface TokenContractDeployedEventObject {
   tokenContract: string;
   tokenName: string;
@@ -494,19 +700,46 @@ export type TokenContractDeployedEvent = TypedEvent<
 export type TokenContractDeployedEventFilter =
   TypedEventFilter<TokenContractDeployedEvent>;
 
-export interface TokenContractParamsUpdatedEventObject {
+export interface TokenParamsUpdatedEventObject {
   tokenContract: string;
-  tokenName: string;
-  tokenSymbol: string;
   tokenParams: IMarketplace.TokenParamsStructOutput;
 }
-export type TokenContractParamsUpdatedEvent = TypedEvent<
-  [string, string, string, IMarketplace.TokenParamsStructOutput],
-  TokenContractParamsUpdatedEventObject
+export type TokenParamsUpdatedEvent = TypedEvent<
+  [string, IMarketplace.TokenParamsStructOutput],
+  TokenParamsUpdatedEventObject
 >;
 
-export type TokenContractParamsUpdatedEventFilter =
-  TypedEventFilter<TokenContractParamsUpdatedEvent>;
+export type TokenParamsUpdatedEventFilter =
+  TypedEventFilter<TokenParamsUpdatedEvent>;
+
+export interface TokenSuccessfullyExchangedEventObject {
+  acceptRequestParams: IMarketplace.AcceptRequestParamsStructOutput;
+  nftRequestInfo: IMarketplace.NFTRequestInfoStructOutput;
+}
+export type TokenSuccessfullyExchangedEvent = TypedEvent<
+  [
+    IMarketplace.AcceptRequestParamsStructOutput,
+    IMarketplace.NFTRequestInfoStructOutput
+  ],
+  TokenSuccessfullyExchangedEventObject
+>;
+
+export type TokenSuccessfullyExchangedEventFilter =
+  TypedEventFilter<TokenSuccessfullyExchangedEvent>;
+
+export interface TokenSuccessfullyPurchasedEventObject {
+  mintedTokenPrice: BigNumber;
+  paidTokensAmount: BigNumber;
+  buyParams: IMarketplace.BuyParamsStructOutput;
+  paymentType: number;
+}
+export type TokenSuccessfullyPurchasedEvent = TypedEvent<
+  [BigNumber, BigNumber, IMarketplace.BuyParamsStructOutput, number],
+  TokenSuccessfullyPurchasedEventObject
+>;
+
+export type TokenSuccessfullyPurchasedEventFilter =
+  TypedEventFilter<TokenSuccessfullyPurchasedEvent>;
 
 export interface UnpausedEventObject {
   account: string;
@@ -547,6 +780,12 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    acceptRequest(
+      requestParams_: IMarketplace.AcceptRequestParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     addToken(
       name_: PromiseOrValue<string>,
       symbol_: PromiseOrValue<string>,
@@ -556,31 +795,40 @@ export interface MarketPlace extends BaseContract {
 
     baseTokenContractsURI(overrides?: CallOverrides): Promise<[string]>;
 
-    buyToken(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithERC20(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    buyTokenWithETH(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    buyTokenByNFT(
+    buyTokenWithNFT(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    buyTokenWithVoucher(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      permitSig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    cancelNFTRequest(
+      requestId_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    createNFTRequest(
       tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+      nftContract_: PromiseOrValue<string>,
+      nftId_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -588,39 +836,56 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { count_: BigNumber }>;
 
-    getBaseTokenParams(
-      tokenContract_: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<
-      [IMarketplace.BaseTokenParamsStructOutput[]] & {
-        baseTokenParams_: IMarketplace.BaseTokenParamsStructOutput[];
-      }
-    >;
+    getAllPendingRequestsCount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getBaseTokenParamsPart(
-      offset_: PromiseOrValue<BigNumberish>,
-      limit_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[IMarketplace.BaseTokenParamsStructOutput[]]>;
-
-    getDetailedTokenParams(
+    getBriefTokenInfo(
       tokenContracts_: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<
-      [IMarketplace.DetailedTokenParamsStructOutput[]] & {
-        detailedTokenParams_: IMarketplace.DetailedTokenParamsStructOutput[];
+      [IMarketplace.BriefTokenInfoStructOutput[]] & {
+        baseTokenParams_: IMarketplace.BriefTokenInfoStructOutput[];
       }
     >;
 
-    getDetailedTokenParamsPart(
+    getBriefTokenInfoPart(
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[IMarketplace.DetailedTokenParamsStructOutput[]]>;
+    ): Promise<[IMarketplace.BriefTokenInfoStructOutput[]]>;
+
+    getDetailedTokenInfo(
+      tokenContracts_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<
+      [IMarketplace.DetailedTokenInfoStructOutput[]] & {
+        detailedTokenParams_: IMarketplace.DetailedTokenInfoStructOutput[];
+      }
+    >;
+
+    getDetailedTokenInfoPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[IMarketplace.DetailedTokenInfoStructOutput[]]>;
 
     getInjector(
       overrides?: CallOverrides
     ): Promise<[string] & { injector_: string }>;
+
+    getNFTRequestsInfo(
+      requestsId_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<
+      [IMarketplace.NFTRequestInfoStructOutput[]] & {
+        nftRequestsInfo_: IMarketplace.NFTRequestInfoStructOutput[];
+      }
+    >;
+
+    getPendingRequestsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
 
     getTokenContractsCount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -629,6 +894,18 @@ export interface MarketPlace extends BaseContract {
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string[]]>;
+
+    getUserPendingRequestsCount(
+      userAddr_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getUserPendingRequestsPart(
+      userAddr_: PromiseOrValue<string>,
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
 
     getUserTokensPart(
       userAddr_: PromiseOrValue<string>,
@@ -640,6 +917,8 @@ export interface MarketPlace extends BaseContract {
         userTokens_: IMarketplace.UserTokensStructOutput[];
       }
     >;
+
+    nextRequestId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     onERC721Received(
       arg0: PromiseOrValue<string>,
@@ -675,10 +954,8 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    updateAllParams(
+    updateTokenParams(
       tokenContract_: PromiseOrValue<string>,
-      name_: PromiseOrValue<string>,
-      symbol_: PromiseOrValue<string>,
       newTokenParams_: IMarketplace.TokenParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -686,12 +963,27 @@ export interface MarketPlace extends BaseContract {
     withdrawCurrency(
       tokenAddr_: PromiseOrValue<string>,
       recipient_: PromiseOrValue<string>,
+      desiredAmount_: PromiseOrValue<BigNumberish>,
+      withdrawAll_: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    withdrawNFTs(
+      nft_: PromiseOrValue<string>,
+      recipient_: PromiseOrValue<string>,
+      tokenIds_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   __Marketplace_init(
     baseTokenContractsURI_: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  acceptRequest(
+    requestParams_: IMarketplace.AcceptRequestParamsStruct,
+    sig_: IMarketplace.SigDataStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -704,59 +996,81 @@ export interface MarketPlace extends BaseContract {
 
   baseTokenContractsURI(overrides?: CallOverrides): Promise<string>;
 
-  buyToken(
-    tokenContract_: PromiseOrValue<string>,
-    futureTokenId_: PromiseOrValue<BigNumberish>,
-    paymentTokenAddress_: PromiseOrValue<string>,
-    paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-    discount_: PromiseOrValue<BigNumberish>,
-    endTimestamp_: PromiseOrValue<BigNumberish>,
-    tokenURI_: PromiseOrValue<string>,
-    r_: PromiseOrValue<BytesLike>,
-    s_: PromiseOrValue<BytesLike>,
-    v_: PromiseOrValue<BigNumberish>,
+  buyTokenWithERC20(
+    buyParams_: IMarketplace.BuyParamsStruct,
+    sig_: IMarketplace.SigDataStruct,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  buyTokenWithETH(
+    buyParams_: IMarketplace.BuyParamsStruct,
+    sig_: IMarketplace.SigDataStruct,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  buyTokenByNFT(
+  buyTokenWithNFT(
+    buyParams_: IMarketplace.BuyParamsStruct,
+    sig_: IMarketplace.SigDataStruct,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  buyTokenWithVoucher(
+    buyParams_: IMarketplace.BuyParamsStruct,
+    sig_: IMarketplace.SigDataStruct,
+    permitSig_: IMarketplace.SigDataStruct,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  cancelNFTRequest(
+    requestId_: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  createNFTRequest(
     tokenContract_: PromiseOrValue<string>,
-    futureTokenId_: PromiseOrValue<BigNumberish>,
-    nftAddress_: PromiseOrValue<string>,
-    nftFloorPrice_: PromiseOrValue<BigNumberish>,
-    tokenId_: PromiseOrValue<BigNumberish>,
-    endTimestamp_: PromiseOrValue<BigNumberish>,
-    tokenURI_: PromiseOrValue<string>,
-    r_: PromiseOrValue<BytesLike>,
-    s_: PromiseOrValue<BytesLike>,
-    v_: PromiseOrValue<BigNumberish>,
+    nftContract_: PromiseOrValue<string>,
+    nftId_: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   getActiveTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getBaseTokenParams(
-    tokenContract_: PromiseOrValue<string>[],
-    overrides?: CallOverrides
-  ): Promise<IMarketplace.BaseTokenParamsStructOutput[]>;
+  getAllPendingRequestsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getBaseTokenParamsPart(
-    offset_: PromiseOrValue<BigNumberish>,
-    limit_: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<IMarketplace.BaseTokenParamsStructOutput[]>;
-
-  getDetailedTokenParams(
+  getBriefTokenInfo(
     tokenContracts_: PromiseOrValue<string>[],
     overrides?: CallOverrides
-  ): Promise<IMarketplace.DetailedTokenParamsStructOutput[]>;
+  ): Promise<IMarketplace.BriefTokenInfoStructOutput[]>;
 
-  getDetailedTokenParamsPart(
+  getBriefTokenInfoPart(
     offset_: PromiseOrValue<BigNumberish>,
     limit_: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<IMarketplace.DetailedTokenParamsStructOutput[]>;
+  ): Promise<IMarketplace.BriefTokenInfoStructOutput[]>;
+
+  getDetailedTokenInfo(
+    tokenContracts_: PromiseOrValue<string>[],
+    overrides?: CallOverrides
+  ): Promise<IMarketplace.DetailedTokenInfoStructOutput[]>;
+
+  getDetailedTokenInfoPart(
+    offset_: PromiseOrValue<BigNumberish>,
+    limit_: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<IMarketplace.DetailedTokenInfoStructOutput[]>;
 
   getInjector(overrides?: CallOverrides): Promise<string>;
+
+  getNFTRequestsInfo(
+    requestsId_: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<IMarketplace.NFTRequestInfoStructOutput[]>;
+
+  getPendingRequestsPart(
+    offset_: PromiseOrValue<BigNumberish>,
+    limit_: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
 
   getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -766,12 +1080,26 @@ export interface MarketPlace extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  getUserPendingRequestsCount(
+    userAddr_: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getUserPendingRequestsPart(
+    userAddr_: PromiseOrValue<string>,
+    offset_: PromiseOrValue<BigNumberish>,
+    limit_: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
   getUserTokensPart(
     userAddr_: PromiseOrValue<string>,
     offset_: PromiseOrValue<BigNumberish>,
     limit_: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IMarketplace.UserTokensStructOutput[]>;
+
+  nextRequestId(overrides?: CallOverrides): Promise<BigNumber>;
 
   onERC721Received(
     arg0: PromiseOrValue<string>,
@@ -807,10 +1135,8 @@ export interface MarketPlace extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  updateAllParams(
+  updateTokenParams(
     tokenContract_: PromiseOrValue<string>,
-    name_: PromiseOrValue<string>,
-    symbol_: PromiseOrValue<string>,
     newTokenParams_: IMarketplace.TokenParamsStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -818,12 +1144,27 @@ export interface MarketPlace extends BaseContract {
   withdrawCurrency(
     tokenAddr_: PromiseOrValue<string>,
     recipient_: PromiseOrValue<string>,
+    desiredAmount_: PromiseOrValue<BigNumberish>,
+    withdrawAll_: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  withdrawNFTs(
+    nft_: PromiseOrValue<string>,
+    recipient_: PromiseOrValue<string>,
+    tokenIds_: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     __Marketplace_init(
       baseTokenContractsURI_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    acceptRequest(
+      requestParams_: IMarketplace.AcceptRequestParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -836,59 +1177,81 @@ export interface MarketPlace extends BaseContract {
 
     baseTokenContractsURI(overrides?: CallOverrides): Promise<string>;
 
-    buyToken(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithERC20(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    buyTokenByNFT(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithETH(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    buyTokenWithNFT(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    buyTokenWithVoucher(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      permitSig_: IMarketplace.SigDataStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    cancelNFTRequest(
+      requestId_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    createNFTRequest(
+      tokenContract_: PromiseOrValue<string>,
+      nftContract_: PromiseOrValue<string>,
+      nftId_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getActiveTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getBaseTokenParams(
-      tokenContract_: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<IMarketplace.BaseTokenParamsStructOutput[]>;
+    getAllPendingRequestsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getBaseTokenParamsPart(
-      offset_: PromiseOrValue<BigNumberish>,
-      limit_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IMarketplace.BaseTokenParamsStructOutput[]>;
-
-    getDetailedTokenParams(
+    getBriefTokenInfo(
       tokenContracts_: PromiseOrValue<string>[],
       overrides?: CallOverrides
-    ): Promise<IMarketplace.DetailedTokenParamsStructOutput[]>;
+    ): Promise<IMarketplace.BriefTokenInfoStructOutput[]>;
 
-    getDetailedTokenParamsPart(
+    getBriefTokenInfoPart(
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<IMarketplace.DetailedTokenParamsStructOutput[]>;
+    ): Promise<IMarketplace.BriefTokenInfoStructOutput[]>;
+
+    getDetailedTokenInfo(
+      tokenContracts_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<IMarketplace.DetailedTokenInfoStructOutput[]>;
+
+    getDetailedTokenInfoPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<IMarketplace.DetailedTokenInfoStructOutput[]>;
 
     getInjector(overrides?: CallOverrides): Promise<string>;
+
+    getNFTRequestsInfo(
+      requestsId_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<IMarketplace.NFTRequestInfoStructOutput[]>;
+
+    getPendingRequestsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
     getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -898,12 +1261,26 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    getUserPendingRequestsCount(
+      userAddr_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserPendingRequestsPart(
+      userAddr_: PromiseOrValue<string>,
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
     getUserTokensPart(
       userAddr_: PromiseOrValue<string>,
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IMarketplace.UserTokensStructOutput[]>;
+
+    nextRequestId(overrides?: CallOverrides): Promise<BigNumber>;
 
     onERC721Received(
       arg0: PromiseOrValue<string>,
@@ -935,10 +1312,8 @@ export interface MarketPlace extends BaseContract {
 
     unpause(overrides?: CallOverrides): Promise<void>;
 
-    updateAllParams(
+    updateTokenParams(
       tokenContract_: PromiseOrValue<string>,
-      name_: PromiseOrValue<string>,
-      symbol_: PromiseOrValue<string>,
       newTokenParams_: IMarketplace.TokenParamsStruct,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -946,6 +1321,15 @@ export interface MarketPlace extends BaseContract {
     withdrawCurrency(
       tokenAddr_: PromiseOrValue<string>,
       recipient_: PromiseOrValue<string>,
+      desiredAmount_: PromiseOrValue<BigNumberish>,
+      withdrawAll_: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdrawNFTs(
+      nft_: PromiseOrValue<string>,
+      recipient_: PromiseOrValue<string>,
+      tokenIds_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -957,6 +1341,39 @@ export interface MarketPlace extends BaseContract {
     BaseTokenContractsURIUpdated(
       newBaseTokenContractsURI?: null
     ): BaseTokenContractsURIUpdatedEventFilter;
+
+    "NFTRequestCanceled(uint256)"(
+      requestId?: PromiseOrValue<BigNumberish> | null
+    ): NFTRequestCanceledEventFilter;
+    NFTRequestCanceled(
+      requestId?: PromiseOrValue<BigNumberish> | null
+    ): NFTRequestCanceledEventFilter;
+
+    "NFTRequestCreated(uint256,address,address,address,uint256)"(
+      requestId?: PromiseOrValue<BigNumberish> | null,
+      requester?: PromiseOrValue<string> | null,
+      tokenContract?: PromiseOrValue<string> | null,
+      nftContract?: null,
+      nftId?: null
+    ): NFTRequestCreatedEventFilter;
+    NFTRequestCreated(
+      requestId?: PromiseOrValue<BigNumberish> | null,
+      requester?: PromiseOrValue<string> | null,
+      tokenContract?: PromiseOrValue<string> | null,
+      nftContract?: null,
+      nftId?: null
+    ): NFTRequestCreatedEventFilter;
+
+    "NFTTokensWithdrawn(address,address,uint256[])"(
+      nftAddr?: PromiseOrValue<string> | null,
+      recipient?: null,
+      tokenIDs?: null
+    ): NFTTokensWithdrawnEventFilter;
+    NFTTokensWithdrawn(
+      nftAddr?: PromiseOrValue<string> | null,
+      recipient?: null,
+      tokenIDs?: null
+    ): NFTTokensWithdrawnEventFilter;
 
     "PaidTokensWithdrawn(address,address,uint256)"(
       tokenAddr?: PromiseOrValue<string> | null,
@@ -972,46 +1389,6 @@ export interface MarketPlace extends BaseContract {
     "Paused(address)"(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
 
-    "SuccessfullyMinted(address,address,tuple,address,uint256,uint256,uint256,address)"(
-      tokenContract?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      mintedTokenInfo?: null,
-      paymentTokenAddress?: PromiseOrValue<string> | null,
-      paidTokensAmount?: null,
-      paymentTokenPrice?: null,
-      discount?: null,
-      fundsRecipient?: null
-    ): SuccessfullyMintedEventFilter;
-    SuccessfullyMinted(
-      tokenContract?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      mintedTokenInfo?: null,
-      paymentTokenAddress?: PromiseOrValue<string> | null,
-      paidTokensAmount?: null,
-      paymentTokenPrice?: null,
-      discount?: null,
-      fundsRecipient?: null
-    ): SuccessfullyMintedEventFilter;
-
-    "SuccessfullyMintedByNFT(address,address,tuple,address,uint256,uint256,address)"(
-      tokenContract?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      mintedTokenInfo?: null,
-      nftAddress?: PromiseOrValue<string> | null,
-      tokenId?: null,
-      nftFloorPrice?: null,
-      fundsRecipient?: null
-    ): SuccessfullyMintedByNFTEventFilter;
-    SuccessfullyMintedByNFT(
-      tokenContract?: PromiseOrValue<string> | null,
-      recipient?: PromiseOrValue<string> | null,
-      mintedTokenInfo?: null,
-      nftAddress?: PromiseOrValue<string> | null,
-      tokenId?: null,
-      nftFloorPrice?: null,
-      fundsRecipient?: null
-    ): SuccessfullyMintedByNFTEventFilter;
-
     "TokenContractDeployed(address,string,string,tuple)"(
       tokenContract?: PromiseOrValue<string> | null,
       tokenName?: null,
@@ -1025,18 +1402,36 @@ export interface MarketPlace extends BaseContract {
       tokenParams?: null
     ): TokenContractDeployedEventFilter;
 
-    "TokenContractParamsUpdated(address,string,string,tuple)"(
+    "TokenParamsUpdated(address,tuple)"(
       tokenContract?: PromiseOrValue<string> | null,
-      tokenName?: null,
-      tokenSymbol?: null,
       tokenParams?: null
-    ): TokenContractParamsUpdatedEventFilter;
-    TokenContractParamsUpdated(
+    ): TokenParamsUpdatedEventFilter;
+    TokenParamsUpdated(
       tokenContract?: PromiseOrValue<string> | null,
-      tokenName?: null,
-      tokenSymbol?: null,
       tokenParams?: null
-    ): TokenContractParamsUpdatedEventFilter;
+    ): TokenParamsUpdatedEventFilter;
+
+    "TokenSuccessfullyExchanged(tuple,tuple)"(
+      acceptRequestParams?: null,
+      nftRequestInfo?: null
+    ): TokenSuccessfullyExchangedEventFilter;
+    TokenSuccessfullyExchanged(
+      acceptRequestParams?: null,
+      nftRequestInfo?: null
+    ): TokenSuccessfullyExchangedEventFilter;
+
+    "TokenSuccessfullyPurchased(uint256,uint256,tuple,uint8)"(
+      mintedTokenPrice?: null,
+      paidTokensAmount?: null,
+      buyParams?: null,
+      paymentType?: null
+    ): TokenSuccessfullyPurchasedEventFilter;
+    TokenSuccessfullyPurchased(
+      mintedTokenPrice?: null,
+      paidTokensAmount?: null,
+      buyParams?: null,
+      paymentType?: null
+    ): TokenSuccessfullyPurchasedEventFilter;
 
     "Unpaused(address)"(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
@@ -1045,6 +1440,12 @@ export interface MarketPlace extends BaseContract {
   estimateGas: {
     __Marketplace_init(
       baseTokenContractsURI_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    acceptRequest(
+      requestParams_: IMarketplace.AcceptRequestParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1057,53 +1458,64 @@ export interface MarketPlace extends BaseContract {
 
     baseTokenContractsURI(overrides?: CallOverrides): Promise<BigNumber>;
 
-    buyToken(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithERC20(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    buyTokenWithETH(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    buyTokenByNFT(
+    buyTokenWithNFT(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    buyTokenWithVoucher(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      permitSig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    cancelNFTRequest(
+      requestId_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    createNFTRequest(
       tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+      nftContract_: PromiseOrValue<string>,
+      nftId_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     getActiveTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getBaseTokenParams(
-      tokenContract_: PromiseOrValue<string>[],
+    getAllPendingRequestsCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBriefTokenInfo(
+      tokenContracts_: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getBaseTokenParamsPart(
+    getBriefTokenInfoPart(
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getDetailedTokenParams(
+    getDetailedTokenInfo(
       tokenContracts_: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getDetailedTokenParamsPart(
+    getDetailedTokenInfoPart(
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1111,9 +1523,32 @@ export interface MarketPlace extends BaseContract {
 
     getInjector(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getNFTRequestsInfo(
+      requestsId_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPendingRequestsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTokenContractsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTokenContractsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserPendingRequestsCount(
+      userAddr_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserPendingRequestsPart(
+      userAddr_: PromiseOrValue<string>,
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1125,6 +1560,8 @@ export interface MarketPlace extends BaseContract {
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    nextRequestId(overrides?: CallOverrides): Promise<BigNumber>;
 
     onERC721Received(
       arg0: PromiseOrValue<string>,
@@ -1160,10 +1597,8 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    updateAllParams(
+    updateTokenParams(
       tokenContract_: PromiseOrValue<string>,
-      name_: PromiseOrValue<string>,
-      symbol_: PromiseOrValue<string>,
       newTokenParams_: IMarketplace.TokenParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1171,6 +1606,15 @@ export interface MarketPlace extends BaseContract {
     withdrawCurrency(
       tokenAddr_: PromiseOrValue<string>,
       recipient_: PromiseOrValue<string>,
+      desiredAmount_: PromiseOrValue<BigNumberish>,
+      withdrawAll_: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    withdrawNFTs(
+      nft_: PromiseOrValue<string>,
+      recipient_: PromiseOrValue<string>,
+      tokenIds_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -1178,6 +1622,12 @@ export interface MarketPlace extends BaseContract {
   populateTransaction: {
     __Marketplace_init(
       baseTokenContractsURI_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    acceptRequest(
+      requestParams_: IMarketplace.AcceptRequestParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1192,31 +1642,40 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    buyToken(
-      tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress_: PromiseOrValue<string>,
-      paymentTokenPrice_: PromiseOrValue<BigNumberish>,
-      discount_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+    buyTokenWithERC20(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    buyTokenWithETH(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    buyTokenByNFT(
+    buyTokenWithNFT(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    buyTokenWithVoucher(
+      buyParams_: IMarketplace.BuyParamsStruct,
+      sig_: IMarketplace.SigDataStruct,
+      permitSig_: IMarketplace.SigDataStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    cancelNFTRequest(
+      requestId_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    createNFTRequest(
       tokenContract_: PromiseOrValue<string>,
-      futureTokenId_: PromiseOrValue<BigNumberish>,
-      nftAddress_: PromiseOrValue<string>,
-      nftFloorPrice_: PromiseOrValue<BigNumberish>,
-      tokenId_: PromiseOrValue<BigNumberish>,
-      endTimestamp_: PromiseOrValue<BigNumberish>,
-      tokenURI_: PromiseOrValue<string>,
-      r_: PromiseOrValue<BytesLike>,
-      s_: PromiseOrValue<BytesLike>,
-      v_: PromiseOrValue<BigNumberish>,
+      nftContract_: PromiseOrValue<string>,
+      nftId_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1224,29 +1683,44 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getBaseTokenParams(
-      tokenContract_: PromiseOrValue<string>[],
+    getAllPendingRequestsCount(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getBaseTokenParamsPart(
+    getBriefTokenInfo(
+      tokenContracts_: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBriefTokenInfoPart(
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getDetailedTokenParams(
+    getDetailedTokenInfo(
       tokenContracts_: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getDetailedTokenParamsPart(
+    getDetailedTokenInfoPart(
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getInjector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getNFTRequestsInfo(
+      requestsId_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPendingRequestsPart(
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getTokenContractsCount(
       overrides?: CallOverrides
@@ -1258,12 +1732,26 @@ export interface MarketPlace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getUserPendingRequestsCount(
+      userAddr_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getUserPendingRequestsPart(
+      userAddr_: PromiseOrValue<string>,
+      offset_: PromiseOrValue<BigNumberish>,
+      limit_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getUserTokensPart(
       userAddr_: PromiseOrValue<string>,
       offset_: PromiseOrValue<BigNumberish>,
       limit_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    nextRequestId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     onERC721Received(
       arg0: PromiseOrValue<string>,
@@ -1299,10 +1787,8 @@ export interface MarketPlace extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    updateAllParams(
+    updateTokenParams(
       tokenContract_: PromiseOrValue<string>,
-      name_: PromiseOrValue<string>,
-      symbol_: PromiseOrValue<string>,
       newTokenParams_: IMarketplace.TokenParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -1310,6 +1796,15 @@ export interface MarketPlace extends BaseContract {
     withdrawCurrency(
       tokenAddr_: PromiseOrValue<string>,
       recipient_: PromiseOrValue<string>,
+      desiredAmount_: PromiseOrValue<BigNumberish>,
+      withdrawAll_: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawNFTs(
+      nft_: PromiseOrValue<string>,
+      recipient_: PromiseOrValue<string>,
+      tokenIds_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

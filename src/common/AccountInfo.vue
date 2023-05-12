@@ -1,5 +1,6 @@
 <template>
   <div :class="accountClasses">
+    <funds-info v-if="rolesStore.hasWithdrawalManagerRole" />
     <network-switcher />
     <drop-down :top="60" :right="0">
       <template #head="{ menu }">
@@ -44,8 +45,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { cropAddress, copyToClipboard, ErrorHandler, logout } from '@/helpers'
-import { useWeb3ProvidersStore } from '@/store'
-import { AppButton, Icon, DropDown, NetworkSwitcher } from '@/common'
+import { useWeb3ProvidersStore, useRolesStore } from '@/store'
+import { AppButton, Icon, DropDown, NetworkSwitcher, FundsInfo } from '@/common'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
 
@@ -61,6 +62,7 @@ const accountClasses = computed(() => [
   `account-info--${props.modification}`,
 ])
 
+const rolesStore = useRolesStore()
 const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
@@ -110,8 +112,9 @@ const copyAddress = async () => {
 }
 
 .account-info__address {
-  font-size: toRem(18);
+  font-size: toRem(16);
   line-height: 160%;
+  font-weight: 500;
   color: var(--text-secondary-main);
   user-select: none;
 
@@ -126,7 +129,7 @@ const copyAddress = async () => {
   background-color: var(--background-primary);
   border-radius: toRem(8);
   border: toRem(1) solid var(--text-secondary-main);
-  height: toRem(52);
+  height: toRem(60);
   width: toRem(60);
   transition: 0.2s ease-in-out;
   transition-property: background-color;

@@ -9,6 +9,7 @@ enum EVENTS {
   default = 'default',
   toggleSidebar = 'toggle-sidebar',
   reloadPromocodesList = 'reload-promocodes-list',
+  toggleFormLoading = 'toggle-form-loading',
 }
 
 export class EventBus {

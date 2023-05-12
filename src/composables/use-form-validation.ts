@@ -14,6 +14,7 @@ export const useFormValidation = (
 
   const isFormValid = (): boolean => {
     validationController.value.$touch()
+
     return !validationController.value.$invalid
   }
 
@@ -42,6 +43,7 @@ export const useFormValidation = (
 
   const touchField = (fieldPath: string): void => {
     const field = get(validationController.value, fieldPath)
+
     if (field) {
       field.$touch()
     }

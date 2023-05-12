@@ -279,6 +279,7 @@ $z-local-index: 1;
   max-height: 500%;
   z-index: $z-local-index;
   background: var(--field-bg);
+  overflow-y: auto;
 
   @include field-border;
 }

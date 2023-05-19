@@ -6,33 +6,8 @@
       </h3>
     </div>
 
-    <error-message
-      v-if="isLoadFailed"
-      :message="$t('overview-nfts.error-message')"
-      :title="$t('overview-nfts.error-title')"
-    />
-
-    <template v-else-if="booksList.length || isLoading">
-      <div v-if="booksList.length" class="overview-nfts__content">
-        <nft-card
-          v-for="nft in booksList"
-          :key="nft.tokenContract as string"
-          :nft="nft"
-        />
-      </div>
-
-      <loader v-if="isLoading" />
-
-      <app-button
-        v-if="isLoadMoreBtnShown"
-        class="overview-nfts__load-more-btn"
-        size="small"
-        scheme="flat"
-        :text="$t('overview-nfts.load-more-btn')"
-        @click="loadNextPage"
-      />
-    </template>
-
+    <loader v-if="isLoading" />
+    <nft-list v-else-if="totalAmount > 0" :total-amount="totalAmount" />
     <no-data-message v-else :message="$t('overview-nfts.no-data-message')" />
 
     <mounted-teleport to="#app-navbar__right-buttons">
@@ -50,78 +25,51 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
-import {
-  Loader,
-  NftCard,
-  ErrorMessage,
-  NoDataMessage,
-  AppButton,
-} from '@/common'
+import { Loader, NoDataMessage, AppButton } from '@/common'
 
 import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { useWindowSize } from '@vueuse/core'
-import { useContractPagination, useBooks, BaseBookInfo } from '@/composables'
+import { useBooks } from '@/composables'
 import { useI18n } from 'vue-i18n'
 import { useWeb3ProvidersStore, useRolesStore } from '@/store'
-import { DateUtil } from '@/utils/date.util'
+import { NftList } from '@/pages/overview-nft-page'
 
 const webProvidersStore = useWeb3ProvidersStore()
 const rolesStore = useRolesStore()
 
 const provider = computed(() => webProvidersStore.provider)
 
-const booksList = ref<BaseBookInfo[]>([])
-const isLoadFailed = ref(false)
-
-const { width } = useWindowSize()
-const { t } = useI18n()
-
-const { getBooksFromContract } = useBooks()
-
-const loadList = computed(
-  () => (limit: number, offset: number) =>
-    getBooksFromContract(limit, offset, provider.value.chainId),
-)
-
-// filtering disabled books and sorting to show user the newest books first
-const processBookList = (bookList: BaseBookInfo[]) => {
-  return bookList
-    .filter(book => !book.isDisabled)
-    .sort((oneBook, anotherBook) =>
-      DateUtil._instance(oneBook.created_at).isBefore(anotherBook.created_at)
-        ? 1
-        : -1,
-    )
-}
-
-function setList(chunk: BaseBookInfo[]) {
-  booksList.value = chunk.length ? processBookList(chunk) : []
-}
-
-function concatList(chunk: BaseBookInfo[]) {
-  booksList.value = processBookList(
-    booksList.value.concat(chunk.length ? chunk : []),
-  )
-}
-
-function onError(e: Error) {
-  ErrorHandler.processWithoutFeedback(e)
-  isLoadFailed.value = true
-}
-
-const { isLoadMoreBtnShown, isLoading, loadNextPage } = useContractPagination(
-  loadList,
-  setList,
-  concatList,
-  onError,
-)
-
 const buttonLinkText = computed(() =>
   width.value >= WINDOW_BREAKPOINTS.medium
     ? t('overview-nfts.create-button')
     : '',
 )
+
+const { width } = useWindowSize()
+const { t } = useI18n()
+
+const { getTotalBooksAmount } = useBooks()
+
+const totalAmount = ref(-1)
+const isLoading = ref(false)
+
+const init = async () => {
+  isLoading.value = true
+  totalAmount.value = -1
+
+  try {
+    const data = await getTotalBooksAmount(provider.value.chainId)
+    if (!data) throw new Error('No books found')
+
+    totalAmount.value = Number(data)
+  } catch (error) {
+    ErrorHandler.processWithoutFeedback(error)
+  }
+
+  isLoading.value = false
+}
+watch(() => provider.value.chainId, init, { immediate: true })
 
 watch(
   () => rolesStore.hasMarkerplaceManagerRole,

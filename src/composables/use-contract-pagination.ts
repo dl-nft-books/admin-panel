@@ -9,10 +9,13 @@ export function useContractPagination<T>(
   opts?: {
     pageLimit?: number
     isLoadOnMounted?: boolean
+    isReverted?: boolean
+    totalAmount?: number
   },
 ) {
   let offset = 0
   let pageNumber = 0
+
   const pageLimit = opts?.pageLimit || config.DEFAULT_PAGE_LIMIT
 
   const isLoading = ref(false)
@@ -20,21 +23,50 @@ export function useContractPagination<T>(
 
   let nextPageLoader: () => Promise<T[]>
 
+  const _calcOffset = () => {
+    if (!opts?.isReverted) {
+      return pageNumber * pageLimit
+    }
+
+    return offset - pageLimit
+  }
+
+  const _calcRevertedParams = () => {
+    if (offset < 0) return [pageLimit + offset, 0]
+
+    return [pageLimit, offset]
+  }
+
   const loadFirstPage = async () => {
+    if (opts?.isReverted && !opts.totalAmount) return
+
     isCollectionFetched.value = false
     isLoading.value = true
 
     try {
-      const data = await firstPageLoader.value(pageLimit, 0)
+      offset =
+        opts?.totalAmount! - pageLimit < 0 ? 0 : opts?.totalAmount! - pageLimit
+
+      const data = await firstPageLoader.value(
+        pageLimit,
+        !opts?.isReverted ? 0 : offset,
+      )
       onFirstPageLoad(data)
 
-      isCollectionFetched.value = data.length === 0
+      if (!opts?.isReverted) pageNumber = 1
 
-      pageNumber = 1
-      offset = pageNumber * pageLimit
+      // offset for next page
+      offset = _calcOffset()
+
+      isCollectionFetched.value = data.length === 0 || -offset >= pageLimit
 
       nextPageLoader = () => {
-        return firstPageLoader.value(pageLimit, offset)
+        const [revertedLimit, revertedOffset] = _calcRevertedParams()
+
+        return firstPageLoader.value(
+          !opts?.isReverted ? pageLimit : revertedLimit,
+          !opts?.isReverted ? offset : revertedOffset,
+        )
       }
     } catch (error) {
       if (onError) onError(error as Error)
@@ -51,9 +83,9 @@ export function useContractPagination<T>(
       onNextPageLoad(data)
 
       pageNumber++
-      offset = pageNumber * pageLimit
+      offset = _calcOffset()
 
-      isCollectionFetched.value = data.length === 0
+      isCollectionFetched.value = data.length === 0 || -offset >= pageLimit
     } catch (error) {
       if (onError) onError(error as Error)
     }

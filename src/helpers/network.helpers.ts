@@ -3,6 +3,7 @@ import {
   POLYGON_MUMBAI_CHAIN,
   Q_MAINNET_CHAIN,
   Q_TESTNET_CHAIN,
+  SEPOLIA_CHAIN,
 } from '@/consts'
 import {
   ETHEREUM_CHAINS,
@@ -10,11 +11,11 @@ import {
   POLYGON_CHAINS,
   Q_CHAINS,
   ICON_NAMES,
-  EIP1193,
 } from '@/enums'
-import { ChainId, EthProviderRpcError, ChainInfo } from '@/types'
+import { ChainInfo } from '@/types'
+import { ChainId, CHAIN_TYPES } from '@distributedlab/w3p'
 import { ErrorHandler } from '@/helpers'
-import { useWeb3ProvidersStore } from '@/store'
+import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 
 export function getNetworkScheme(chainID: ChainId) {
   switch (chainID?.toString()) {
@@ -58,22 +59,39 @@ export function getNetworkInfo(chainID: ChainId): ChainInfo | null {
       return Q_TESTNET_CHAIN
     case Q_CHAINS.mainet:
       return Q_MAINNET_CHAIN
+    case ETHEREUM_CHAINS.sepolia:
+      return SEPOLIA_CHAIN
     default:
       return null
   }
 }
 
 export async function switchNetwork(chainID: ChainId) {
-  const { provider } = useWeb3ProvidersStore()
-  try {
-    await provider.switchChain(chainID)
-  } catch (error) {
-    const ethError = error as EthProviderRpcError
+  const web3Store = useWeb3ProvidersStore()
+  const networkStore = useNetworksStore()
 
+  const networkURLs = getNetworkInfo(chainID)
+  const networkInfo = networkStore.getNetworkByID(Number(chainID))
+
+  if (!networkInfo || !networkURLs) throw new Error('Unsupported network')
+
+  try {
+    await web3Store.provider.switchChain(chainID)
+  } catch (error) {
     // if wallet has no chain added we need to add it and switch to it
-    if (ethError?.code === EIP1193.walletMissingChain) {
-      await provider.addNetwork(chainID)
-    }
+    await web3Store.provider.addChain({
+      id: chainID,
+      name: networkInfo.name,
+      rpcUrl: networkURLs.rpcUrl,
+      explorerUrl: networkURLs.blockExplorerUrl,
+      type: CHAIN_TYPES.EVM,
+      token: {
+        name: networkInfo.token_name,
+        symbol: networkInfo.token_symbol,
+        decimals: networkInfo.decimals,
+      },
+      icon: '',
+    })
 
     ErrorHandler.processWithoutFeedback(error)
   }

@@ -1,21 +1,40 @@
 import { defineStore } from 'pinia'
-import { useProvider, useWeb3 } from '@/composables'
-import { DesignatedProvider } from '@/types'
+import { computed } from 'vue'
+import {
+  ProviderDetector,
+  PROVIDERS,
+  MetamaskProvider,
+} from '@distributedlab/w3p'
 
-export const useWeb3ProvidersStore = defineStore('web3-providers-store', {
-  state: () => ({
-    providers: [] as DesignatedProvider[],
-    provider: useProvider(),
-  }),
-  actions: {
-    async detectProviders() {
-      const web3 = useWeb3()
-      await web3.init()
-      this.providers = web3.providers.value
-    },
+import { useProvider } from '@/composables'
 
-    addProvider(provider: DesignatedProvider) {
-      this.providers.push(provider)
-    },
-  },
+const STORE_NAME = 'web3-providers-store'
+
+export const useWeb3ProvidersStore = defineStore(STORE_NAME, () => {
+  const provider = useProvider()
+
+  const providerDetector = computed(() => new ProviderDetector<PROVIDERS>())
+
+  async function detectProviders() {
+    await providerDetector.value.init()
+  }
+
+  async function init() {
+    const metamaskProvider = providerDetector.value.getProvider(
+      PROVIDERS.Metamask,
+    )
+
+    if (!metamaskProvider) return
+
+    await provider.init(MetamaskProvider, {
+      providerDetector: providerDetector.value,
+    })
+  }
+
+  return {
+    provider,
+
+    detectProviders,
+    init,
+  }
 })

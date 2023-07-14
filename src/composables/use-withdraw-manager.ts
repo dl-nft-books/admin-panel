@@ -10,9 +10,10 @@ export function useWithdrawalManager() {
   const web3Store = useWeb3ProvidersStore()
   const provider = computed(() => web3Store.provider)
 
-  const { getMarketPlaceAddress, init: initRegistry } = useContractRegistry()
+  const { getMarketPlaceAddress, init: initRegistry } =
+    useContractRegistry(provider)
 
-  const { init: initMarketPlace, withdrawFunds } = useMarketplace()
+  const { init: initMarketPlace, withdrawFunds } = useMarketplace(provider)
 
   const _initMarketPlace = async () => {
     const marketPlaceAddress = await getMarketPlaceAddress()
@@ -66,7 +67,7 @@ export function useWithdrawalManager() {
 
     if (!balance) return
 
-    return new BN(balance._hex).toString()
+    return balance
   }
 
   return {

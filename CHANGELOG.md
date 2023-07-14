@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [Unreleased]
+#### Changed
+- Interaction with providers moved on [@distributedlab/w3p](https://github.com/distributed-lab/web-kit/tree/main/packages/w3p)
+
 ## [1.5.0] - 2023-05-12
 #### Added
 - Deploying/editing on multiple chains at once

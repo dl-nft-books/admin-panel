@@ -7,30 +7,18 @@ import {
 import { ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { IRoleManager } from '@/types/contracts/RoleManager'
+import { FullUserRoleInfo, RoleBaseInfo, UserRoleAdditionalInfo } from '@/types'
 
 import { ref, computed, watch } from 'vue'
-
-export type FullUserRoleInfo = UserRoleAdditionalInfo &
-  Omit<RoleBaseInfo, 'members'>
-
-export type RoleBaseInfo = {
-  roleName: string
-  role: string
-  members: Array<string>
-}
-
-type UserRoleAdditionalInfo = {
-  address: string
-  name: string
-  created_at: string
-}
 
 export function useRolesManager() {
   const networkStore = useNetworksStore()
   const web3Store = useWeb3ProvidersStore()
   const provider = computed(() => web3Store.provider)
 
-  const { init: initRegistry, getRoleManagerAddress } = useContractRegistry()
+  const { init: initRegistry, getRoleManagerAddress } =
+    useContractRegistry(provider)
+
   const {
     init: initRoleManager,
     isRoleSupervisor,
@@ -42,7 +30,7 @@ export function useRolesManager() {
     getRolesList: _getRolesList,
     revokeRole: _revokeRole,
     getUserRoles: _getUserRoles,
-  } = _useRoleManager()
+  } = _useRoleManager(provider)
 
   const hasAdminRole = ref(false)
   const hasRolesManagerRole = ref(false)
@@ -145,12 +133,12 @@ export function useRolesManager() {
   }
 
   const checkRoles = async () => {
-    if (!provider.value.selectedAddress) return
+    if (!provider.value.address) return
 
-    await checkAdminRole(provider.value.selectedAddress)
-    await checkMarketplaceManagerRole(provider.value.selectedAddress)
-    await checkRolesManagerRole(provider.value.selectedAddress)
-    await checkWithdrawalManagerRole(provider.value.selectedAddress)
+    await checkAdminRole(provider.value.address)
+    await checkMarketplaceManagerRole(provider.value.address)
+    await checkRolesManagerRole(provider.value.address)
+    await checkWithdrawalManagerRole(provider.value.address)
   }
 
   const revokeRole = async (role: string, address: string) => {
@@ -288,7 +276,7 @@ export function useRolesManager() {
   )
 
   watch(
-    () => provider.value.selectedAddress,
+    () => provider.value.address,
     async () => {
       isLoadingFailed.value = false
       isLoadingRoles.value = true

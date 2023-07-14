@@ -25,6 +25,13 @@ export default defineConfig(({ command, mode }) => {
       port: Number(env.VITE_PORT),
     },
     publicDir: 'static',
+    optimizeDeps: {
+      esbuildOptions: {
+        supported: {
+          bigint: true,
+        },
+      },
+    },
     plugins: [
       vue(),
       createSvgIconsPlugin({

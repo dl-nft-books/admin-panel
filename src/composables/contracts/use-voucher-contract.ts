@@ -1,12 +1,15 @@
-import { useWeb3ProvidersStore } from '@/store'
-import { computed, ref } from 'vue'
-import { Voucher__factory, EthProviderRpcError } from '@/types'
+import { ref, Ref } from 'vue'
+import {
+  Voucher__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError } from '@/helpers'
 
-export const useVoucherContract = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
-
+export const useVoucherContract = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInterface = Voucher__factory.createInterface()

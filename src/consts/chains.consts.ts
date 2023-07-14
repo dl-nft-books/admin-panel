@@ -10,6 +10,11 @@ export const POLYGON_MAINNET_CHAIN: ChainInfo = {
   blockExplorerUrl: 'https://polygonscan.com/',
 }
 
+export const SEPOLIA_CHAIN: ChainInfo = {
+  rpcUrl: 'https://rpc2.sepolia.org',
+  blockExplorerUrl: 'https://sepolia.etherscan.io/',
+}
+
 export const Q_TESTNET_CHAIN: ChainInfo = {
   rpcUrl: 'https://rpc.qtestnet.org',
   blockExplorerUrl: 'https://explorer.qtestnet.org/',

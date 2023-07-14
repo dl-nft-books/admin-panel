@@ -1,6 +1,6 @@
 <template>
   <drop-down
-    v-if="provider.selectedAddress"
+    v-if="provider.address"
     :class="networkSwitcherClasses"
     :right="dropDownShift"
     :disabled="isSwitchingChain"

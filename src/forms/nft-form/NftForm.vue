@@ -414,7 +414,7 @@ const { getFieldErrorMessage, touchField, isFormValid } = useFormValidation(
 )
 
 const submit = async () => {
-  if (!isFormValid() || !provider.value.selectedAddress) return
+  if (!isFormValid() || !provider.value.address) return
 
   disableForm()
 

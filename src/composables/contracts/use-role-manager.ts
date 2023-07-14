@@ -1,6 +1,9 @@
-import { useWeb3ProvidersStore } from '@/store'
-import { computed, ref } from 'vue'
-import { RoleManager__factory, EthProviderRpcError } from '@/types'
+import { computed, ref, Ref } from 'vue'
+import {
+  RoleManager__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError } from '@/helpers'
 
 export enum ROLES {
@@ -14,10 +17,10 @@ export enum ROLES {
   signatureManager = '0x19ba3f3de64825cc833b0769b9c93a3eec261d38a326692c7588705c0a5a2bf4',
 }
 
-export const useRoleManager = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
-
+export const useRoleManager = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(

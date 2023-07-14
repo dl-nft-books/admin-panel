@@ -1,14 +1,17 @@
-import { useWeb3ProvidersStore } from '@/store'
-import { computed, ref } from 'vue'
-import { TokenRegistry__factory, EthProviderRpcError } from '@/types'
+import { computed, ref, Ref } from 'vue'
+import {
+  TokenRegistry__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError } from '@/helpers'
 
 const VOUCHERS_POOL_NAME = 'VOUCHER_TOKEN'
 
-export const useTokenRegistry = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
-
+export const useTokenRegistry = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(

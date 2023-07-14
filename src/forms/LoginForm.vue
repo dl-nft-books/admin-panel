@@ -33,14 +33,14 @@ const submit = async () => {
   try {
     await provider.value.connect()
     await sleep(1000)
-    if (provider.value.selectedAddress) {
-      const authNonce = await getAuthNonce(provider.value.selectedAddress)
+    if (provider.value.address) {
+      const authNonce = await getAuthNonce(provider.value.address)
 
       const signedMessage = await provider.value.signMessage(authNonce)
 
       if (!signedMessage) return
 
-      await authStore.login(provider.value.selectedAddress, signedMessage)
+      await authStore.login(provider.value.address, signedMessage)
 
       redirectByAccessLevel()
     }

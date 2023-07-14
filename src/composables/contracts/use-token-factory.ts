@@ -1,26 +1,16 @@
-import { useWeb3ProvidersStore } from '@/store'
-import { computed, ref } from 'vue'
-import { TokenFactory__factory, EthProviderRpcError } from '@/types'
+import { ref, Ref } from 'vue'
+import {
+  TokenFactory__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError } from '@/helpers'
 
-export const useTokenFactory = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
-
+export const useTokenFactory = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
-
-  // eslint-disable-next-line
-  const contractInstance = computed(
-    () =>
-      (!!provider.value &&
-        !!provider.value.currentProvider &&
-        !!contractAddress.value &&
-        TokenFactory__factory.connect(
-          contractAddress.value,
-          provider.value.currentProvider,
-        )) ||
-      undefined,
-  )
 
   const contractInterface = TokenFactory__factory.createInterface()
 

@@ -17,7 +17,7 @@ shell:
     - cd /app
     #- yarn autoclean --init
     #- yarn autoclean --force
-    - apk --no-cache --update --virtual build-dependencies add python make g++
+    - apk --no-cache --update --virtual build-dependencies add python3 make g++
     - yarn install
   setup: 
     - cd /app

@@ -10,6 +10,7 @@ for further information about branching and tagging conventions.
 ## [Unreleased]
 #### Changed
 - Interaction with providers moved on [@distributedlab/w3p](https://github.com/distributed-lab/web-kit/tree/main/packages/w3p)
+- Book types refactored
 
 ## [1.5.0] - 2023-05-12
 #### Added

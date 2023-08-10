@@ -1,4 +1,5 @@
 import {
+  GOERLI_CHAIN,
   POLYGON_MAINNET_CHAIN,
   POLYGON_MUMBAI_CHAIN,
   Q_MAINNET_CHAIN,
@@ -61,6 +62,8 @@ export function getNetworkInfo(chainID: ChainId): ChainInfo | null {
       return Q_MAINNET_CHAIN
     case ETHEREUM_CHAINS.sepolia:
       return SEPOLIA_CHAIN
+    case ETHEREUM_CHAINS.goerli:
+      return GOERLI_CHAIN
     default:
       return null
   }

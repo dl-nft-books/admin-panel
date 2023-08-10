@@ -96,7 +96,7 @@ const loadList = computed(() => async (limit: number, offset: number) => {
     const { data: statistics } = await getStatisticByBookId(id)
 
     data[index] = Object.assign(data[index], {
-      totalMoneySpent: statistics.tokens_histogram.attributes.total,
+      totalMoneySpent: statistics.tokens_histogram.attributes.total || 0,
     })
   }
 

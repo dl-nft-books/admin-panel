@@ -15,6 +15,11 @@ export const SEPOLIA_CHAIN: ChainInfo = {
   blockExplorerUrl: 'https://sepolia.etherscan.io/',
 }
 
+export const GOERLI_CHAIN: ChainInfo = {
+  rpcUrl: 'https://ethereum-goerli.publicnode.com',
+  blockExplorerUrl: 'https://goerli.etherscan.io/',
+}
+
 export const Q_TESTNET_CHAIN: ChainInfo = {
   rpcUrl: 'https://rpc.qtestnet.org',
   blockExplorerUrl: 'https://explorer.qtestnet.org/',

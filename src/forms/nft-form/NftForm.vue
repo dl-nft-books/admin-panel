@@ -209,12 +209,7 @@ import { computed, reactive, ref } from 'vue'
 import { AppButton, Collapse } from '@/common'
 import { FIELD_LENGTH, ROUTE_NAMES } from '@/enums'
 import { useRouter } from 'vue-router'
-import {
-  useForm,
-  useFormValidation,
-  useBooks,
-  FullBookInfo,
-} from '@/composables'
+import { useForm, useFormValidation, useBooks } from '@/composables'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { Document } from '@/api'
 import {
@@ -230,7 +225,7 @@ import { ErrorHandler, Bus, switchNetwork } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { MIN_PRICE_VALUE, MAX_PRICE_VALUE, MAX_BOOK_SIZE } from '@/consts'
 import { useI18n } from 'vue-i18n'
-import { BookFile } from '@/types'
+import { BookFile, FullBookInfo } from '@/types'
 
 import { VouchersTemplate } from '@/forms'
 import { Vouchers } from '@/forms/nft-form/VouchersTemplate.vue'

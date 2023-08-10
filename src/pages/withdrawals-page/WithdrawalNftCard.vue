@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { formatFiatAsset, formatFiatAssetFromWei } from '@/helpers'
+import { formatAssetFromWei, formatFiatAssetFromWei } from '@/helpers'
 import { CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
 import { BnLike } from '@/utils/math.util'
@@ -50,7 +50,7 @@ const cardHeader = [
   },
   {
     label: t('withdrawal-nft-card.money-lbl'),
-    value: formatFiatAsset(props.nft.totalMoneySpent, CURRENCIES.USD),
+    value: formatAssetFromWei(props.nft.totalMoneySpent, 2, CURRENCIES.USD),
   },
 ]
 </script>

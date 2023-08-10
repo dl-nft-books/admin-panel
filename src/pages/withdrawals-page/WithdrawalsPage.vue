@@ -60,17 +60,13 @@ import { Loader, ErrorMessage, NoDataMessage, AppButton, Modal } from '@/common'
 import { WithdrawalNftCard } from '@/pages/withdrawals-page'
 
 import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
-import {
-  useContractPagination,
-  useBooks,
-  BaseBookInfo,
-  useStatistics,
-} from '@/composables'
+import { useContractPagination, useBooks, useStatistics } from '@/composables'
 import { useWeb3ProvidersStore, useRolesStore } from '@/store'
 import { WithdrawForm } from '@/forms'
 import { useI18n } from 'vue-i18n'
 import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
+import { BaseBookInfo } from '@/types'
 
 const { width } = useWindowSize()
 const { t } = useI18n()
@@ -93,10 +89,10 @@ const loadList = computed(() => async (limit: number, offset: number) => {
   const data = await getBooksFromContract(limit, offset, provider.value.chainId)
 
   for (const [index, { id }] of data.entries()) {
-    const { data: statistics } = await getStatisticByBookId(id)
+    const statistics = await getStatisticByBookId(id)
 
     data[index] = Object.assign(data[index], {
-      totalMoneySpent: statistics.tokens_histogram.attributes.total || 0,
+      totalMoneySpent: statistics.tokens_histogram.total || 0,
     })
   }
 

@@ -1,4 +1,4 @@
-import { JsonApiRecordBase } from '@/types'
+import { JsonApiRecordBase } from '@distributedlab/jac'
 
 export type BookFile = JsonApiRecordBase<'files'> & {
   attributes: {

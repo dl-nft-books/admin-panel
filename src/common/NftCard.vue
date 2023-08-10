@@ -28,7 +28,7 @@
 import { formatFiatAssetFromWei, formatDMY } from '@/helpers'
 import { CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
-import { BaseBookInfo } from '@/composables'
+import { BaseBookInfo } from '@/types'
 import { BnLike } from '@/utils/math.util'
 
 const props = defineProps<{

@@ -1,19 +1,13 @@
-import { JsonApiClient } from '@/api/json-api'
+import { JsonApiClient } from '@distributedlab/jac'
 import { config } from '@config'
 import {
-  attachBearerInjector,
-  attachStaleTokenHandler,
-} from '@/api/apiInterceptors'
-import axios from 'axios'
+  bearerAttachInterceptor,
+  refreshTokenInterceptor,
+} from '@/api/interceptors'
 
-const axiosInstance = axios.create()
-attachBearerInjector(axiosInstance)
-attachStaleTokenHandler(axiosInstance)
-
-export const api = new JsonApiClient({
-  baseUrl: config.API_URL,
-  axios: axiosInstance,
-})
-
-export * from './utils'
-export * from './requests'
+export const api = new JsonApiClient(
+  {
+    baseUrl: config.API_URL,
+  },
+  [{ request: bearerAttachInterceptor, error: refreshTokenInterceptor }],
+)

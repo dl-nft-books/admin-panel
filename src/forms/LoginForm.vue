@@ -15,12 +15,7 @@
 import { AppButton } from '@/common'
 
 import { useWeb3ProvidersStore } from '@/store'
-import {
-  ErrorHandler,
-  getAuthNonce,
-  sleep,
-  redirectByAccessLevel,
-} from '@/helpers'
+import { ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import { computed } from 'vue'
 import { useAuthStore } from '@/store'
 
@@ -32,18 +27,18 @@ const authStore = useAuthStore()
 const submit = async () => {
   try {
     await provider.value.connect()
-    await sleep(1000)
-    if (provider.value.address) {
-      const authNonce = await getAuthNonce(provider.value.address)
 
-      const signedMessage = await provider.value.signMessage(authNonce)
+    if (!provider.value.address) throw new Error('Missing address')
 
-      if (!signedMessage) return
+    const authNonce = await authStore.getAuthNonce(provider.value.address)
 
-      await authStore.login(provider.value.address, signedMessage)
+    const signedMessage = await provider.value.signMessage(authNonce)
 
-      redirectByAccessLevel()
-    }
+    if (!signedMessage) throw new Error('Failed to sign auth nonce')
+
+    await authStore.login(provider.value.address, signedMessage)
+
+    await redirectByAccessLevel()
   } catch (error) {
     ErrorHandler.process(error)
   }

@@ -36,12 +36,13 @@
 </template>
 
 <script lang="ts" setup>
+import { ChainId } from '@distributedlab/w3p'
 import { ref, computed, onMounted } from 'vue'
+import { useWindowSize } from '@vueuse/core'
+
 import { DropDown, NetworkItem, Loader, ErrorMessage } from '@/common'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { ErrorHandler, getNetworkScheme, switchNetwork } from '@/helpers'
-import { ChainId } from '@/types'
-import { useWindowSize } from '@vueuse/core'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 
 type MODIFICATIONS = 'dark-mode' | 'default'

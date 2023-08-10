@@ -1,5 +1,5 @@
 import { api } from '@/api'
-import { JsonApiRecordBase } from '@/types'
+import { JsonApiRecordBase } from '@distributedlab/jac'
 
 type TokenPrice = JsonApiRecordBase<'prices'> & {
   price: string
@@ -17,15 +17,19 @@ type NftPrice = JsonApiRecordBase<'nft-price'> & {
 export function usePricer() {
   const getPrice = (chainId: number, erc20Address?: string) => {
     return api.get<TokenPrice>('/integrations/pricer/price', {
-      ...(erc20Address ? { contract: erc20Address } : {}),
-      chain_id: chainId,
+      query: {
+        ...(erc20Address ? { contract: erc20Address } : {}),
+        chain_id: chainId,
+      },
     })
   }
 
   const getNftPrice = (chainId: number, nftAddress: string) => {
     return api.get<NftPrice>('/integrations/pricer/nft', {
-      contract: nftAddress,
-      chain_id: chainId,
+      query: {
+        contract: nftAddress,
+        chain_id: chainId,
+      },
     })
   }
 

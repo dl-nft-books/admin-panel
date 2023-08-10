@@ -41,7 +41,6 @@ export const redirectByAccessLevel = async () => {
   }
 
   if (rolesStore.hasNoRoles) {
-    router.push({ name: ROUTE_NAMES.login })
     authStore.logout()
   }
 }

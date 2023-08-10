@@ -1,4 +1,24 @@
-import { getDocument, uploadDocument } from '@/api'
+import { JsonApiRecordBase } from '@distributedlab/jac'
+
+import { api } from '@/api'
+
+type UploadDocumentResponse = JsonApiRecordBase<'s3keys'> & {
+  key: string
+}
+
+type DocumentResponse = JsonApiRecordBase<'documents'> & {
+  url: string
+}
+
+function uploadDocument(formData: FormData) {
+  return api.post<UploadDocumentResponse>('/integrations/documents', {
+    body: formData,
+  })
+}
+
+function getDocument(key: string) {
+  return api.get<DocumentResponse>(`/integrations/documents/${key}`)
+}
 
 export class Document {
   _file?: File
@@ -67,6 +87,7 @@ export class Document {
 
     const formData = new FormData()
     formData.append('Document', blob)
+
     const { data } = await uploadDocument(formData)
 
     this._key = data.key

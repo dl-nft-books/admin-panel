@@ -47,6 +47,21 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.0.2.tgz#1bfafe4b7ed0f3e4105837e056e0a89b108ebe36"
   integrity sha512-IkpVW/ehM1hWKln4fCA3NzJU8KwD+kIOvPZA4cqxoJHtE21CCzjyp+Kxbu0i5I4tBNOlXPL9mjwnWlL0VEG4Fg==
 
+"@distributedlab/fetcher@1.0.0-rc.6":
+  version "1.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@distributedlab/fetcher/-/fetcher-1.0.0-rc.6.tgz#6bf3ddc329bbcc8fc906c6a6f9ae36c0b1e02fa3"
+  integrity sha512-EBJL1eneD8mp7EXWQhovvpBLndpC3+HFVVxZeQpRNNecMlrTYhwaUfdFfPVpm2Ddyx+rAAinPJOTKGM6iaZ1sg==
+  dependencies:
+    uuid "^9.0.0"
+
+"@distributedlab/jac@^1.0.0-rc.6":
+  version "1.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@distributedlab/jac/-/jac-1.0.0-rc.6.tgz#33367be23d3651a9fd0c00554147e27aaa06d17f"
+  integrity sha512-H+xCNkoffkELsFaipKQvac1UoEfwxy9LizT/T0GDGe8iYDL7K3O0RaHtQtr2FqROTCo9QVEkBPh/qoVLm/NwTA==
+  dependencies:
+    "@distributedlab/fetcher" "1.0.0-rc.6"
+    lodash "^4.17.21"
+
 "@distributedlab/tools@1.0.0-rc.0":
   version "1.0.0-rc.0"
   resolved "https://registry.yarnpkg.com/@distributedlab/tools/-/tools-1.0.0-rc.0.tgz#07956e654507d89fd151d2d8e6a44e6bae8a8d88"
@@ -5254,6 +5269,11 @@ uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+uuid@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
+  integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
 uuidv4@^5.0.1:
   version "5.0.1"

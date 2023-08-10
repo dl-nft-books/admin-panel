@@ -21,6 +21,7 @@
     "generate-ether-types": "typechain --target=ethers-v5 'src/abi/**/*.json' --out-dir src/types/contracts"
   },
   "dependencies": {
+    "@distributedlab/jac": "^1.0.0-rc.6",
     "@distributedlab/w3p": "^1.0.0-rc.0",
     "@solana/web3.js": "1.52.0",
     "@vuelidate/core": "^2.0.0-alpha.44",

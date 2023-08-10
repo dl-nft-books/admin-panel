@@ -32,7 +32,8 @@ import { ref, computed } from 'vue'
 import { Loader, NftCard, ErrorMessage, AppButton } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
-import { useContractPagination, useBooks, BaseBookInfo } from '@/composables'
+import { useContractPagination, useBooks } from '@/composables'
+import { BaseBookInfo } from '@/types'
 import { useWeb3ProvidersStore } from '@/store'
 import { DateUtil } from '@/utils/date.util'
 

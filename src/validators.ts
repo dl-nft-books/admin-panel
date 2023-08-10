@@ -14,7 +14,7 @@ import { Ref } from 'vue'
 import { createI18nMessage, MessageProps } from '@vuelidate/validators'
 import { get } from 'lodash-es'
 import { i18n } from '@/localization'
-import { Document } from '@/api'
+import { Document } from '@/helpers'
 import { ethers } from 'ethers'
 
 const { t } = i18n.global || i18n

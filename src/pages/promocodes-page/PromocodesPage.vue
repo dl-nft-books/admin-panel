@@ -62,7 +62,11 @@ import { ref, computed, watch } from 'vue'
 import { AppButton, Loader, ErrorMessage, Modal, NoDataMessage } from '@/common'
 import { usePaginate, usePromocodes } from '@/composables'
 import { SelectField } from '@/fields'
-import { PROMOCODE_STATUSES, WINDOW_BREAKPOINTS } from '@/enums'
+import {
+  PROMOCODES_FILTERS,
+  PROMOCODE_STATUSES,
+  WINDOW_BREAKPOINTS,
+} from '@/enums'
 import { Promocode } from '@/types'
 import { Bus, ErrorHandler, redirectByAccessLevel } from '@/helpers'
 import { PromocodeItem } from '@/pages/promocodes-page'
@@ -70,12 +74,6 @@ import { PromocodeForm } from '@/forms'
 import { useWindowSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useRolesStore } from '@/store'
-
-enum PROMOCODES_FILTERS {
-  ALL = 'all',
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
 
 const rolesStore = useRolesStore()
 

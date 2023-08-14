@@ -12,11 +12,14 @@ import { useAuthStore } from '@/store'
 import { i18n } from '@/localization'
 import { Bus } from '@/helpers'
 
-const REFRESH_TOKEN_URL = '/integrations/nonce-auth-svc/refresh-token'
+const REFRESH_TOKEN_ENDPOINT = '/integrations/nonce-auth-svc/refresh-token'
 
 export const bearerAttachInterceptor: FetcherRequestInterceptor = async (
   request: FetcherRequest,
 ) => {
+  // no need to attach access token while refreshing
+  if (request.url.includes(REFRESH_TOKEN_ENDPOINT)) return request
+
   const authStore = useAuthStore()
 
   if (!authStore.accessToken) return request
@@ -39,7 +42,7 @@ export const refreshTokenInterceptor: FetcherErrorResponseInterceptor = async (
   const isUnauthorized = response.status === HTTP_STATUS_CODES.UNAUTHORIZED
 
   // If error isn't unauthorized - return error
-  if (!isUnauthorized || config.url === REFRESH_TOKEN_URL)
+  if (!isUnauthorized || config.url.includes(REFRESH_TOKEN_ENDPOINT))
     return Promise.reject(response)
 
   const { t } = i18n.global

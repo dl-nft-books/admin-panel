@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { JsonApiBodyBuilder, JsonApiRecordBase } from '@distributedlab/jac'
+import { time } from '@distributedlab/tools'
 
 import { api } from '@/api'
 import { router } from '@/router'
@@ -55,7 +56,7 @@ export const useAuthStore = defineStore('auth', {
       router.push({ name: ROUTE_NAMES.login })
     },
 
-    async refreshToken(): Promise<void> {
+    async refresh(): Promise<void> {
       const { data } = await api.get<TokenResponse>(
         '/integrations/nonce-auth-svc/refresh-token',
         {
@@ -95,7 +96,20 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isLoggedIn: state => Boolean(state._accessToken),
-    accessToken: state => state._accessToken,
+    accessToken: state => {
+      if (!state._accessToken) return ''
+
+      return time().isAfter(state._accessToken.expires_in)
+        ? ''
+        : state._accessToken.id
+    },
+    refreshToken: state => {
+      if (!state._refreshToken) return ''
+
+      return time().isAfter(state._refreshToken.expires_in)
+        ? ''
+        : state._refreshToken.id
+    },
     account: state => state._account,
   },
 })

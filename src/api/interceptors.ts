@@ -12,13 +12,18 @@ import { useAuthStore } from '@/store'
 import { i18n } from '@/localization'
 import { Bus } from '@/helpers'
 
-const REFRESH_TOKEN_ENDPOINT = '/integrations/nonce-auth-svc/refresh-token'
+// prefixes of services, that don't require auth
+const UNAUTHORIZED_SERVICES = ['networks', 'nonce-auth-svc']
+
+const isAllowedUnauth = (url: string) => {
+  return UNAUTHORIZED_SERVICES.some(service => url.includes(service))
+}
 
 export const bearerAttachInterceptor: FetcherRequestInterceptor = async (
   request: FetcherRequest,
 ) => {
   // no need to attach access token while refreshing
-  if (request.url.includes(REFRESH_TOKEN_ENDPOINT)) return request
+  if (isAllowedUnauth(request.url)) return request
 
   const authStore = useAuthStore()
 
@@ -29,41 +34,21 @@ export const bearerAttachInterceptor: FetcherRequestInterceptor = async (
   // Attach bearer token to every request
   request.headers = {
     ...request.headers,
-    Authorization: `Bearer ${authStore.accessToken.id}`,
+    Authorization: `Bearer ${authStore.accessToken}`,
   }
 
   return request
 }
 
-export const refreshTokenInterceptor: FetcherErrorResponseInterceptor = async (
-  response: FetcherResponse<unknown>,
+export const refreshTokenInterceptor: FetcherRequestInterceptor = async (
+  request: FetcherRequest,
 ) => {
-  const config = response?.request
-  const isUnauthorized = response.status === HTTP_STATUS_CODES.UNAUTHORIZED
+  if (isAllowedUnauth(request.url)) return request
 
-  // If error isn't unauthorized - return error
-  if (!isUnauthorized || config.url.includes(REFRESH_TOKEN_ENDPOINT))
-    return Promise.reject(response)
-
-  const { t } = i18n.global
   const authStore = useAuthStore()
+  const { t } = i18n.global
 
-  try {
-    await authStore.refreshToken()
-
-    const url = new URL(config.url)
-
-    return new Fetcher({ baseUrl: url.origin }).request({
-      endpoint: url.pathname,
-      method: config.method as HTTP_METHODS,
-      ...(config.body ? { body: config.body } : {}),
-      headers: {
-        ...config.headers,
-        // Reset default authorization header with new token
-        Authorization: `Bearer ${authStore.accessToken?.id}`,
-      },
-    })
-  } catch (error) {
+  if (!authStore.refreshToken) {
     authStore.logout()
 
     Bus.info({
@@ -71,6 +56,51 @@ export const refreshTokenInterceptor: FetcherErrorResponseInterceptor = async (
       message: t('api-errors.session-expired-desc'),
     })
 
-    return Promise.reject(error)
+    return request
   }
+
+  if (!authStore.accessToken) {
+    await authStore.refresh()
+  }
+
+  return request
 }
+
+export const refreshTokenInterceptorOnError: FetcherErrorResponseInterceptor =
+  async (response: FetcherResponse<unknown>) => {
+    const config = response?.request
+    const isUnauthorized = response.status === HTTP_STATUS_CODES.UNAUTHORIZED
+
+    // If error isn't unauthorized - return error
+    if (!isUnauthorized || isAllowedUnauth(config.url))
+      return Promise.reject(response)
+
+    const { t } = i18n.global
+    const authStore = useAuthStore()
+
+    try {
+      await authStore.refresh()
+
+      const url = new URL(config.url)
+
+      return new Fetcher({ baseUrl: url.origin }).request({
+        endpoint: url.pathname,
+        method: config.method as HTTP_METHODS,
+        ...(config.body ? { body: config.body } : {}),
+        headers: {
+          ...config.headers,
+          // Reset default authorization header with new token
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+      })
+    } catch (error) {
+      authStore.logout()
+
+      Bus.info({
+        title: t('api-errors.session-expired-title'),
+        message: t('api-errors.session-expired-desc'),
+      })
+
+      return Promise.reject(error)
+    }
+  }

@@ -62,21 +62,21 @@
     "@distributedlab/fetcher" "1.0.0-rc.6"
     lodash "^4.17.21"
 
-"@distributedlab/tools@1.0.0-rc.0":
-  version "1.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@distributedlab/tools/-/tools-1.0.0-rc.0.tgz#07956e654507d89fd151d2d8e6a44e6bae8a8d88"
-  integrity sha512-xvxCbgBx7CBs69iHLBTLrQvY+WydoYvVqcInbF452xMovDm4IfTqc0MZXJ4zecSlyD7//Fk2ByAeKydcX2uAwQ==
+"@distributedlab/tools@1.0.0-rc.6", "@distributedlab/tools@^1.0.0-rc.6":
+  version "1.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@distributedlab/tools/-/tools-1.0.0-rc.6.tgz#6c472dea25a8451d6057052de8e8e164d3ffb3d6"
+  integrity sha512-V6SJweFWeTRPR+jq9SGE1yT5wfpEjjOG1LVScjakjlnNT9JJOU8fyUqfS09sYAX+KpaOPbfaAkH92Ji7rCxySw==
   dependencies:
     bignumber.js "^9.1.1"
     dayjs "^1.11.7"
     tslib "^2.5.0"
 
-"@distributedlab/w3p@^1.0.0-rc.0":
-  version "1.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@distributedlab/w3p/-/w3p-1.0.0-rc.0.tgz#166f8e38c3c0d8c79952afb5ede701961e592bd7"
-  integrity sha512-yERzSOsUkaNktsVBAOjYXrcENcfhWJ7GeZEkzQF24uvY5vPs1bawYMStJWz+9jwHulJIjUzfwEPtgXdXlkNDsA==
+"@distributedlab/w3p@^1.0.0-rc.6":
+  version "1.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/@distributedlab/w3p/-/w3p-1.0.0-rc.6.tgz#08039f950e5a949c6099fc631467e388dc760cdd"
+  integrity sha512-91nKuOJeHYHnRaDT/kezmxZ5WkbtVLIn6mclQOu/Nz8vWowBl/Q05L/JDvHI8vC9XJK5oY6Zs/6+UQuHFkHTRw==
   dependencies:
-    "@distributedlab/tools" "1.0.0-rc.0"
+    "@distributedlab/tools" "1.0.0-rc.6"
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/properties" "^5.7.0"
     "@near-wallet-selector/core" "^7.8.2"

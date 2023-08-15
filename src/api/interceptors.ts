@@ -1,11 +1,6 @@
 import {
-  Fetcher,
-  FetcherErrorResponseInterceptor,
   FetcherRequest,
   FetcherRequestInterceptor,
-  FetcherResponse,
-  HTTP_METHODS,
-  HTTP_STATUS_CODES,
 } from '@distributedlab/fetcher'
 
 import { useAuthStore } from '@/store'
@@ -65,42 +60,3 @@ export const refreshTokenInterceptor: FetcherRequestInterceptor = async (
 
   return request
 }
-
-export const refreshTokenInterceptorOnError: FetcherErrorResponseInterceptor =
-  async (response: FetcherResponse<unknown>) => {
-    const config = response?.request
-    const isUnauthorized = response.status === HTTP_STATUS_CODES.UNAUTHORIZED
-
-    // If error isn't unauthorized - return error
-    if (!isUnauthorized || isAllowedUnauth(config.url))
-      return Promise.reject(response)
-
-    const { t } = i18n.global
-    const authStore = useAuthStore()
-
-    try {
-      await authStore.refresh()
-
-      const url = new URL(config.url)
-
-      return new Fetcher({ baseUrl: url.origin }).request({
-        endpoint: url.pathname,
-        method: config.method as HTTP_METHODS,
-        ...(config.body ? { body: config.body } : {}),
-        headers: {
-          ...config.headers,
-          // Reset default authorization header with new token
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      })
-    } catch (error) {
-      authStore.logout()
-
-      Bus.info({
-        title: t('api-errors.session-expired-title'),
-        message: t('api-errors.session-expired-desc'),
-      })
-
-      return Promise.reject(error)
-    }
-  }

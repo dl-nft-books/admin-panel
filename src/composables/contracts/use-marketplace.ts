@@ -1,6 +1,9 @@
-import { useWeb3ProvidersStore } from '@/store'
-import { computed, ref } from 'vue'
-import { MarketPlace__factory, EthProviderRpcError } from '@/types'
+import { computed, ref, Ref } from 'vue'
+import {
+  MarketPlace__factory,
+  EthProviderRpcError,
+  UnwrappedProvider,
+} from '@/types'
 import { handleEthError, sleep } from '@/helpers'
 
 export type TokenParams = {
@@ -14,10 +17,10 @@ export type TokenParams = {
   isVoucherBuyable: boolean
 }
 
-export const useMarketplace = (address?: string) => {
-  const web3ProvidersStore = useWeb3ProvidersStore()
-  const provider = computed(() => web3ProvidersStore.provider)
-
+export const useMarketplace = (
+  provider: Ref<UnwrappedProvider>,
+  address?: string,
+) => {
   const contractAddress = ref(address || '')
 
   const contractInstance = computed(
@@ -57,7 +60,8 @@ export const useMarketplace = (address?: string) => {
         data,
       })
 
-      const txHash = (receipt as { hash: string }).hash
+      const txHash = (receipt as unknown as { transactionHash: string })
+        .transactionHash
 
       const txInfo = await provider.value.getTransactionReceipt(txHash)
 

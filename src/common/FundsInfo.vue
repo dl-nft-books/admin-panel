@@ -75,7 +75,7 @@ const loadBalance = async () => {
 }
 
 onMounted(async () => {
-  if (!provider.value.selectedAddress) return
+  if (!provider.value.address) return
 
   await loadBalance()
 })

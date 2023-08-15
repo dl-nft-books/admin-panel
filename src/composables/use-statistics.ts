@@ -1,22 +1,5 @@
 import { api } from '@/api'
-import { JsonApiRecordBase, Statistics } from '@/types'
-
-type TokenStatistics = {
-  name: string
-  native_currency: number
-  usd: number
-}
-
-export type StatisticByBook = JsonApiRecordBase<'statistics'> & {
-  tokens_histogram: {
-    attributes: {
-      total: number
-      tokens: Array<{
-        attributes: TokenStatistics
-      }>
-    }
-  }
-}
+import { Statistics, StatisticByBook } from '@/types'
 
 export function useStatistics() {
   const getStatistics = () => {

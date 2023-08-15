@@ -17,7 +17,7 @@
           <div class="account-info__info">
             <icon class="account-info__avatar-icon" :name="$icons.account" />
             <h5 class="account-info__address">
-              {{ cropAddress(provider.selectedAddress) }}
+              {{ cropAddress(provider.address) }}
             </h5>
           </div>
           <app-button
@@ -67,10 +67,10 @@ const web3ProvidersStore = useWeb3ProvidersStore()
 const provider = computed(() => web3ProvidersStore.provider)
 
 const copyAddress = async () => {
-  if (!provider.value.selectedAddress) return
+  if (!provider.value.address) return
 
   try {
-    await copyToClipboard(provider.value.selectedAddress)
+    await copyToClipboard(provider.value.address)
   } catch (error) {
     ErrorHandler.process(error)
   }

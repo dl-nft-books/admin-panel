@@ -1,5 +1,6 @@
 import { api, Document } from '@/api'
-import { Book, ChainId, CreateBookResponse } from '@/types'
+import { Book, CreateBookResponse, FullBookInfo, BaseBookInfo } from '@/types'
+import { ChainId } from '@distributedlab/w3p'
 import {
   useMarketplace,
   useContractRegistry,
@@ -11,15 +12,6 @@ import { BN } from '@/utils/math.util'
 import { ethers } from 'ethers'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { switchNetwork } from '@/helpers'
-
-// Info about book gathering partly from backend and partly from contract
-export type FullBookInfo = Book &
-  IMarketplace.BaseTokenDataStruct &
-  IMarketplace.TokenParamsStruct
-
-export type BaseBookInfo = Book &
-  Pick<IMarketplace.BriefTokenInfoStruct, 'pricePerOneToken' | 'isDisabled'> &
-  IMarketplace.BaseTokenDataStruct
 
 type CreateBookOpts = {
   tokenName: string
@@ -45,6 +37,7 @@ export function useBooks(contractRegistryAddress?: string) {
   const provider = computed(() => web3Store.provider)
 
   const { getMarketPlaceAddress, init: initRegistry } = useContractRegistry(
+    provider,
     contractRegistryAddress,
   )
 
@@ -55,7 +48,7 @@ export function useBooks(contractRegistryAddress?: string) {
     getBooksBatch,
     updateAllParams,
     getTokenContractsCount,
-  } = useMarketplace()
+  } = useMarketplace(provider)
 
   const _initMarketPlace = async (address?: string) => {
     const marketPlaceAddress = address || (await getMarketPlaceAddress())
@@ -129,6 +122,7 @@ export function useBooks(contractRegistryAddress?: string) {
 
     _initContractRegistry(bookNetwork.attributes.chain_id)
     await _initMarketPlace()
+
     const bookParams = await getTokenParams([
       bookNetwork.attributes.contract_address,
     ])
@@ -166,17 +160,12 @@ export function useBooks(contractRegistryAddress?: string) {
   ) => {
     if (!limit) return []
 
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
     if (
       !networkStore.list.some(network => network.chain_id === Number(chainId))
     ) {
       return []
     }
 
-    await switchNetwork(chainId)
     await _initContractRegistry(Number(chainId))
     await _initMarketPlace()
 
@@ -219,17 +208,11 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const getTotalBooksAmount = async (chainId: ChainId) => {
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
-
     if (
       !networkStore.list.some(network => network.chain_id === Number(chainId))
     ) {
       return
     }
-
-    if (provider.value.isConnected) await switchNetwork(chainId)
 
     await _initContractRegistry(Number(chainId))
     await _initMarketPlace()

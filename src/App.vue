@@ -13,26 +13,21 @@ import { ErrorHandler } from '@/helpers/error-handler'
 import { ref } from 'vue'
 import { useNotifications } from '@/composables'
 import { config } from '@config'
-import { useWeb3ProvidersStore } from '@/store'
-import { PROVIDERS } from '@/enums'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 
 const isAppInitialized = ref(false)
 
 const web3Store = useWeb3ProvidersStore()
+const networkStore = useNetworksStore()
 
 const init = async () => {
   try {
     useNotifications()
     document.title = config.APP_NAME
-    await Promise.all([web3Store.detectProviders()])
 
-    const metamaskProvider = web3Store.providers.find(
-      provider => provider.name === PROVIDERS.metamask,
-    )
-
-    if (metamaskProvider) {
-      await web3Store.provider.init(metamaskProvider)
-    }
+    await web3Store.detectProviders()
+    await web3Store.init()
+    await networkStore.loadNetworks()
   } catch (error) {
     ErrorHandler.process(error)
   }

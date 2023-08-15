@@ -18,10 +18,12 @@ export function useVouchers() {
     getTokenFactoryAddress,
     getTokenRegistryAddress,
     init: initRegistry,
-  } = useContractRegistry()
-  const { deployVoucher, init: initTokenFactory } = useTokenFactory()
-  const { getVoucherListPart, init: initTokenRegistry } = useTokenRegistry()
-  const { mintVoucher: _mintVoucher, init: initVoucher } = useVoucherContract()
+  } = useContractRegistry(provider)
+  const { deployVoucher, init: initTokenFactory } = useTokenFactory(provider)
+  const { getVoucherListPart, init: initTokenRegistry } =
+    useTokenRegistry(provider)
+  const { mintVoucher: _mintVoucher, init: initVoucher } =
+    useVoucherContract(provider)
 
   const _initTokenFactory = async (address?: string) => {
     const factoryAddress = address || (await getTokenFactoryAddress())

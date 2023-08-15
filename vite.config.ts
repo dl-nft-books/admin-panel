@@ -27,10 +27,14 @@ export default defineConfig(({ command, mode }) => {
     publicDir: 'static',
     optimizeDeps: {
       esbuildOptions: {
+        target: 'esnext',
         supported: {
           bigint: true,
         },
       },
+    },
+    build: {
+      target: ['esnext'],
     },
     plugins: [
       vue(),

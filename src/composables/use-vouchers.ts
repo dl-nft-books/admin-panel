@@ -1,3 +1,6 @@
+import { computed } from 'vue'
+import { BN, DECIMALS } from '@distributedlab/tools'
+
 import {
   useTokenFactory,
   useContractRegistry,
@@ -6,8 +9,6 @@ import {
 } from '@/composables'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
-import { BN } from '@/utils/math.util'
-import { computed } from 'vue'
 
 export function useVouchers() {
   const networkStore = useNetworksStore()
@@ -93,7 +94,7 @@ export function useVouchers() {
   ) => {
     initVoucher(voucherAddress)
 
-    const weiAmount = new BN(amount).toWei().toString()
+    const weiAmount = BN.fromRaw(amount, DECIMALS.WEI).value
 
     await _mintVoucher(recieverAddress, weiAmount)
   }

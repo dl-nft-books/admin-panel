@@ -17,7 +17,6 @@ const isAllowedUnauth = (url: string) => {
 export const bearerAttachInterceptor: FetcherRequestInterceptor = async (
   request: FetcherRequest,
 ) => {
-  // no need to attach access token while refreshing
   if (isAllowedUnauth(request.url)) return request
 
   const authStore = useAuthStore()

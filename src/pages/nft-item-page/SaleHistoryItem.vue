@@ -71,18 +71,18 @@
 </template>
 
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+import { time } from '@distributedlab/tools'
+
 import { Payment } from '@/types'
 import { Collapse, AppButton } from '@/common'
 import {
   formatFiatAssetFromWei,
   formatAssetFromWei,
   cropAddress,
-  formatDMY,
 } from '@/helpers'
 import { CURRENCIES, TOKEN_TYPES } from '@/enums'
 import { NftDetails } from '@/pages/nft-item-page/NftDetails.vue'
-import { useI18n } from 'vue-i18n'
-
 const props = defineProps<{ historyItem: Payment }>()
 
 const { t } = useI18n()
@@ -124,7 +124,7 @@ const saleHeader: NftDetails[] = [
   },
   {
     label: t('sale-history-item.purchase-date-lbl'),
-    value: formatDMY(props.historyItem.purchase_timestamp),
+    value: time(props.historyItem.purchase_timestamp).format('MMMM D, YYYY'),
   },
   {
     label: t('sale-history-item.price-lbl'),

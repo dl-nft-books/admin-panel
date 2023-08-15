@@ -12,6 +12,8 @@ for further information about branching and tagging conventions.
 - Old local json api client
 - JsonApiTypes
 - `requests` folder
+- `utils` folder
+- unused helpers
 
 #### Changed
 - Interaction with providers moved on [@distributedlab/w3p](https://github.com/distributed-lab/web-kit/tree/main/packages/w3p)
@@ -19,6 +21,7 @@ for further information about branching and tagging conventions.
 - Intraction with API moved on [@distributeslab/jac](https://distributed-lab.github.io/web-kit/modules/_distributedlab_jac.html)
 - Statistics types refactored
 - `authStore` refactored
+- Math and date utils moved on [@distributedlab/tools](https://distributed-lab.github.io/web-kit/modules/_distributedlab_tools.html)
 
 ## [1.5.0] - 2023-05-12
 #### Added

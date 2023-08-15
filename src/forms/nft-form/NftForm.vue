@@ -197,6 +197,11 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { BN, DECIMALS } from '@distributedlab/tools'
+
 import {
   InputField,
   TextareaField,
@@ -205,10 +210,8 @@ import {
   CheckboxField,
   MultipleSelectField,
 } from '@/fields'
-import { computed, reactive, ref } from 'vue'
 import { AppButton, Collapse } from '@/common'
 import { FIELD_LENGTH, ROUTE_NAMES } from '@/enums'
-import { useRouter } from 'vue-router'
 import { useForm, useFormValidation, useBooks } from '@/composables'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import {
@@ -221,11 +224,8 @@ import {
   address,
 } from '@/validators'
 import { ErrorHandler, Bus, switchNetwork, Document } from '@/helpers'
-import { BN } from '@/utils/math.util'
 import { MIN_PRICE_VALUE, MAX_PRICE_VALUE, MAX_BOOK_SIZE } from '@/consts'
-import { useI18n } from 'vue-i18n'
 import { BookFile, FullBookInfo } from '@/types'
-
 import { VouchersTemplate } from '@/forms'
 import { Vouchers } from '@/forms/nft-form/VouchersTemplate.vue'
 
@@ -279,10 +279,12 @@ const secondSubtitleText = computed(() =>
     : t('nft-form.details-subtitle'),
 )
 
-const nftPrice = new BN(props.book?.pricePerOneToken || 0).fromWei().toString()
-const nftFloorPrice = new BN(props.book?.minNFTFloorPrice || 0)
-  .fromWei()
-  .toString()
+const nftPrice = BN.fromBigInt(props.book?.pricePerOneToken || 0).format({
+  decimals: 0,
+})
+const nftFloorPrice = BN.fromBigInt(props.book?.minNFTFloorPrice || 0).format({
+  decimals: 0,
+})
 
 const isContractValuesUpdated = computed(
   () =>
@@ -295,7 +297,7 @@ const isContractValuesUpdated = computed(
     form.isDisabled !== props.book?.isDisabled ||
     form.isVoucherBuyable !== props.book?.isVoucherBuyable ||
     form.voucherTokenContract !== props.book?.voucherTokenContract ||
-    new BN(form.voucherTokensAmount).toWei().toString() !==
+    BN.fromRaw(form.voucherTokensAmount, DECIMALS.WEI).value !==
       props.book.voucherTokensAmount,
 )
 
@@ -357,7 +359,7 @@ const form = reactive<{
   isDisabled: props.book?.isDisabled || false,
   voucherTokenContract: props.book?.voucherTokenContract ?? '',
   voucherTokensAmount: props.book?.voucherTokensAmount
-    ? new BN(props.book.voucherTokensAmount).fromWei().toString()
+    ? BN.fromBigInt(props.book.voucherTokensAmount).format({ decimals: 0 })
     : '0',
   networksToDeploy: networkList.value[0]?.value
     ? [networkList.value[0].value]

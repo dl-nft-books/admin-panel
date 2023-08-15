@@ -1,6 +1,8 @@
+import { ethers } from 'ethers'
+import { computed } from 'vue'
 import { ChainId } from '@distributedlab/w3p'
 import { JsonApiBodyBuilder } from '@distributedlab/jac'
-import { ethers } from 'ethers'
+import { BN, DECIMALS } from '@distributedlab/tools'
 
 import { api } from '@/api'
 import { Book, CreateBookResponse, FullBookInfo, BaseBookInfo } from '@/types'
@@ -10,8 +12,6 @@ import {
   TokenParams,
 } from '@/composables/contracts'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { computed } from 'vue'
-import { BN } from '@/utils/math.util'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
 import { switchNetwork, Document } from '@/helpers'
 
@@ -81,7 +81,7 @@ export function useBooks(contractRegistryAddress?: string) {
   ): BaseBookInfo => {
     return {
       ...backendData,
-      pricePerOneToken: new BN(contractData.pricePerOneToken._hex).toString(),
+      pricePerOneToken: contractData.pricePerOneToken.toString(),
       tokenName: contractData.baseTokenData.tokenName,
       tokenContract: contractData.baseTokenData.tokenContract,
       isDisabled: contractData.isDisabled,
@@ -95,16 +95,11 @@ export function useBooks(contractRegistryAddress?: string) {
   ): FullBookInfo => {
     return {
       ...backendData,
-      pricePerOneToken: new BN(
-        contractData.tokenParams.pricePerOneToken._hex,
-      ).toString(),
-      minNFTFloorPrice: new BN(
-        contractData.tokenParams.minNFTFloorPrice._hex,
-      ).toString(),
+      pricePerOneToken: contractData.tokenParams.pricePerOneToken.toString(),
+      minNFTFloorPrice: contractData.tokenParams.minNFTFloorPrice.toString(),
       voucherTokenContract: contractData.tokenParams.voucherTokenContract,
-      voucherTokensAmount: new BN(
-        contractData.tokenParams.voucherTokensAmount._hex,
-      ).toString(),
+      voucherTokensAmount:
+        contractData.tokenParams.voucherTokensAmount.toString(),
       fundsRecipient: contractData.tokenParams.fundsRecipient,
       isNFTBuyable: contractData.tokenParams.isNFTBuyable,
       isDisabled: contractData.tokenParams.isDisabled,
@@ -225,7 +220,7 @@ export function useBooks(contractRegistryAddress?: string) {
 
     if (!amount) return
 
-    return new BN(amount._hex).toString()
+    return amount.toString()
   }
 
   const _uploadBookMedia = async (...bookMedia: Array<Document>) => {
@@ -298,9 +293,10 @@ export function useBooks(contractRegistryAddress?: string) {
           voucherTokensAmount:
             opts.vouchers[counter].voucherTokenAmount &&
             opts.vouchers[counter].isVoucherBuyable
-              ? new BN(opts.vouchers[counter].voucherTokenAmount)
-                  .toWei()
-                  .toString()
+              ? BN.fromRaw(
+                  opts.vouchers[counter].voucherTokenAmount,
+                  DECIMALS.WEI,
+                ).value
               : '0',
           isNFTBuyable: opts.isNftBuyable,
           fundsRecipient: opts.fundsRecipient || ethers.constants.AddressZero,
@@ -321,9 +317,9 @@ export function useBooks(contractRegistryAddress?: string) {
   }
 
   const createBook = async (opts: CreateBookOpts) => {
-    const weiPrice = new BN(opts.price).toWei().toString()
+    const weiPrice = BN.fromRaw(opts.price, DECIMALS.WEI).value
     const weiFloorPrice = opts.floorPrice
-      ? new BN(opts.floorPrice).toWei().toString()
+      ? BN.fromRaw(opts.floorPrice, DECIMALS.WEI).value
       : '0'
 
     const deployedBookAddressList = await _deployBook({
@@ -369,12 +365,14 @@ export function useBooks(contractRegistryAddress?: string) {
       contractValuesUpdate: boolean
     },
   ) => {
-    const weiPrice = new BN(opts.contractParams.pricePerOneToken)
-      .toWei()
-      .toString()
-    const weiFloorPrice = new BN(opts.contractParams.minNFTFloorPrice)
-      .toWei()
-      .toString()
+    const weiPrice = BN.fromRaw(
+      opts.contractParams.pricePerOneToken,
+      DECIMALS.WEI,
+    ).value
+    const weiFloorPrice = BN.fromRaw(
+      opts.contractParams.minNFTFloorPrice,
+      DECIMALS.WEI,
+    ).value
 
     if (updateOpts.contractValuesUpdate) {
       for (const {
@@ -391,7 +389,8 @@ export function useBooks(contractRegistryAddress?: string) {
           pricePerOneToken: weiPrice,
           minNFTFloorPrice: weiFloorPrice,
           voucherTokensAmount: opts.contractParams.voucherTokensAmount
-            ? new BN(opts.contractParams.voucherTokensAmount).toWei().toString()
+            ? BN.fromRaw(opts.contractParams.voucherTokensAmount, DECIMALS.WEI)
+                .value
             : '0',
           voucherTokenContract:
             opts.contractParams.voucherTokenContract ||

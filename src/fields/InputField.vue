@@ -50,11 +50,11 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from '@/common'
 import uuid from 'uuidv4'
-
-import { BN } from '@/utils/math.util'
 import { computed, ref, useAttrs, useSlots } from 'vue'
+import { BN } from '@distributedlab/tools'
+
+import { Icon } from '@/common'
 import { FIELD_LENGTH } from '@/enums'
 
 type INPUT_TYPES = 'text' | 'number' | 'password'
@@ -134,9 +134,9 @@ const inputClasses = computed(() =>
 const normalizeRange = (value: string | number): string => {
   let result = value
 
-  if (min.value && new BN(value).compare(min.value) < 0) {
+  if (min.value && BN.fromRaw(result).lt(BN.fromRaw(min.value))) {
     result = min.value
-  } else if (max.value && new BN(value).compare(max.value) > 0) {
+  } else if (max.value && BN.fromRaw(result).gt(BN.fromRaw(max.value))) {
     result = max.value
   }
 

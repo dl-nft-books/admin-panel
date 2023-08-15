@@ -72,6 +72,8 @@
 
 <script setup lang="ts">
 import { reactive, computed, ref, onMounted } from 'vue'
+import { time } from '@distributedlab/tools'
+
 import { AppButton } from '@/common'
 import { InputField, DateField, MultipleSelectField } from '@/fields'
 import {
@@ -91,7 +93,6 @@ import {
 } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { Promocode } from '@/types'
-import { DateUtil } from '@/utils/date.util'
 
 import {
   MAX_DISCOUNT,
@@ -136,7 +137,7 @@ const submitText = computed(() =>
 const form = reactive({
   numberOfUses: props.promocode?.initial_usages || '',
   dueDate: isUpdate.value
-    ? DateUtil.format(props.promocode?.expiration_date, 'YYYY-MM-DD')
+    ? time(props.promocode?.expiration_date).format('YYYY-MM-DD')
     : '',
   discount: '',
   promocode: props.promocode?.promocode || '',
@@ -145,11 +146,8 @@ const form = reactive({
 
 const minDate = computed(() =>
   isUpdate.value
-    ? DateUtil.format(props.promocode?.expiration_date, 'YYYY-MM-DD')
-    : DateUtil.format(
-        DateUtil._instance(Date.now()).add(1, 'day'),
-        'YYYY-MM-DD',
-      ),
+    ? time(props.promocode?.expiration_date).format('YYYY-MM-DD')
+    : time().add(1, 'day').format('YYYY-MM-DD'),
 )
 
 const { disableForm, enableForm, isFormDisabled } = useForm()
@@ -186,7 +184,7 @@ const submit = async () => {
       await updatePromocode({
         id: props.promocode?.id as string,
         initial_usages: Number(form.numberOfUses),
-        expiration_date: DateUtil.toISO(form.dueDate),
+        expiration_date: time(form.dueDate).ISO,
         promocode: form.promocode,
         booksIds: form.bookIds,
       })
@@ -195,7 +193,7 @@ const submit = async () => {
     } else {
       await createPromocode({
         discount: Number(form.discount) / 100,
-        expiration_date: DateUtil.toISO(form.dueDate),
+        expiration_date: time(form.dueDate).ISO,
         initial_usages: Number(form.numberOfUses),
         promocode: form.promocode,
         booksIds: form.bookIds,

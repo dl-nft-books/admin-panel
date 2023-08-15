@@ -64,16 +64,12 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import {
-  cropAddress,
-  formatDMY,
-  copyToClipboard,
-  Bus,
-  ErrorHandler,
-} from '@/helpers'
 import { useI18n } from 'vue-i18n'
+import { time } from '@distributedlab/tools'
 
-import { FullUserRoleInfo, useRolesManager } from '@/composables'
+import { cropAddress, copyToClipboard, Bus, ErrorHandler } from '@/helpers'
+import { useRolesManager } from '@/composables'
+import { FullUserRoleInfo } from '@/types'
 import { Icon, AppButton, Modal, ConfirmationModal } from '@/common'
 import { RoleForm } from '@/forms'
 
@@ -106,7 +102,7 @@ const cardHeader = [
   {
     label: t('roles-info-card.date'),
     value: props.role.created_at
-      ? formatDMY(props.role.created_at)
+      ? time(props.role.created_at).format('MMMM D, YYYY')
       : t('roles-info-card.date-unknown'),
   },
   {

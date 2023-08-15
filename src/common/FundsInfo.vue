@@ -18,16 +18,17 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { BN } from '@distributedlab/tools'
 
 import { Icon, Loader } from '@/common'
 import { useWeb3ProvidersStore } from '@/store'
-import { ErrorHandler, formatFiatAsset } from '@/helpers'
+import { ErrorHandler, formatFiatAssetFromWei } from '@/helpers'
 
 import { useWithdrawalManager, usePricer } from '@/composables'
 import { CURRENCIES, WINDOW_BREAKPOINTS } from '@/enums'
-import { useI18n } from 'vue-i18n'
+
 import { useWindowSize } from '@vueuse/core'
-import { BN } from '@/utils/math.util'
 
 const { t } = useI18n()
 const { width } = useWindowSize()
@@ -41,10 +42,8 @@ const { getPrice } = usePricer()
 const isLoading = ref(false)
 const currentChainFunds = ref('')
 
-const balance = computed(() =>
-  currentChainFunds.value
-    ? formatFiatAsset(currentChainFunds.value, CURRENCIES.USD)
-    : t('funds-info.not-available'),
+const balance = computed(
+  () => currentChainFunds.value ?? t('funds-info.not-available'),
 )
 
 const balanceTitle = computed(() =>
@@ -60,14 +59,11 @@ const loadBalance = async () => {
 
     if (!funds) return
 
-    const balance = new BN(funds, {
-      decimals: tokenPrice.token.decimals,
-    })
-      .fromFraction(tokenPrice.token.decimals)
-      .mul(tokenPrice.price)
-      .toString()
+    const usdBalance = BN.fromBigInt(funds, tokenPrice.token.decimals).mul(
+      BN.fromRaw(tokenPrice.price, tokenPrice.token.decimals),
+    ).value
 
-    currentChainFunds.value = balance
+    currentChainFunds.value = formatFiatAssetFromWei(usdBalance, CURRENCIES.USD)
   } catch (error) {
     ErrorHandler.processWithoutFeedback(error)
   }

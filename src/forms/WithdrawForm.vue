@@ -8,7 +8,7 @@
         {{ $t('withdraw-form.balance-lbl') }}
       </p>
       <p class="withdraw-form__header-value">
-        {{ formattedBalance }}
+        {{ balance }}
       </p>
     </header>
     <form class="withdraw-form__form" @submit.prevent="submit">
@@ -22,8 +22,8 @@
         @blur="touchField('chain')"
       />
       <read-only-field
-        v-if="weiBalance"
-        :value="weiBalance"
+        v-if="tokenBalance"
+        :value="tokenBalance"
         :label="$t('withdraw-form.token-amount-lbl')"
       />
       <amount-field
@@ -72,6 +72,9 @@
 
 <script setup lang="ts">
 import { ref, computed, reactive, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { BN } from '@distributedlab/tools'
+
 import { AppButton } from '@/common'
 import {
   SelectField,
@@ -88,15 +91,8 @@ import {
   usePricer,
 } from '@/composables'
 import { required, address, maxValue, minValue, requiredIf } from '@/validators'
-import {
-  Bus,
-  ErrorHandler,
-  formatAssetFromWei,
-  formatFiatAsset,
-} from '@/helpers'
+import { Bus, ErrorHandler, formatFiatAssetFromWei } from '@/helpers'
 import { CURRENCIES } from '@/enums'
-import { useI18n } from 'vue-i18n'
-import { BN } from '@/utils/math.util'
 
 const MIN_WITHDRAW_AMOUNT = 0.01
 
@@ -121,11 +117,8 @@ const networkList = computed(() =>
 )
 
 const balance = ref('')
-const weiBalance = ref('')
+const tokenBalance = ref('')
 
-const formattedBalance = computed(
-  () => balance.value && formatFiatAsset(balance.value, CURRENCIES.USD),
-)
 const isLoading = ref(false)
 const form = reactive({
   amount: '',
@@ -142,7 +135,7 @@ const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
   {
     amount: {
       requiredIf: requiredIf(isCertainAmount),
-      maxValue: maxValue(weiBalance),
+      maxValue: maxValue(tokenBalance),
       minValue: minValue(MIN_WITHDRAW_AMOUNT),
     },
     recipient: {
@@ -194,16 +187,13 @@ watch(
         Number(provider.value.chainId),
       )
 
-      const formattedBalance = new BN(data, {
-        decimals: tokenPrice.token.decimals,
-      })
-        .fromFraction(tokenPrice.token.decimals)
-        .mul(tokenPrice.price)
-        .toString()
+      const usdBalance = BN.fromBigInt(data, tokenPrice.token.decimals).mul(
+        BN.fromRaw(tokenPrice.price, tokenPrice.token.decimals),
+      ).value
 
-      weiBalance.value = formatAssetFromWei(data, tokenPrice.token.decimals)
+      tokenBalance.value = BN.fromBigInt(data).toString()
 
-      balance.value = formattedBalance
+      balance.value = formatFiatAssetFromWei(usdBalance, CURRENCIES.USD)
     } catch (error) {
       ErrorHandler.process(error)
     }

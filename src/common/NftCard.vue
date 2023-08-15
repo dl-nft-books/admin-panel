@@ -25,9 +25,11 @@
 </template>
 
 <script lang="ts" setup>
-import { formatFiatAssetFromWei, formatDMY } from '@/helpers'
-import { CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
+import { time } from '@distributedlab/tools'
+
+import { formatFiatAssetFromWei } from '@/helpers'
+import { CURRENCIES } from '@/enums'
 import { BaseBookInfo } from '@/types'
 import { BnLike } from '@/utils/math.util'
 
@@ -44,7 +46,7 @@ const cardHeader = [
   },
   {
     label: t('nft-card.date-description'),
-    value: formatDMY(props.nft.created_at),
+    value: time(props.nft.created_at).format('D MMM, YYYY'),
   },
   {
     label: t('nft-card.price-description'),

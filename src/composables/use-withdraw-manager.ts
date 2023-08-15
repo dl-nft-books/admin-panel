@@ -1,9 +1,10 @@
+import { ethers } from 'ethers'
+import { computed } from 'vue'
+import { BN, DECIMALS } from '@distributedlab/tools'
+
 import { useMarketplace, useContractRegistry } from '@/composables'
 import { switchNetwork } from '@/helpers'
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
-import { BN } from '@/utils/math.util'
-import { ethers } from 'ethers'
-import { computed } from 'vue'
 
 export function useWithdrawalManager() {
   const networkStore = useNetworksStore()
@@ -48,7 +49,7 @@ export function useWithdrawalManager() {
     await _initContractRegistry(chainId)
     await _initMarketPlace()
 
-    const weiAmount = amount ? new BN(amount).toWei().toString() : '0'
+    const weiAmount = amount ? BN.fromRaw(amount, DECIMALS.WEI).value : '0'
 
     await withdrawFunds(tokenAddress, recipient, weiAmount, isMax)
   }

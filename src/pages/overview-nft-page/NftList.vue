@@ -29,13 +29,14 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { time } from '@distributedlab/tools'
+
 import { Loader, NftCard, ErrorMessage, AppButton } from '@/common'
 
 import { ErrorHandler } from '@/helpers'
 import { useContractPagination, useBooks } from '@/composables'
 import { BaseBookInfo } from '@/types'
 import { useWeb3ProvidersStore } from '@/store'
-import { DateUtil } from '@/utils/date.util'
 
 const props = defineProps<{
   totalAmount: number
@@ -58,9 +59,7 @@ const loadList = computed(
 // filtering disabled books and sorting to show user the newest books first
 const processBookList = (bookList: BaseBookInfo[]) => {
   return bookList.sort((oneBook, anotherBook) =>
-    DateUtil._instance(oneBook.created_at).isBefore(anotherBook.created_at)
-      ? 1
-      : -1,
+    time(oneBook.created_at).isBefore(anotherBook.created_at) ? 1 : -1,
   )
 }
 

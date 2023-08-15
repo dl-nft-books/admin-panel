@@ -34,15 +34,13 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { ethers } from 'ethers'
-import { Icon } from '@/common'
-import {
-  formatAssetFromWei,
-  formatFiatAssetFromWei,
-  formatMDY,
-} from '@/helpers'
-import { CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
+import { ethers } from 'ethers'
+import { time } from '@distributedlab/tools'
+
+import { Icon } from '@/common'
+import { formatAssetFromWei, formatFiatAssetFromWei } from '@/helpers'
+import { CURRENCIES } from '@/enums'
 import { FullBookInfo } from '@/types'
 
 export type NftDetails = {
@@ -58,7 +56,7 @@ const { t } = useI18n()
 const details: NftDetails[] = [
   {
     label: t('nft-details.creation-date-lbl'),
-    value: formatMDY(props.book.created_at),
+    value: time(props.book.created_at).format('MMMM D, YYYY'),
   },
   {
     label: t('nft-details.price-lbl'),

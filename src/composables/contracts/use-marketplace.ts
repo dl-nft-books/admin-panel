@@ -1,10 +1,6 @@
 import { computed, ref, Ref } from 'vue'
-import {
-  MarketPlace__factory,
-  EthProviderRpcError,
-  UnwrappedProvider,
-} from '@/types'
-import { handleEthError, sleep } from '@/helpers'
+import { MarketPlace__factory, UnwrappedProvider } from '@/types'
+import { ErrorHandler, sleep } from '@/helpers'
 
 export type TokenParams = {
   pricePerOneToken: string
@@ -67,7 +63,7 @@ export const useMarketplace = (
 
       return txInfo
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -90,7 +86,7 @@ export const useMarketplace = (
 
       return receipt
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -104,7 +100,7 @@ export const useMarketplace = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -116,7 +112,7 @@ export const useMarketplace = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -131,7 +127,7 @@ export const useMarketplace = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -146,7 +142,7 @@ export const useMarketplace = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -173,7 +169,7 @@ export const useMarketplace = (
 
       return receipt
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 

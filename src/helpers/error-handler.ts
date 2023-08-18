@@ -30,9 +30,6 @@ export class ErrorHandler {
         case errors.ProviderChainNotFoundError:
           errorMessage = t('errors.provider-chain-not-found-error')
           break
-        case errors.ProviderNotSupportedError:
-          errorMessage = t('errors.provider-not-supported-error')
-          break
         case errors.ProviderUserRejectedRequest:
           errorMessage = t('errors.provider-user-rejected-request')
           break
@@ -83,9 +80,6 @@ export class ErrorHandler {
           break
         case errors.ProviderJsonRpcVersionNotSupported:
           errorMessage = t('errors.provider-json-rpc-version-not-supported')
-          break
-        case errors.ProviderWrapperMethodNotFoundError:
-          errorMessage = t('errors.provider-wrapper-method-not-found')
           break
         default: {
           errorMessage = t('errors.default')

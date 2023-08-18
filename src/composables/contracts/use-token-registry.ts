@@ -1,10 +1,6 @@
 import { computed, ref, Ref } from 'vue'
-import {
-  TokenRegistry__factory,
-  EthProviderRpcError,
-  UnwrappedProvider,
-} from '@/types'
-import { handleEthError } from '@/helpers'
+import { TokenRegistry__factory, UnwrappedProvider } from '@/types'
+import { ErrorHandler } from '@/helpers'
 
 const VOUCHERS_POOL_NAME = 'VOUCHER_TOKEN'
 
@@ -43,7 +39,7 @@ export const useTokenRegistry = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 

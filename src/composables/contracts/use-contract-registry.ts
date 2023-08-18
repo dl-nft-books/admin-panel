@@ -1,10 +1,6 @@
 import { computed, ref, Ref } from 'vue'
-import {
-  ContractRegistry__factory,
-  EthProviderRpcError,
-  UnwrappedProvider,
-} from '@/types'
-import { handleEthError } from '@/helpers'
+import { ContractRegistry__factory, UnwrappedProvider } from '@/types'
+import { ErrorHandler } from '@/helpers'
 
 export const useContractRegistry = (
   provider: Ref<UnwrappedProvider>,
@@ -38,7 +34,7 @@ export const useContractRegistry = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -50,7 +46,7 @@ export const useContractRegistry = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -62,7 +58,7 @@ export const useContractRegistry = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -74,7 +70,7 @@ export const useContractRegistry = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 

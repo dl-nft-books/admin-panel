@@ -42,14 +42,16 @@ import { SaleHistoryItem } from '@/pages/nft-item-page'
 import { Payment } from '@/types'
 
 import { ErrorHandler } from '@/helpers'
-import { getPayments } from '@/api'
 import { ref, computed } from 'vue'
-import { usePaginate } from '@/composables'
+import { usePaginate, useStatistics } from '@/composables'
+
 const props = defineProps<{ bookId: string | number }>()
 
 const isLoadFailed = ref(false)
 
 const history = ref<Payment[]>([])
+
+const { getPayments } = useStatistics()
 
 const loadList = computed(
   () => () =>

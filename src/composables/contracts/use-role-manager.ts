@@ -1,10 +1,6 @@
 import { computed, ref, Ref } from 'vue'
-import {
-  RoleManager__factory,
-  EthProviderRpcError,
-  UnwrappedProvider,
-} from '@/types'
-import { handleEthError } from '@/helpers'
+import { RoleManager__factory, UnwrappedProvider } from '@/types'
+import { ErrorHandler } from '@/helpers'
 
 export enum ROLES {
   admin = '0xe5a0b4d50f56047f84728557fedbda92f956391bc9d5c762e8461996dd8e7ad7',
@@ -51,7 +47,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -63,7 +59,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -75,7 +71,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -87,7 +83,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -99,7 +95,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -111,7 +107,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -123,7 +119,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -135,7 +131,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -153,7 +149,7 @@ export const useRoleManager = (
 
       return receipt
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -171,7 +167,7 @@ export const useRoleManager = (
 
       return receipt
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -185,7 +181,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -196,7 +192,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 
@@ -208,7 +204,7 @@ export const useRoleManager = (
 
       return data
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 

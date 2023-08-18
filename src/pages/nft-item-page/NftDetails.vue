@@ -43,7 +43,7 @@ import {
 } from '@/helpers'
 import { CURRENCIES } from '@/enums'
 import { useI18n } from 'vue-i18n'
-import { FullBookInfo } from '@/composables'
+import { FullBookInfo } from '@/types'
 
 export type NftDetails = {
   label: string

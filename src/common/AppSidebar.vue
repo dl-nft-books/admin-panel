@@ -88,7 +88,7 @@
           class="app-sidebar__link app-sidebar__logout"
           :text="$t('app-sidebar.logout-btn')"
           :icon-left="$icons.logout"
-          @click="logout"
+          @click="authStore.logout"
         />
 
         <div class="app-sidebar__copyright">
@@ -105,10 +105,11 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue'
+
 import { WINDOW_BREAKPOINTS } from '@/enums'
-import { Bus, logout } from '@/helpers'
+import { Bus } from '@/helpers'
 import { AppLogo, AppButton, Loader, ErrorMessage } from '@/common'
-import { useRolesStore } from '@/store'
+import { useRolesStore, useAuthStore } from '@/store'
 import {
   onClickOutside,
   SwipeDirection,
@@ -120,6 +121,7 @@ const asideElement = ref<HTMLElement | null>(null)
 
 const { width: windowWidth } = useWindowSize()
 const rolesStore = useRolesStore()
+const authStore = useAuthStore()
 
 const swipe = useSwipe(document.querySelector('#app'))
 

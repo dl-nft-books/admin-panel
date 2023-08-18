@@ -1,7 +1,7 @@
-import { JsonApiResponse } from '@/api/json-api/response'
-import { JsonApiLinkFields } from '@/api/json-api/types'
-import { config } from '@config'
+import { JsonApiResponse, JsonApiLinkFields } from '@distributedlab/jac'
 import { onMounted, Ref, ref, watch, computed, ComputedRef } from 'vue'
+
+import { config } from '@config'
 import { ErrorHandler } from '@/helpers'
 
 export const usePaginate = <T>(

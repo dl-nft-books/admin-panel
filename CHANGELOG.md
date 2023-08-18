@@ -7,10 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [Unreleased]
+#### Removed
+- Old local json api client
+- JsonApiTypes
+- `requests` folder
+
 ## [1.5.1] - 2023-08-15
 #### Changed
 - Interaction with providers moved on [@distributedlab/w3p](https://github.com/distributed-lab/web-kit/tree/main/packages/w3p)
 - Book types refactored
+- Intraction with API moved on [@distributeslab/jac](https://distributed-lab.github.io/web-kit/modules/_distributedlab_jac.html)
+- Statistics types refactored
+- `authStore` refactored
 
 ## [1.5.0] - 2023-05-12
 #### Added

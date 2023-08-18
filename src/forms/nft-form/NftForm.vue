@@ -211,7 +211,6 @@ import { FIELD_LENGTH, ROUTE_NAMES } from '@/enums'
 import { useRouter } from 'vue-router'
 import { useForm, useFormValidation, useBooks } from '@/composables'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { Document } from '@/api'
 import {
   required,
   minValue,
@@ -221,7 +220,7 @@ import {
   alphaNumWithSpecialChars,
   address,
 } from '@/validators'
-import { ErrorHandler, Bus, switchNetwork } from '@/helpers'
+import { ErrorHandler, Bus, switchNetwork, Document } from '@/helpers'
 import { BN } from '@/utils/math.util'
 import { MIN_PRICE_VALUE, MAX_PRICE_VALUE, MAX_BOOK_SIZE } from '@/consts'
 import { useI18n } from 'vue-i18n'

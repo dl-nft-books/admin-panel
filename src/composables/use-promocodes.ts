@@ -1,3 +1,5 @@
+import { JsonApiBodyBuilder } from '@distributedlab/jac'
+
 import { api } from '@/api'
 import { config } from '@/config'
 import { PROMOCODE_STATUSES } from '@/enums'
@@ -10,12 +12,14 @@ export function usePromocodes() {
     status?: PROMOCODE_STATUSES[]
   }) => {
     return api.get<Promocode[]>('/integrations/core/promocodes', {
-      page: {
-        limit: opts.pageLimit ?? config.DEFAULT_PAGE_LIMIT,
-        order: opts.pageOrder ?? 'desc',
-      },
-      filter: {
-        ...(opts.status?.length ? { state: opts.status.join(',') } : {}),
+      query: {
+        page: {
+          limit: opts.pageLimit ?? config.DEFAULT_PAGE_LIMIT,
+          order: opts.pageOrder ?? 'desc',
+        },
+        filter: {
+          ...(opts.status?.length ? { state: opts.status.join(',') } : {}),
+        },
       },
     })
   }
@@ -27,15 +31,17 @@ export function usePromocodes() {
     promocode?: string
     booksIds?: Array<number>
   }) => {
+    const body = new JsonApiBodyBuilder()
+      .setAttributes({
+        initial_usages: opts.initial_usages,
+        expiration_date: opts.expiration_date,
+        promocode: opts.promocode,
+        books: opts.booksIds ?? [],
+      })
+      .build()
+
     return api.patch(`/integrations/core/promocodes/${opts.id}`, {
-      data: {
-        attributes: {
-          initial_usages: opts.initial_usages,
-          expiration_date: opts.expiration_date,
-          promocode: opts.promocode,
-          books: opts.booksIds ?? [],
-        },
-      },
+      body,
     })
   }
 
@@ -46,16 +52,18 @@ export function usePromocodes() {
     promocode?: string
     booksIds?: Array<number>
   }) => {
+    const body = new JsonApiBodyBuilder()
+      .setAttributes({
+        discount: opts.discount,
+        expiration_date: opts.expiration_date,
+        initial_usages: opts.initial_usages,
+        promocode: opts.promocode,
+        books: opts.booksIds ?? [],
+      })
+      .build()
+
     return api.post<Promocode>('/integrations/core/promocodes', {
-      data: {
-        attributes: {
-          discount: opts.discount,
-          expiration_date: opts.expiration_date,
-          initial_usages: opts.initial_usages,
-          promocode: opts.promocode,
-          books: opts.booksIds ?? [],
-        },
-      },
+      body,
     })
   }
 

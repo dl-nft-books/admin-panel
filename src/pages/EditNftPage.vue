@@ -21,9 +21,10 @@ import { ref, watch, computed } from 'vue'
 import { NftForm } from '@/forms'
 import { ErrorHandler } from '@/helpers'
 import { Loader, ErrorMessage } from '@/common'
-import { useBooks, FullBookInfo } from '@/composables'
+import { useBooks } from '@/composables'
 import { useWeb3ProvidersStore } from '@/store'
 import { Bus } from '@/helpers'
+import { FullBookInfo } from '@/types'
 
 const props = defineProps<{
   id: string

@@ -52,6 +52,7 @@
             scheme="flat"
             size="small"
             color="secondary"
+            :disabled="isFormDisabled"
             :icon-right="$icons.arrowDown"
             @click.stop="collapse.toggle"
           />
@@ -70,11 +71,13 @@
         <div class="promocode-item__actions">
           <app-button
             size="small"
+            :disabled="isFormDisabled"
             :icon-right="$icons.pencil"
             @click="showUpdateModal"
           />
           <app-button
             size="small"
+            :disabled="isFormDisabled"
             :icon-right="$icons.trash"
             @click="showDeleteModal"
           />
@@ -90,6 +93,7 @@
 
     <confirmation-modal
       v-model:is-shown="isDeleteModalShown"
+      :is-deleting="isFormDisabled"
       :entity="$t('promocodes-page.promocode-lbl')"
       @confirm="deletePromocode"
     />
@@ -103,7 +107,7 @@ import { PromocodeState } from '@/pages/promocodes-page'
 import { computed, ref } from 'vue'
 import { PROMOCODE_STATUSES } from '@/enums'
 import { PromocodeForm } from '@/forms'
-import { usePromocodes } from '@/composables'
+import { usePromocodes, useForm } from '@/composables'
 import { Bus, copyToClipboard, ErrorHandler } from '@/helpers'
 import { useI18n } from 'vue-i18n'
 
@@ -115,6 +119,7 @@ type PromocodeInfo = {
 
 const { t } = useI18n()
 const { deletePromocode: _deletePromocode } = usePromocodes()
+const { isFormDisabled, disableForm, enableForm } = useForm()
 
 const props = defineProps<{
   promocode: Promocode
@@ -165,6 +170,7 @@ const showDeleteModal = () => {
 }
 
 const deletePromocode = async () => {
+  disableForm()
   try {
     await _deletePromocode(props.promocode.id)
     Bus.emit(Bus.eventList.reloadPromocodesList)
@@ -173,6 +179,7 @@ const deletePromocode = async () => {
   } catch (error) {
     ErrorHandler.process(error)
   }
+  enableForm()
 }
 
 const copyPromocode = async (promocode: string) => {

@@ -1,5 +1,6 @@
+import { JsonApiRecordBase } from '@distributedlab/jac'
+
 import { PROMOCODE_STATUSES } from '@/enums'
-import { JsonApiRecordBase } from '@/types'
 
 export type Promocode = JsonApiRecordBase<'promocode'> & {
   discount: number

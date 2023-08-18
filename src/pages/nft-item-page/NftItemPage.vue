@@ -63,9 +63,10 @@ import { useI18n } from 'vue-i18n'
 import { Loader, ErrorMessage, AppButton, Modal } from '@/common'
 import { NftDetails, SaleHistory } from '@/pages/nft-item-page'
 import { AddNetworkForm } from '@/forms'
-import { FullBookInfo, useBooks } from '@/composables'
+import { useBooks } from '@/composables'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 import { ErrorHandler } from '@/helpers'
+import { FullBookInfo } from '@/types'
 
 const props = defineProps<{
   id: string

@@ -1,6 +1,9 @@
-import { api, Document } from '@/api'
-import { Book, CreateBookResponse, FullBookInfo, BaseBookInfo } from '@/types'
 import { ChainId } from '@distributedlab/w3p'
+import { JsonApiBodyBuilder } from '@distributedlab/jac'
+import { ethers } from 'ethers'
+
+import { api } from '@/api'
+import { Book, CreateBookResponse, FullBookInfo, BaseBookInfo } from '@/types'
 import {
   useMarketplace,
   useContractRegistry,
@@ -9,9 +12,8 @@ import {
 import { useNetworksStore, useWeb3ProvidersStore } from '@/store'
 import { computed } from 'vue'
 import { BN } from '@/utils/math.util'
-import { ethers } from 'ethers'
 import { IMarketplace } from '@/types/contracts/MarketPlace'
-import { switchNetwork } from '@/helpers'
+import { switchNetwork, Document } from '@/helpers'
 
 type CreateBookOpts = {
   tokenName: string
@@ -176,14 +178,16 @@ export function useBooks(contractRegistryAddress?: string) {
     const { data: booksFromBackend } = await api.get<Book[]>(
       '/integrations/books',
       {
-        filter: {
-          contract: bookContractsList
-            .map(book => book.baseTokenData.tokenContract)
-            .join(','),
-        },
-        page: {
-          limit: limit,
-          order: 'desc',
+        query: {
+          filter: {
+            contract: bookContractsList
+              .map(book => book.baseTokenData.tokenContract)
+              .join(','),
+          },
+          page: {
+            limit: limit,
+            order: 'desc',
+          },
         },
       },
     )
@@ -239,22 +243,24 @@ export function useBooks(contractRegistryAddress?: string) {
       }
     }>
   }) => {
-    return api.post<CreateBookResponse>('/integrations/books', {
-      data: {
-        type: 'books',
-        attributes: {
-          description: opts.description,
-          banner: {
-            type: 'banners',
-            attributes: opts.banner,
-          },
-          file: {
-            type: 'files',
-            attributes: opts.bookFile,
-          },
-          networks: opts.networks,
+    const body = new JsonApiBodyBuilder()
+      .setType('books')
+      .setAttributes({
+        description: opts.description,
+        banner: {
+          type: 'banners',
+          attributes: opts.banner,
         },
-      },
+        file: {
+          type: 'files',
+          attributes: opts.bookFile,
+        },
+        networks: opts.networks,
+      })
+      .build()
+
+    return api.post<CreateBookResponse>('/integrations/books', {
+      body,
     })
   }
 
@@ -400,31 +406,33 @@ export function useBooks(contractRegistryAddress?: string) {
     }
 
     if (updateOpts.apiValuesUpdated) {
+      const body = new JsonApiBodyBuilder()
+        .setType('books')
+        .setAttributes({
+          ...(opts.apiParams.description
+            ? { description: opts.apiParams.description }
+            : {}),
+          ...(opts.apiParams.banner
+            ? {
+                banner: {
+                  type: 'banners',
+                  attributes: opts.apiParams.banner,
+                },
+              }
+            : {}),
+          ...(opts.apiParams.file
+            ? {
+                file: {
+                  type: 'files',
+                  attributes: opts.apiParams.file,
+                },
+              }
+            : {}),
+        })
+        .build()
+
       await api.patch(`/integrations/books/${opts.apiParams.id}`, {
-        data: {
-          type: 'books',
-          attributes: {
-            ...(opts.apiParams.description
-              ? { description: opts.apiParams.description }
-              : {}),
-            ...(opts.apiParams.banner
-              ? {
-                  banner: {
-                    type: 'banners',
-                    attributes: opts.apiParams.banner,
-                  },
-                }
-              : {}),
-            ...(opts.apiParams.file
-              ? {
-                  file: {
-                    type: 'files',
-                    attributes: opts.apiParams.file,
-                  },
-                }
-              : {}),
-          },
-        },
+        body,
       })
     }
   }
@@ -436,13 +444,17 @@ export function useBooks(contractRegistryAddress?: string) {
   ) => {
     const deployedBookAddressList = await _deployBook(opts)
 
+    const data = opts.chainIds.map((el, idx) => ({
+      attributes: {
+        chain_id: el,
+        contract_address: deployedBookAddressList[idx],
+      },
+    }))
+
     await api.post(`/integrations/books/${opts.id}/network`, {
-      data: opts.chainIds.map((el, idx) => ({
-        attributes: {
-          chain_id: el,
-          contract_address: deployedBookAddressList[idx],
-        },
-      })),
+      body: {
+        data,
+      },
     })
   }
 

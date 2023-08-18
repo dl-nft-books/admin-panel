@@ -1,18 +1,12 @@
 <template>
   <drop-down
-    v-if="provider.address"
+    v-if="provider.address && networksStore.list.length"
     :class="networkSwitcherClasses"
     :right="dropDownShift"
     :disabled="isSwitchingChain"
   >
     <template #head="{ menu }">
-      <loader v-if="isLoadingNetworks" />
-      <error-message
-        v-else-if="isLoadFailed"
-        class="network-switcher__error"
-        :message="$t('networks.network-error')"
-      />
-      <div v-else class="network-switcher__wrapper" @click="menu.open">
+      <div class="network-switcher__wrapper" @click="menu.open">
         <network-item
           :modification="`non-active ${modification}`"
           :name="pickedNetwork?.name"
@@ -36,12 +30,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { DropDown, NetworkItem, Loader, ErrorMessage } from '@/common'
-import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
-import { ErrorHandler, getNetworkScheme, switchNetwork } from '@/helpers'
-import { ChainId } from '@/types'
+import { ChainId } from '@distributedlab/w3p'
+import { ref, computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
+
+import { DropDown, NetworkItem } from '@/common'
+import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
+import { getNetworkScheme, switchNetwork } from '@/helpers'
 import { WINDOW_BREAKPOINTS } from '@/enums'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
@@ -60,8 +55,6 @@ const { width } = useWindowSize()
 const networksStore = useNetworksStore()
 
 const isSwitchingChain = ref(false)
-const isLoadingNetworks = ref(true)
-const isLoadFailed = ref(false)
 
 const networkSwitcherClasses = computed(() => [
   'network-switcher',
@@ -81,16 +74,6 @@ const changeNetwork = async (chainID: ChainId) => {
   await switchNetwork(chainID)
   isSwitchingChain.value = false
 }
-
-onMounted(() => {
-  try {
-    networksStore.loadNetworks()
-    isLoadingNetworks.value = false
-  } catch (error) {
-    ErrorHandler.processWithoutFeedback(error)
-    isLoadFailed.value = true
-  }
-})
 </script>
 
 <style lang="scss" scoped>

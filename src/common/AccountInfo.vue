@@ -16,7 +16,7 @@
         <div class="account-info__body">
           <div class="account-info__info">
             <icon class="account-info__avatar-icon" :name="$icons.account" />
-            <h5 class="account-info__address">
+            <h5 v-if="provider.address" class="account-info__address">
               {{ cropAddress(provider.address) }}
             </h5>
           </div>
@@ -34,7 +34,7 @@
             class="account-info__action"
             scheme="default"
             modification="default"
-            @click="logout"
+            @click="authStore.logout"
           />
         </div>
       </template>
@@ -44,8 +44,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { cropAddress, copyToClipboard, ErrorHandler, logout } from '@/helpers'
-import { useWeb3ProvidersStore, useRolesStore } from '@/store'
+
+import { cropAddress, copyToClipboard, ErrorHandler } from '@/helpers'
+import { useWeb3ProvidersStore, useRolesStore, useAuthStore } from '@/store'
 import { AppButton, Icon, DropDown, NetworkSwitcher, FundsInfo } from '@/common'
 
 type MODIFICATIONS = 'dark-mode' | 'default'
@@ -64,6 +65,8 @@ const accountClasses = computed(() => [
 
 const rolesStore = useRolesStore()
 const web3ProvidersStore = useWeb3ProvidersStore()
+const authStore = useAuthStore()
+
 const provider = computed(() => web3ProvidersStore.provider)
 
 const copyAddress = async () => {

@@ -1,10 +1,6 @@
 import { ref, Ref } from 'vue'
-import {
-  TokenFactory__factory,
-  EthProviderRpcError,
-  UnwrappedProvider,
-} from '@/types'
-import { handleEthError } from '@/helpers'
+import { TokenFactory__factory, UnwrappedProvider } from '@/types'
+import { ErrorHandler } from '@/helpers'
 
 export const useTokenFactory = (
   provider: Ref<UnwrappedProvider>,
@@ -34,7 +30,7 @@ export const useTokenFactory = (
 
       return receipt
     } catch (error) {
-      handleEthError(error as EthProviderRpcError)
+      ErrorHandler.process(error)
     }
   }
 

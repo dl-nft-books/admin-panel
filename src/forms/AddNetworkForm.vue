@@ -75,12 +75,7 @@
 import { reactive, computed } from 'vue'
 import { AppButton, Collapse } from '@/common'
 import { InputField, AmountField, SelectField, CheckboxField } from '@/fields'
-import {
-  FullBookInfo,
-  useBooks,
-  useForm,
-  useFormValidation,
-} from '@/composables'
+import { useBooks, useForm, useFormValidation } from '@/composables'
 import { useI18n } from 'vue-i18n'
 import { address, requiredIf, minValue, maxValue, required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
@@ -88,6 +83,7 @@ import { MAX_PRICE_VALUE } from '@/consts'
 import { useNetworksStore } from '@/store'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
+import { FullBookInfo } from '@/types'
 
 const props = defineProps<{
   book: FullBookInfo

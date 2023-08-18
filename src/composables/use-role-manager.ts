@@ -1,5 +1,6 @@
+import { JsonApiBodyBuilder } from '@distributedlab/jac'
+
 import { api } from '@/api'
-import { NotFoundError } from '@/api/json-api'
 import {
   useContractRegistry,
   useRoleManager as _useRoleManager,
@@ -8,6 +9,7 @@ import { ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { IRoleManager } from '@/types/contracts/RoleManager'
 import { FullUserRoleInfo, RoleBaseInfo, UserRoleAdditionalInfo } from '@/types'
+import { errors } from '@/errors'
 
 import { ref, computed, watch } from 'vue'
 
@@ -51,9 +53,6 @@ export function useRolesManager() {
 
   const _initContractRegistry = async () => {
     if (!provider.value.chainId) return
-    if (!networkStore.list.length) {
-      await networkStore.loadNetworks()
-    }
 
     const appropriateRegistryAddress = networkStore.list.find(
       network => network.chain_id === Number(provider.value.chainId),
@@ -88,8 +87,10 @@ export function useRolesManager() {
       const { data } = await api.get<UserRoleAdditionalInfo[]>(
         '/integrations/nonce-auth-svc/users',
         {
-          filter: {
-            address: members.join(','),
+          query: {
+            filter: {
+              address: members.join(','),
+            },
           },
         },
       )
@@ -157,14 +158,13 @@ export function useRolesManager() {
     } catch (error) {
       ErrorHandler.processWithoutFeedback(error)
 
-      if (error instanceof NotFoundError) {
+      if (error instanceof errors.NotFoundError) {
+        const body = new JsonApiBodyBuilder()
+          .setAttributes({ name, address })
+          .build()
+
         await api.post('/integrations/nonce-auth-svc/users', {
-          data: {
-            attributes: {
-              name,
-              address,
-            },
-          },
+          body,
         })
       }
     }
@@ -172,23 +172,20 @@ export function useRolesManager() {
 
   const editUserName = async (name: string, address: string) => {
     try {
+      const body = new JsonApiBodyBuilder().setAttributes({ name }).build()
+
       await api.patch(`/integrations/nonce-auth-svc/users/${address}`, {
-        data: {
-          attributes: {
-            name,
-          },
-        },
+        body,
       })
     } catch (error) {
       // in case we editing default role that was set on contract during deploy
-      if (error instanceof NotFoundError) {
+      if (error instanceof errors.NotFoundError) {
+        const userBody = new JsonApiBodyBuilder()
+          .setAttributes({ name, address })
+          .build()
+
         await api.post('/integrations/nonce-auth-svc/users', {
-          data: {
-            attributes: {
-              name,
-              address,
-            },
-          },
+          body: userBody,
         })
       }
     }

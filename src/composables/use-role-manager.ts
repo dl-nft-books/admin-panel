@@ -1,4 +1,4 @@
-import { NotFoundError, JsonApiBodyBuilder } from '@distributedlab/jac'
+import { JsonApiBodyBuilder } from '@distributedlab/jac'
 
 import { api } from '@/api'
 import {
@@ -9,6 +9,7 @@ import { ErrorHandler } from '@/helpers'
 import { useWeb3ProvidersStore, useNetworksStore } from '@/store'
 import { IRoleManager } from '@/types/contracts/RoleManager'
 import { FullUserRoleInfo, RoleBaseInfo, UserRoleAdditionalInfo } from '@/types'
+import { errors } from '@/errors'
 
 import { ref, computed, watch } from 'vue'
 
@@ -157,7 +158,7 @@ export function useRolesManager() {
     } catch (error) {
       ErrorHandler.processWithoutFeedback(error)
 
-      if (error instanceof NotFoundError) {
+      if (error instanceof errors.NotFoundError) {
         const body = new JsonApiBodyBuilder()
           .setAttributes({ name, address })
           .build()
@@ -178,7 +179,7 @@ export function useRolesManager() {
       })
     } catch (error) {
       // in case we editing default role that was set on contract during deploy
-      if (error instanceof NotFoundError) {
+      if (error instanceof errors.NotFoundError) {
         const userBody = new JsonApiBodyBuilder()
           .setAttributes({ name, address })
           .build()
